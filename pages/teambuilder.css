@@ -34,6 +34,7 @@ header {
     height: 80px;
     background-color: #0F172A;
     border-bottom: 1px solid #1F2937;
+    margin-bottom: 20px;
 }
 /* DISPLAY TEAM */
 
@@ -121,4 +122,68 @@ header {
     object-fit:contain;
     display: block;
     opacity: 30%;
+}
+
+/* TEAM STAT BARS -- TEMPORARY */
+
+.team-stat-bars {
+    background-color: #1F2937;
+    width: 90%;
+    height: 280px;
+    border-radius: 16px;
+    margin: 0 5%;
+    
+}
+
+/* MEDIA QUERIES */
+
+@media (min-width: 700px) {
+
+    /* TEAM GALLERY */
+    .team-overview {
+
+    width: 90%;
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+    align-content: center;
+    
+    min-width: 660px;
+    max-width: 100%;
+}
+
+    .team-overview li {
+    margin: 0.2rem; 
+    max-height: 240px;
+    max-width: 200px;
+}
+
+    /* CAROUSELS */
+    .waitlist {
+        margin: 0 10px;
+    }
+    .waitlist li {
+        min-width: 105px;
+        min-height: 115px;
+    }
+
+    .suggested {
+        margin: 0 0 20px 10px;
+    }
+    .suggested li {
+        min-width: 105px;
+        min-height: 115px;
+    }
+
+
+}
+
+@media (min-width: 1300px) {
+
+    /* TEAM GALLERY */
+    .team-overview li {
+    max-height: 240px;
+    max-width: 200px;
+    
+}
 }
