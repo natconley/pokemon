@@ -1,11 +1,32 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pokedex</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pokédex</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Nunito:wght@400;600;700;900&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="../css/styles.css" />
 </head>
+
 <body>
-    
+
+    <!-- Huvud-layout -->
+    <div id="layout">
+        <div id="main-content">
+            <!-- Navigationsfält: tema-knapp till höger -->
+            <div class="topbar">
+                <img src="/assets/pokeball.svg" alt="Pokeball Icon" class="icon" />
+
+                <div class="topbar-right">
+                    <button id="theme-toggle" class="icon-btn" title="Toggle theme">☀️</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/themes.js"></script>
 </body>
+
 </html>
