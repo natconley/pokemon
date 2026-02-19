@@ -1,5 +1,7 @@
 * {
     box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 html {
     background-color: #111827;
@@ -16,8 +18,107 @@ a {
     color: #F3F4F6;
     text-decoration: none;
     font-size: 1rem;
+    margin: 0 15px;
 }
 
 button {
     cursor: pointer;
+    font-size: 1rem;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+
+
+/* TEMPORARY FOR LAYOUT PURPOSES */
+header {
+    height: 80px;
+    background-color: #0F172A;
+    border-bottom: 1px solid #1F2937;
+}
+/* DISPLAY TEAM */
+
+.team-overview {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    margin: 0 auto;
+    max-width: 430px;
+}
+
+.team-overview li {
+    background-color: #1b232e;
+    border-radius: 16px;
+    margin: 0.3rem;
+
+}
+
+.team-overview img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    padding: 7px;
+    display: block;
+    opacity: 70%;
+}
+
+.teamOverviewFilled {
+    opacity: 100%;
+}
+
+#random-team {
+    border: 1.8px solid #0891B2;
+    border-radius: 16px;
+    padding: 3px 5px;
+    background-color: #111827;
+    color: #0891B2;
+    margin: 10px 20px;
+}
+
+/* CAROUSELS */
+
+.waitlist {
+    display: flex;
+    flex-direction: row;
+    overflow-y: scroll;
+    width: 100%;
+}
+
+.waitlist li {
+    height: 120px;
+    min-width: 100px;
+    max-width: 150px;
+    background-color: #1b232e;
+    border-radius: 16px;
+    margin: 0.3rem;
+}
+
+.waitlist img {
+    width: 100%;
+    height: 100%;
+    object-fit:contain;
+    display: block;
+    opacity: 30%;
+}
+
+.suggested {
+    display: flex;
+    flex-direction: row;
+    overflow-y: scroll;
+    width: 100%;
+}
+
+.suggested li {
+    height: 120px;
+    min-width: 100px;
+    max-width: 150px;
+    background-color: #1b232e;
+    border-radius: 16px;
+    margin: 0.3rem;
+}
+
+.suggested img {
+    width: 100%;
+    height: 100%;
+    object-fit:contain;
+    display: block;
+    opacity: 30%;
 }
