@@ -5,51 +5,125 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="../pokePage.js" type="module"></script>
+    <link rel="stylesheet" href="../pokePage.css">
 
     <title>Document</title>
 </head>
 
 <body>
 
-    <img src="" alt="Pokemon sprite" id="pokeSprite">
-    <h1 id="pokeName">Pokemon name</h1>
-    <p id="pokeId">Pokemon id</p>
+    <!--Hero section-->
+    <section>
+        <img src="" alt="Pokemon sprite" id="pokeSprite">
+        <div class="alignItems">
+            <h1 id="pokeName">Pokemon name</h1>
+            <p id="pokeId">Pokemon id</p>
+        </div>
 
-    <!--Description-->
-    <p id="pokeDescription">Laborum anim minim nostrud ut sunt eu. Elit eiusmod veniam nulla nulla tempor. Qui enim anim
-        Lorem reprehenderit
-        dolore consequat aliquip sunt minim quis aliquip consequat duis. Amet do velit cillum amet sit consectetur
-        cupidatat non.
-    </p>
+        <!--Description-->
+        <p id="pokeDescription">Laborum anim minim nostrud ut sunt eu. Elit eiusmod veniam nulla nulla tempor. Qui enim
+            anim
+            Lorem reprehenderit
+            dolore consequat aliquip sunt minim quis aliquip consequat duis. Amet do velit cillum amet sit consectetur
+            cupidatat non.
+        </p>
+    </section>
 
     <!--Base stats-->
-    <div>
+    <section>
         <h2>Base stats</h2>
-        <div>
-            <p>HP</p>
-            <p id="pokeHP"></p>
+        <div id="pokeHP">
+            <h3>HP</h3>
+            <p></p>
+            <div class="pokeProgressBar">
+                <div class="pokeBar"></div>
+            </div>
         </div>
-        <div>
-            <p>Attack</p>
-            <p id="pokeAttack"></p>
+        <div id="pokeAttack">
+            <h3>Attack</h3>
+            <p></p>
+            <div class="pokeProgressBar">
+                <div class="pokeBar"></div>
+            </div>
         </div>
-        <div>
-            <p>Defense</p>
-            <p id="pokeDefense"></p>
+        <div id="pokeDefense">
+            <h3>Defense</h3>
+            <p></p>
+            <div class="pokeProgressBar">
+                <div class="pokeBar"></div>
+            </div>
         </div>
-    </div>
+        <div id="pokeSpecialAttack">
+            <h3>Special attack</h3>
+            <p></p>
+            <div class="pokeProgressBar">
+                <div class="pokeBar"></div>
+            </div>
+        </div>
+        <div id="pokeSpecialDefense">
+            <h3>Special defense</h3>
+            <p></p>
+            <div class="pokeProgressBar">
+                <div class="pokeBar"></div>
+            </div>
+        </div>
+        <div id="pokeSpeed">
+            <h3>Speed</h3>
+            <p></p>
+            <div class="pokeProgressBar">
+                <div class="pokeBar"></div>
+            </div>
+        </div>
+    </section>
 
-    <!--Types-->
-    <div>
+    <!--Types & weaknesses-->
+    <section>
         <div>
             <h2>Type</h2>
-            <span id="type1">Type 1</span>
-            <span id="type2" style="display: none">Type 2</span>
+            <div class="alignItems">
+                <span id="type1">Type 1</span>
+                <span id="type2" style="display: none">Type 2</span>
+            </div>
         </div>
         <div>
             <h2>Weaknesses</h2>
+            <div>
+                <span>TBA</span>
+            </div>
         </div>
-    </div>
+    </section>
+
+    <!--Traits-->
+    <section>
+        <h2>Traits</h2>
+        <div class="grid">
+            <div>
+                <h3>Height</h3>
+                <p id="pokeHeight"></p>
+            </div>
+            <div>
+                <h3>Weight</h3>
+                <p id="pokeWeight"></p>
+            </div>
+            <div>
+                <h3>Category</h3>
+                <p>TBA</p>
+            </div>
+            <div>
+                <h3>Abilities</h3>
+                <p id="pokeAbility"></p>
+            </div>
+        </div>
+    </section>
+
+    <!--Works well with-->
+    <section>
+        <h3>Works well with</h3>
+        <img src="" alt="Suggested pokeSprite">
+        <img src="" alt="Suggested pokeSprite">
+        <img src="" alt="Suggested pokeSprite">
+        <img src="" alt="Suggested pokeSprite">
+    </section>
 
 
 </body>
