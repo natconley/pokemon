@@ -13,7 +13,12 @@ const pokeSpecialDefense = document.querySelector("#pokeSpecialDefense p");
 const pokeSpeed = document.querySelector("#pokeSpeed p");
 
 //Bars
-const pokeBar = document.querySelector(".pokeBar");
+const hpBar = document.querySelector("#pokeHP .pokeBar");
+const attackBar = document.querySelector("#pokeAttack .pokeBar");
+const defenseBar = document.querySelector("#pokeDefense .pokeBar");
+const specialAttackBar = document.querySelector("#pokeSpecialAttack .pokeBar");
+const specialDefenseBar = document.querySelector("#pokeSpecialDefense .pokeBar");
+const speedBar = document.querySelector("#pokeSpeed .pokeBar");
 
 //Type
 const type1 = document.getElementById("type1");
@@ -33,23 +38,36 @@ export function capitalizeString(string = "") {
 }
 
 //Beräknar progressbarens längd
-export function calculateProgressBar(HPbar = 1) {
-    //Denna funktion fungerar endast på hp statsen just nu men tanken är attdet ska vara dynamiskt
-    pokeBar.style.width = HPbar + "%";
+export function setProgressBar(pokeArray = []) {
+
+    //Går igenom varje objekt i arrayen
+    pokeArray.forEach(element => {
+        //Blissey har högst bas stats i spelet (255 hp) 
+        element.bar.style.width = ((element.stat / 255) * 100) + "%";
+    });
+
 }
 
 //Hämtar pokemon beskrivning
 export function fetchPokeDescription(id = 1) {
-    fetch(`https://pokeapi.co/api/v2/characteristic/${id}`)
+    fetch(`https://pokeapi.co/api/v2/pokemon-species/${id}`)
         .then(res => res.json())
         .then(data => {
-            const descriptions = data.descriptions;
-            pokeDescription.textContent = descriptions[7].description;
+            // Hämtar flavor text
+            const descriptions = data.flavor_text_entries;
+
+            //Flavor texten har har en konstig tecken mitt i strängen
+            //Tecknet tas bort via replace. Replace() returnerar en ny sträng
+            const rawDescription = descriptions[0].flavor_text;
+            const description = rawDescription.replace("", " ");
+
+            pokeDescription.textContent = description;
+
         })
 };
 
 //Hämtar pokemon infon
-export function fetchPokemon(id = 1) {
+export function fetchPokemon(id = 900) {
     fetch(`https://pokeapi.co/api/v2/pokemon/${id}`)
         .then(res => res.json())
         .then(data => {
@@ -65,6 +83,7 @@ export function fetchPokemon(id = 1) {
             const types = data.types;
             type1.textContent = capitalizeString(types[0].type.name);
 
+            //Om det finns mer än en typ visas även andra typ labeln
             if (types.length > 1) {
                 type2.style.display = "block";
                 type2.textContent = capitalizeString(types[1].type.name);
@@ -78,13 +97,24 @@ export function fetchPokemon(id = 1) {
             pokeSpecialDefense.textContent = data.stats[4].base_stat;
             pokeSpeed.textContent = data.stats[5].base_stat;
 
+            //lägger alla stats i en objects of array
+            const pokeStats = [
+                { stat: data.stats[0].base_stat, bar: hpBar }, //hp
+                { stat: data.stats[1].base_stat, bar: attackBar }, //attack
+                { stat: data.stats[2].base_stat, bar: defenseBar }, //defense
+                { stat: data.stats[3].base_stat, bar: specialAttackBar }, //Special attack
+                { stat: data.stats[4].base_stat, bar: specialDefenseBar }, //Special defense
+                { stat: data.stats[5].base_stat, bar: speedBar } //speed
+            ];
+
+            setProgressBar(pokeStats);
+
             //Abilities
             pokeHeight.textContent = data.height
             pokeWeight.textContent = data.weight;
             pokeAbility.textContent = capitalizeString(data.abilities[0].ability.name);
 
             fetchPokeDescription(id);
-            calculateProgressBar(data.stats[0].base_stat);
 
         })
 };
