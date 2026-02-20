@@ -4,7 +4,7 @@
    CSS-variabler som används överallt i stilmallen.
    Byt värden här för att ändra hela färgschemat. */
 :root, [data-theme="dark"] {
-  --bg:       #0b0c1a;
+  --bg:       #111827;
   --surface:  #12132b;  /* Kortbakgrund */
   --surface2: #1a1c38;  /* Fördjupad yta, t.ex. stats-staplar */
   --border:   rgba(255,255,255,0.07);
