@@ -10,6 +10,9 @@ html {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
+h1, h2, h3, h4, h5, p {
+    margin: 0.8rem;
+}
 ul {
     list-style: none;
 }
@@ -18,7 +21,7 @@ a {
     color: #F3F4F6;
     text-decoration: none;
     font-size: 1rem;
-    margin: 0 15px;
+    margin: 0 1rem;
 }
 
 button {
