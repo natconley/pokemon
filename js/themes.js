@@ -1,4 +1,5 @@
-/* ── TEMA (mörkt / ljust) ────────────────────────── */
+
+/* ----TEMA (mörkt / ljust) ------------------------*/
 
 // Sätter temat på <html>-elementet, sparar valet och uppdaterar knappens ikon
 function applyTheme(theme) {
@@ -16,4 +17,4 @@ function initTheme() {
     applyTheme(cur === 'dark' ? 'light' : 'dark');
   });
 }
-  initTheme();
+initTheme();

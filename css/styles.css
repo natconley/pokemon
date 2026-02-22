@@ -1,7 +1,7 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
  
-/* ── MÖRKT TEMA (standard) ────────────────────────
-   CSS-variabler som används överallt i stilmallen.
+/* -- MÖRKT TEMA (standard) -----------------------------
+   CSS-variabler för färger och teman. 
    Byt värden här för att ändra hela färgschemat. */
 :root, [data-theme="dark"] {
   --bg:       #111827;
@@ -14,7 +14,7 @@
   --shadow:   rgba(0,0,0,.55);
 }
  
-/* ── LJUST TEMA ───────────────────────────────────
+/* -- LJUST TEMA ----------------------------------------------
    Aktiveras när data-theme="light" sätts på <html> */
 [data-theme="light"] {
   --bg:       #f0f2f8;
@@ -27,7 +27,8 @@
   --shadow:   rgba(0,0,0,.12);
 }
  
-/* ── BODY ─────────────────────────────────────────
+/* -- BODY --------------------------------------------------
+   Grundläggande stilar för hela sidan.
    Bakgrundsgradienten skapar ett subtilt djup på sidan */
 body {
   background: var(--bg);
@@ -41,13 +42,7 @@ body {
   overflow-x: hidden;
 }
  
-body.page-exit { animation: pageExit .4s ease forwards; }
-@keyframes pageExit { to { opacity: 0; transform: scale(.97); } }
- 
-#layout { display: flex; align-items: flex-start; }
-#main-content { flex: 1; min-width: 0; }
- 
-/* ── TOPBAR ───────────────────────────────────────*/
+/* -- TOPBAR -------------------------------------------------*/
 .topbar {
   position: fixed;
   top: 0; left: 0; right: 0;
@@ -70,7 +65,7 @@ body.page-exit { animation: pageExit .4s ease forwards; }
 }
 
 .topbar-right {
-  margin-left: auto;
+  justify-content: space-between;
   display: flex;
   align-items: center;
   gap: .5rem;
@@ -90,5 +85,3 @@ body.page-exit { animation: pageExit .4s ease forwards; }
   color: var(--text);
 }
 .icon-btn:hover { transform: translateY(-2px); border-color: var(--accent); }
- /* ── HEADER ───────────────────────────────────────
-   Sidans rubriksektion med "orb"-dekoration */
