@@ -64,11 +64,11 @@ body {
   height: 28px;
 }
 
-.topbar-right {
-  justify-content: space-between;
-  display: flex;
-  align-items: center;
-  gap: .5rem;
+.topbar-title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: .7rem;
+  color: #f7d02c;
+  margin-left: 1rem;
 }
  
 /* Toggle theme */

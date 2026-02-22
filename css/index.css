@@ -5,7 +5,12 @@ header {
   position: relative;
   overflow: hidden;
 }
-
+.topbar-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
 
 /* --  KONTROLLER ------------------------------------------------
     Innehåller sökfält och sorteringsväljare. */
