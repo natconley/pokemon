@@ -1,5 +1,6 @@
 .alignItems {
     display: flex;
+    flex-direction: row;
     align-items: center;
     gap: 1rem;
 }
@@ -18,4 +19,14 @@
 .grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+
+.pokeCard {
+    display: flex;
+    flex-direction: column;
+}
+
+.pokeCard img {
+    width: 96px;
+    height: 96px;
 }
