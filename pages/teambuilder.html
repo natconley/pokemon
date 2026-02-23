@@ -12,50 +12,54 @@
             <main> 
                 <h2>Your Team</h2>
                 <a href="#">Visit the Pokédex to get started on your team!</a><br>
-                <button id="random-team">Randomize</button>
-                <ul class="team-overview">
-                    <li class="slot slot--empty" aria-label="Team slot 1, empty. Add Pokémon."><img src="/assets/q-mark.png" alt="Question Mark"></li>
-                    <li class="slot slot--empty" aria-label="Team slot 2, empty. Add Pokémon."><img src="/assets/q-mark.png" alt="Question Mark"></li>
-                    <li class="slot slot--empty" aria-label="Team slot 3, empty. Add Pokémon."><img src="/assets/q-mark.png" alt="Question Mark"></li>
-                    <li class="slot slot--empty" aria-label="Team slot 4, empty. Add Pokémon."><img src="/assets/q-mark.png" alt="Question Mark"></li>
-                    <li class="slot slot--empty" aria-label="Team slot 5, empty. Add Pokémon."><img src="/assets/q-mark.png" alt="Question Mark"></li>
-                    <li class="slot slot--empty" aria-label="Team slot 6, empty. Add Pokémon."><img src="/assets/q-mark.png" alt="Question Mark"></li>
+                <button id="randomTeam">Randomize</button>
+                <ul class="teamOverview">
+                    <li class="teamSlot teamSlot--empty" aria-label="Team slot 1, empty. Add Pokémon."><img src="/assets/q-mark.png" alt="Question Mark"></li>
+                    <li class="teamSlot teamSlot--empty" aria-label="Team slot 2, empty. Add Pokémon."><img src="/assets/q-mark.png" alt="Question Mark"></li>
+                    <li class="teamSlot teamSlot--empty" aria-label="Team slot 3, empty. Add Pokémon."><img src="/assets/q-mark.png" alt="Question Mark"></li>
+                    <li class="teamSlot teamSlot--empty" aria-label="Team slot 4, empty. Add Pokémon."><img src="/assets/q-mark.png" alt="Question Mark"></li>
+                    <li class="teamSlot teamSlot--empty" aria-label="Team slot 5, empty. Add Pokémon."><img src="/assets/q-mark.png" alt="Question Mark"></li>
+                    <li class="teamSlot teamSlot--empty" aria-label="Team slot 6, empty. Add Pokémon."><img src="/assets/q-mark.png" alt="Question Mark"></li>
                 </ul>
 
-                <section class="team-info">
+                <section class="teamInfo">
                     <h3>Team Stats</h3>
-                    <div class="team-stat-bars">
+                    <div class="teamStatbars">
                     </div>
                     <h4>Team Pros</h4>
-                    <p class="team-info-body"></p>
+                    <p id="teamInfoPros"></p>
                     <h4>Team Cons</h4>
-                    <p class="team-info-body"></p>
+                    <p id="teamInfoCons"></p>
                     <h4>Tips</h4>
-                    <p class="team-info-body"></p>
+                    <p id="teamInfoTips"></p>
                 </section>
             </main>
             <section class="carousels">
                 <h3>Waitlist</h3>
-                <p>Save Pokémon in your waitlist when your team is full.</p>
+                <p id="waitlistInfo">Save Pokémon in your waitlist when your team is full.</p>
                 <ul class="waitlist">
-                    <li class="slot slot--empty" aria-label="Waitlist slot 1, empty. Saves pokémon when team is full."><img src="/assets/q-mark.png" alt="Question Mark"></li>
-                    <li class="slot slot--empty" aria-label="Waitlist slot 2, empty. Saves pokémon when team is full."><img src="/assets/q-mark.png" alt="Question Mark"></li>
-                    <li class="slot slot--empty" aria-label="Waitlist slot 3, empty. Saves pokémon when team is full."><img src="/assets/q-mark.png" alt="Question Mark"></li>
-                    <li class="slot slot--empty" aria-label="Waitlist slot 4, empty. Saves pokémon when team is full."><img src="/assets/q-mark.png" alt="Question Mark"></li>
-                    <li class="slot slot--empty" aria-label="Waitlist slot 5, empty. Saves pokémon when team is full."><img src="/assets/q-mark.png" alt="Question Mark"></li>
+                    <li class="waitSlot waitSlot--empty" aria-label="Waitlist slot 1, empty. Saves pokémon when team is full."><img src="/assets/q-mark.png" alt="Question Mark"></li>
+                    <li class="waitSlot waitSlot--empty" aria-label="Waitlist slot 2, empty. Saves pokémon when team is full."><img src="/assets/q-mark.png" alt="Question Mark"></li>
+                    <li class="waitSlot waitSlot--empty" aria-label="Waitlist slot 3, empty. Saves pokémon when team is full."><img src="/assets/q-mark.png" alt="Question Mark"></li>
+                    <li class="waitSlot waitSlot--empty" aria-label="Waitlist slot 4, empty. Saves pokémon when team is full."><img src="/assets/q-mark.png" alt="Question Mark"></li>
+                    <li class="waitSlot waitSlot--empty" aria-label="Waitlist slot 5, empty. Saves pokémon when team is full."><img src="/assets/q-mark.png" alt="Question Mark"></li>
 
                 </ul>
 
                 <h3>Suggested</h3>
-                <p>Start creating your team to recieve suggested Pokémons</p>
+                <p id="suggestionInfo">Start creating your team to recieve suggested Pokémons</p>
                 <ul class="suggested">
-                    <li class="slot slot--empty" aria-label="Suggestion slot, empty. Create team to see complementary pokémon."><img src="/assets/q-mark.png alt="Question Mark"></li>
-                    <li class="slot slot--empty" aria-label="Suggestion slot, empty. Create team to see complementary pokémon."><img src="/assets/q-mark.png" alt="Question Mark"></li>
-                    <li class="slot slot--empty" aria-label="Suggestion slot, empty. Create team to see complementary pokémon."><img src="/assets/q-mark.png" alt="Question Mark"></li>
-                    <li class="slot slot--empty" aria-label="Suggestion slot, empty. Create team to see complementary pokémon."><img src="/assets/q-mark.png" alt="Question Mark"></li>
-                    <li class="slot slot--empty" aria-label="Suggestion slot, empty. Create team to see complementary pokémon."><img src="/assets/q-mark.png" alt="Question Mark"></li>
+                    <li class="sugSlot sugSlot--empty" aria-label="Suggestion slot, empty. Create team to see complementary pokémon."><img src="/assets/q-mark.png" alt="Question Mark"></li>
+                    <li class="sugSlot sugSlot--empty" aria-label="Suggestion slot, empty. Create team to see complementary pokémon."><img src="/assets/q-mark.png" alt="Question Mark"></li>
+                    <li class="sugSlot sugSlot--empty" aria-label="Suggestion slot, empty. Create team to see complementary pokémon."><img src="/assets/q-mark.png" alt="Question Mark"></li>
+                    <li class="sugSlot sugSlot--empty" aria-label="Suggestion slot, empty. Create team to see complementary pokémon."><img src="/assets/q-mark.png" alt="Question Mark"></li>
+                    <li class="sugSlot sugSlot--empty" aria-label="Suggestion slot, empty. Create team to see complementary pokémon."><img src="/assets/q-mark.png" alt="Question Mark"></li>
                 </ul>
             </section>
         </section>
+
+
+        
+        <script src="/js/teamBuilder.mjs"></script>
     </body>
 </html>
