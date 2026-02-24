@@ -6,12 +6,13 @@
 /* -- GLOBAL STATE ---------------------------------------------------
    Dessa variabler håller reda på vad användaren valt.
    De uppdateras när användaren interagerar med sidan. */
-let CHAINS       = [];              // Alla evolutionskedjor, t.ex. [[Bulbasaur, Ivysaur, Venusaur], …]
-let POKEMON      = [];              // Platt lista av alla Pokémon — används för att bygga typ-chips
-let activeType   = 'all';          // Vilket typ-filter är valt? ('all', 'fire', 'water', …)
+let CHAINS       = [];         // Alla evolutionskedjor, t.ex. [[Bulbasaur, Ivysaur, Venusaur], …]
+let POKEMON      = [];         // Platt lista av alla Pokémon — används för att bygga typ-chips
+let activeType   = 'all';     // Vilket typ-filter är valt? ('all', 'fire', 'water', …)
+let visibleCount = 24;        // Antal Pokémon som visas åt gången
 
-/* -- DOM-REFERENSER ------------------------------------------------- 
-    Vi sparar referenser till HTML-element vi behöver manipulera.
+/* -- DOM-REFERENSER -------------------------------------------------
+   Vi sparar referenser till HTML-element vi behöver manipulera.
    Görs en gång här istället för att söka i DOM:en om och om igen. */
 const gridEl      = document.getElementById('grid');
 const filtersEl   = document.getElementById('filters');
@@ -40,7 +41,7 @@ function setLoading(msg, percent) {
    if (loadingBar) loadingBar.style.width = (Number(percent) || 0) + '%';
 }
 
-// Skapar ett kort för en Pokémon, med glöd-effekt och "Add To Team-knapp"
+// Bygg typ-chip-listan (behåll befintliga "All" och "Team")
 function buildTypeChips() {
    // Ta bort redan skapade chips (utom de fasta i HTML)
    const existing = Array.from(filtersEl.querySelectorAll('.chip')).filter(c => c.id !== 'chip-all' && c.id !== 'chip-team');
@@ -51,7 +52,7 @@ function buildTypeChips() {
    Array.from(types).sort().forEach(t => {
       const chip = createChip(t, () => {
          activeType = t;
-         // markera aktiv
+         // Markera aktiv chip
          filtersEl.querySelectorAll('.chip').forEach(c => c.classList.toggle('active', c.dataset.type === t));
          applyFiltersAndRender();
       });
@@ -59,7 +60,7 @@ function buildTypeChips() {
       filtersEl.appendChild(chip);
    });
 
-   // Hook för "All" och "Favorites"
+   // Hook för "All" och "Team"
    document.getElementById('chip-all')?.addEventListener('click', () => {
       activeType = 'all';
       filtersEl.querySelectorAll('.chip').forEach(c => c.classList.toggle('active', c.dataset.type === 'all'));
@@ -87,7 +88,13 @@ function applyFiltersAndRender() {
    if (sortVal === 'az') entries.sort((a, b) => a.name.localeCompare(b.name));
    else if (sortVal === 'number') entries.sort((a, b) => a.id - b.id);
 
-   renderGrid(gridEl, entries.map(p => ({ pokemon: p })));
+   // Visa bara visibleCount antal
+   const visible = entries.slice(0, visibleCount);
+   renderGrid(gridEl, visible.map(p => ({ pokemon: p })));
+
+   // Visa/dölj load more-knappen
+   const btn = document.getElementById('load-more');
+   if (btn) btn.style.display = entries.length > visibleCount ? 'block' : 'none';
 }
 
 // Init — hämta data och visa allt
@@ -110,11 +117,14 @@ async function init() {
    }
 }
 
-// Händelsebindningar
-searchEl?.addEventListener('input', () => applyFiltersAndRender());
-sortEl?.addEventListener('change', () => applyFiltersAndRender());
+// Händelsebindningar — nollställ visibleCount vid ny sökning eller sortering
+searchEl?.addEventListener('input', () => { visibleCount = 24; applyFiltersAndRender(); });
+sortEl?.addEventListener('change', () => { visibleCount = 24; applyFiltersAndRender(); });
+document.getElementById('load-more')?.addEventListener('click', () => {
+   visibleCount += 24;
+   applyFiltersAndRender();
+});
 
 // Starta när DOM är redo
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
 else init();
-
