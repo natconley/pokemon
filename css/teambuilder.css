@@ -138,6 +138,11 @@ header {
     
 }
 
+/* ALT. VIEWS */
+.hidden {
+    display: none;
+}
+
 /* MEDIA QUERIES */
 
 @media (min-width: 700px) {
