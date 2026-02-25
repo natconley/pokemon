@@ -23,11 +23,14 @@ const specialDefenseBar = document.querySelector("#pokeSpecialDefense .pokeBar")
 const speedBar = document.querySelector("#pokeSpeed .pokeBar");
 
 //Type
-const type1 = document.getElementById("type1");
-const type2 = document.getElementById("type2");
+const pokeWeaknessDiv = document.getElementById("pokeWeaknessDiv");
+const pokeTypesDiv = document.getElementById("pokeTypesDiv");
 
 //Evoluiton 
-const pokeEvolution = document.getElementById("pokeEvolution");
+const pokeEvolutionDiv = document.getElementById("pokeEvolution");
+
+//Shiny
+const shinyImg = document.querySelector("#shiny img");
 
 //Abilities
 const pokeHeight = document.getElementById("pokeHeight");
@@ -52,29 +55,7 @@ export function getPokeDescription(id = 1) {
             pokeDescription.textContent = description;
 
         })
-};
-
-//Sätter typerna
-export function setPokeTypes(pokeArray = [], div) {
-    if (pokeArray.length > 1) {
-        const newDiv = document.createElement("div");
-        div.append(newDiv);
-
-        pokeArray.forEach(element => {
-            const span = document.createElement("span");
-            span.textContent = capitalizeString(element.type.name);
-            span.style.paddingRight = "1rem";
-
-            newDiv.append(span);
-        })
-    } else {
-
-        const span = document.createElement("span");
-        span.textContent = capitalizeString(pokeArray[0].type.name);
-
-        div.append(span);
-
-    }
+        .catch()
 };
 
 //Hämtar en pokemons alla evolutioner
@@ -114,43 +95,134 @@ export function getPokemonEvolutions(id = 1) {
             return evolutions;
 
         })
+        .catch()
 };
+
+//export function setTextContent(){}; ?
 
 export async function renderEvolutions(evolutionArray = []) {
 
-    //forEach loopar stödjer inte async på ett bra sätt.
-    //Därför används for ... of här
-    for (const element of evolutionArray) {
+    try {
 
-        //Skapar alla element
-        const div = document.createElement("div");
-        const evolutionSprite = document.createElement("img");
-        const evolutionName = document.createElement("span");
-        const evolutionID = document.createElement("span");
+        let typesName = [];
 
-        //Hämtar data för varje pokemon
-        const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${element.name}`);
-        const evoData = await res.json();
+        //forEach loopar stödjer inte async på ett bra sätt.
+        //Därför används for ... of här
+        for (const element of evolutionArray) {
 
-        //Sätter bilden och namnet
-        evolutionSprite.src = evoData.sprites.front_default;
-        evolutionName.textContent = capitalizeString(element.name);
+            //Tömmer types arreyn
+            typesName = [];
 
-        //Sätter 0:or och # i början av ID:t
-        setPokeID(evoData.id, evolutionID);
+            //Skapar alla element
+            const div = document.createElement("div");
+            const evolutionSprite = document.createElement("img");
+            const evolutionName = document.createElement("span");
+            const evolutionID = document.createElement("span");
+            const typeDiv = document.createElement("div");
 
+            //Hämtar data för varje pokemon
+            const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${element.name}`);
+            const evoData = await res.json();
 
-        div.classList.add("pokeCard");
-        div.append(evolutionSprite); // du glömde lägga till spriten!
-        div.append(evolutionName);
-        div.append(evolutionID);
-        //Sätter typen
-        setPokeTypes(evoData.types, div);
-        pokeEvolution.append(div);
+            //Sätter bilden och namnet
+            evolutionSprite.src = evoData.sprites.front_default;
+            evolutionName.textContent = capitalizeString(element.name);
+
+            //Sätter 0:or och # i början av ID:t
+            setPokeID(evoData.id, evolutionID);
+
+            div.classList.add("pokeCard");
+
+            pokeEvolutionDiv.append(div);
+            div.append(evolutionSprite); // du glömde lägga till spriten!
+            div.append(evolutionName);
+            div.append(evolutionID);
+            div.append(typeDiv);
+
+            //Sätter typen
+            typesName = [evoData.types[0].type.name];
+
+            //Om det finns en andra typ
+            if (evoData.types[1]) {
+                typesName.push(evoData.types[1].type.name);
+            }
+
+            console.log(typesName);
+
+            setPokemonType(typesName, typeDiv);
+
+        }
+
+    } catch (Error) {
+
     }
 
 };
 
+//Hämtar vilka typer en pokemon är svag mot
+export async function getPokemonWeakness(typeArray = []) {
+
+    try {
+
+        //Här används objekt istället för arrayer för att lättare kunna söka eftere element utan att loopa 
+        let typesMultipliers = {};
+
+        for (const element of typeArray) {
+
+            const res = await fetch(`https://pokeapi.co/api/v2/type/${element.type.name}`);
+            const typeData = await res.json();
+
+            //Loopar igenom double_damage_from arrayen
+            typeData.damage_relations.double_damage_from.forEach(element => {
+
+                //1. (typesMultipliers[element.name] || 1) kollar om nyckeln med namnet element.name (tex "fire") redan finns
+                //2. Om nyckeln inte finns sätts default värdet till 1
+                //3. Multipliceras med 2 eftersom den här typen gör x2 skada
+                //4. Om nyckeln inte fanns sedan innan läggs den in i objektet typesMultipliers
+
+                typesMultipliers[element.name] = (typesMultipliers[element.name] || 1) * 2
+            })
+
+            typeData.damage_relations.half_damage_from.forEach(element => {
+                typesMultipliers[element.name] = (typesMultipliers[element.name] || 1) * 0.5
+            })
+
+            typeData.damage_relations.no_damage_from.forEach(element => {
+                typesMultipliers[element.name] = (typesMultipliers[element.name] || 1) * 0
+            })
+
+        };
+
+        //Gör om objektet till en array genom Object.entries
+        const results = Object.entries(typesMultipliers);
+        //De slutliga värdena sparas i den här arrayen
+        const doubleDamage = [];
+
+        for (const [key, value] of results) {
+            if (value > 1) { doubleDamage.push(key) }
+        };
+
+        //Ingenting händer med resultatet här, utan värdet returneras endast. Detta för att göra funkitonen återanvändbar
+        return doubleDamage;
+
+    } catch (Error) {
+
+    }
+
+};
+
+//Sätter pokemon typerna. Tar endast emot en array med namn
+export function setPokemonType(pokeArray = [], div) {
+
+    pokeArray.forEach(element => {
+        const span = document.createElement("span");
+        span.textContent = capitalizeString(element);
+
+        span.style.paddingRight = "1rem";
+        div.append(span);
+    })
+
+};
 
 //Hämtar pokemon infon
 export function fetchPokemon(id = 1) {
@@ -165,16 +237,16 @@ export function fetchPokemon(id = 1) {
             //Sätter 0:or och # i början av ID:t
             setPokeID(data.id, pokeId);
 
+            //Hämtar types arrayen
+            const typesdata = data.types;
+            const typesName = [data.types[0].type.name];
 
-
-            const types = data.types;
-            type1.textContent = capitalizeString(types[0].type.name);
-
-            //Om det finns mer än en pokemontyp visas även andra typ labeln
-            if (types.length > 1) {
-                type2.style.display = "block";
-                type2.textContent = capitalizeString(types[1].type.name);
+            //Om det finns en andra typ
+            if (data.types[1]) {
+                typesName.push(data.types[1].type.name);
             }
+
+            setPokemonType(typesName, pokeTypesDiv);
 
             //Stats
             pokeHP.textContent = data.stats[0].base_stat;
@@ -194,6 +266,7 @@ export function fetchPokemon(id = 1) {
                 { stat: data.stats[5].base_stat, bar: speedBar } //speed
             ];
 
+            //Sätter progressbaren utifrån pokemon statsen
             setProgressBar(pokeStats);
 
             //Abilities
@@ -201,9 +274,17 @@ export function fetchPokemon(id = 1) {
             pokeWeight.textContent = data.weight;
             pokeAbility.textContent = capitalizeString(data.abilities[0].ability.name);
 
+            //Shiny
+            shinyImg.src = data.sprites.front_shiny;
+
             getPokeDescription(id);
+            getPokemonWeakness(typesdata).then(weaknessArray => setPokemonType(weaknessArray, pokeWeaknessDiv));
+            //1. Anroppar getPokemonEvolutions med pokemon id:t
+            //2. Får tillbaka ett return värde (promise)
+            //3. Anropar renderEvolutions funktionen med return värdet
             getPokemonEvolutions(id).then(evolutions => renderEvolutions(evolutions));
         })
+        .catch()
 };
 
 fetchPokemon();
