@@ -342,6 +342,37 @@ function renderFilledCarousel(slot, pokemon) {
 
 async function loadSuggested() {
     // hårdkodade alternativ för dynamiska teamresultat
+    // pokemon id
+    const typePools = {
+        water: [9, 130, 134],
+        fire: [6, 59, 136],
+        electric: [26, 135, 181],
+        ground: [232, 330, 445],
+        ice: [131, 471, 473],
+        fighting: [68, 106, 448],
+        fairy: [282, 468, 700]
+    };
+
+    const specialAttackers = [65, 94, 196];
+    const physicalAttackers = [149, 248, 373];
+
+    const weaknessPools = {
+        hp: [143, 242, 134],
+        attack: [68, 149, 445],
+        defense: [205, 208, 227],
+        "special-attack": [65, 94, 150],
+        "special-defense": [197, 242, 378],
+        speed: [101, 135, 142]
+    };
+
+    // TYPE suggestions
+    // takes keys(types) from typePools and finds a non match in team.
+    const missingType = Object.keys(typePools).find(type => !teamStats.types.includes(type));
+     // get missing type pool   
+    //randomize type pool pick
+    // fetch type suggestion pick
+    // render first slot ---- OR ----- find other two suggestions and render all at once?
+
 }
 
 
