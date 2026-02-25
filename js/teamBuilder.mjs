@@ -1,5 +1,4 @@
 
-
 // TEAM GALLERY
 const fillRandom = document.getElementById("randomTeam");
 const teamOverviewContainer = document.querySelector("teamOverview");
@@ -46,6 +45,8 @@ async function loadTeam() {
     } else {
         emptyText.classList.remove("hidden");
     }
+    // return för användning i loadStats
+    return pokemonData;
 }
 
 // FETCH POKEMON FROM API
@@ -64,6 +65,7 @@ async function fetchPokemon(id) {
     return data;
 }
 
+
 //FILL SLOT W. POKE INFO (img, name, id, types, actions)
 function renderFilledSlot(slot, pokemon) {
     // Tömmer kortets tidigare innehåll, innerHTML bör inte vara en risk här
@@ -78,7 +80,6 @@ function renderFilledSlot(slot, pokemon) {
     const pokeImg = document.createElement("img");
     pokeImg.src = pokemon.sprites.front_default;
     pokeImg.alt = pokemon.name;
-
 
     // Lägger till namn och id i ny div
     const slotInfo = document.createElement("div");
@@ -142,14 +143,13 @@ function renderFilledSlot(slot, pokemon) {
         // navigate to see more page
     });
 
-
     // Lägger in det skapade i förälderelement
     slot.appendChild(pokeImg);
     slot.appendChild(slotInfo);
     slot.appendChild(pokemonDelete);
     slot.appendChild(pokemonSee);
-
 }
+
 
 function renderEmptySlot(slot) {
     // clear slot contents
@@ -167,10 +167,33 @@ function renderEmptySlot(slot) {
     slot.appendChild(emptyImg);
 }
 
+// GET AND COMBINES INDIVIDUAL STATS FOR TEAM STATS
+function loadStats(pokemonData) {
+    // tomt objekt för att lagra resultat
+    const teamStats = {};
+    // array med types inuti objektet
+    teamStats.types = [];
+    // filtrera bort null
+    const validPokemon = pokemonData.filter(pokemon => pokemon !== null);
 
+    // loopa igenom pokemon 
+    validPokemon.forEach(pokemon => {
+        // loopa igenom types
+        pokemon.types.forEach(t => {
+            // push type names to stat object
+            teamStats.types.push(t.type.name);
+        })
+        // loopa igenom stats
+        pokemon.stats.forEach(s => {
+            // stats namn
+            const statName = s.stat.name;
+            // stats namn + kombinerade resultat
+            teamStats[statName] = (teamStats[statName] || 0) + s.base_stat;
+        });
+    });
+    return teamStats;
+}
 
-
-async function loadStatbars() { }
 
 // LOAD WAITLIST
 async function loadWaitlist() {
@@ -256,7 +279,7 @@ function renderFilledCarousel(slot, pokemon) {
             const updatedWaitlist = waitlistIds.filter(id => id !== pokemon.id);
             // skickar tillbaks uppdaterad array
             localStorage.setItem("pokemonWaitlist", JSON.stringify(updatedWaitlist));
-            // återställer tom slot utseende
+            // återställer tom slot 
             loadWaitlist();
         }
     });
@@ -309,25 +332,25 @@ function renderFilledCarousel(slot, pokemon) {
         // navigate to see more page
     });
 
-
     // Lägger in det skapade i förälderelement
     slot.appendChild(pokeImg);
     slot.appendChild(slotInfo);
     slot.appendChild(pokemonDelete);
     slot.appendChild(pokemonSee);
     slot.appendChild(addToTeam);
-
-
 }
 
-async function loadSuggested() { }
+async function loadSuggested() {
+    // hårdkodade alternativ för dynamiska teamresultat
+}
 
 
 
 // LOAD DATA ON PAGE
 async function init() {
-    await loadTeam();
-    await loadStatbars();
+    //Hämta team data från loadTeam
+    const pokemonData = await loadTeam();
+    const teamStats = loadStats(pokemonData);
     await loadWaitlist();
     await loadSuggested();
 }
