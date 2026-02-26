@@ -1,3 +1,11 @@
+            // TO DO
+// Lägg till try/catch i async functions
+// Gör klart suggested
+// team stats/bars
+// team info
+// random??
+// design på fyllda kort
+
 
 // TEAM GALLERY
 const fillRandom = document.getElementById("randomTeam");
@@ -365,14 +373,149 @@ async function loadSuggested() {
         speed: [101, 135, 142]
     };
 
-    // TYPE suggestions
+    // TYPE suggestion
+    // Brigittas weakness calculator är mere specifik/bättre, men skulle kräva upp till 12 API anrop beroende på lagkonstellation
+    // Ändra till Brigittas version om tid finns över (Type weakness istället för Type Coverage)
+
     // takes keys(types) from typePools and finds a non match in team.
     const missingType = Object.keys(typePools).find(type => !teamStats.types.includes(type));
-     // get missing type pool   
+     // get pokemon pool for missing type
+     const typePool = typePools[missingType];  
     //randomize type pool pick
+    const typeSuggestionId = typePool[Math.floor(Math.random() * typePool.length)];
     // fetch type suggestion pick
     // render first slot ---- OR ----- find other two suggestions and render all at once?
 
+    // BALANCE suggestion
+    let balanceSuggestionId;
+    // if physical attack is higher than special attack, suggest special attacker, else suggest physical attacker
+    if (teamStats.attack > teamStats["special-attack"]) {
+        // remove from pokemon pool, pokemon already in team
+        const availableSpecialAttackers = specialAttackers.filter(id => !teamIds.includes(id));
+        // pick random pokemon from pokemon in pool, not in team
+        balanceSuggestionId = availableSpecialAttackers[Math.floor(Math.random() * availableSpecialAttackers.length)];
+    } else {
+        // remove pokemon already in team from suggestion pool
+        const availableAttackers = physicalAttackers.filter(id => !teamIds.includes(id));
+        // pick random pokemon from pokemon in pool, not in team
+        balanceSuggestionId = availableAttackers[Math.floor(Math.random() * availableAttackers.length)];
+    }
+
+    // STAT WEAKNESS suggestion (lowest stat)
+    // reduce compares stats and keeps the lowest, weakestStat is name of found lowest stat
+    const weakestStat = Object.keys(weaknessPools).reduce((lowest, current) => {
+        // if current stat is lower than lowest so far, replace as lowest, if not keep previous lowest
+        return teamStats[current] < teamStats[lowest] ? current : lowest;
+    });
+    // remove pokemon already in team from suggestion pool
+    const availablePool = weaknessPools[weakestStat].filter(id => !teamIds.includes(id));
+    // pick random from suggestion pool
+    const weaknessSuggestionId = availablePool[Math.floor(Math.random() * availablePool.length)];
+
+    const suggestionData = await Promise.all([
+        fetchPokemon(typeSuggestionId),
+        fetchPokemon(balanceSuggestionId),
+        fetchPokemon(weaknessSuggestionId)
+    ]);
+
+    // Töm suggestions på tidigare innehåll
+    // fyll i slots med pokemons
+    // fetch suggestions ids med fetchpokemon
+    // skapa och placera ut information i egna slots
+    // move on to render
+}
+
+function renderFilledSuggestions(slot, pokemon) {
+     // Tömmer kortets tidigare innehåll, innerHTML bör inte vara en risk här
+    slot.innerHTML = "";
+    // Ändrar class från empty till filled
+    slot.classList.remove("sugSlot--empty");
+    slot.classList.add("sugSlot--filled");
+    // Ändrar aria-label
+    slot.setAttribute("aria-label", `Suggested pokémon: #${pokemon.id}: ${pokemon.name}`);
+
+    // Skapar bild till slot
+    const pokeImg = document.createElement("img");
+    pokeImg.src = pokemon.sprites.front_default;
+    pokeImg.alt = pokemon.name;
+
+    const slotInfo = document.createElement("div");
+    const pokeName = document.createElement("p");
+    pokeName.textContent = pokemon.name;
+    const pokeId = document.createElement("p");
+    pokeId.textContent = `#${pokemon.id}`;
+
+    slotInfo.appendChild(pokeName);
+    slotInfo.appendChild(pokeId);
+
+    // lägger till types i listformat
+    const typesAll = document.createElement("ul");
+    // loopar igenom types för att ta ut namn på alla types
+    pokemon.types.forEach(item => {
+        //Skapar list items för varje type
+        const pokeType = document.createElement("li");
+        // Skapar innehåll på list item = type name
+        pokeType.textContent = item.type.name;
+        // lägger till li i ul
+        typesAll.appendChild(pokeType);
+    });
+    slotInfo.appendChild(typesAll);
+
+    //Lägg till "add to team" knapp med innehåll och aria label
+    const addToTeam = document.createElement("button");
+    addToTeam.setAttribute("aria-label", `Add ${pokemon.name} to your team`);
+    const plusIcon = document.createElement("img");
+    plusIcon.src = "/assets/plus.png";
+    plusIcon.alt = "";
+    addToTeam.appendChild(plusIcon);
+
+    // Event listener för att lägga till pokemon i team
+    addToTeam.addEventListener("click", () => {
+        //Ta reda på om Det finns plats att lägga till i team (under 6 finns plats, annars fullt)
+        // Hämtar id från localStorage, converterar från sträng.       
+        const teamIds = JSON.parse(localStorage.getItem("pokemonTeam")) || [];
+        if (teamIds.length < 6) {
+            // lägg till i team array
+            teamIds.push(pokemon.id);
+            // skickar tillbaks uppdaterad pokemonTeam
+            localStorage.setItem("pokemonTeam", JSON.stringify(teamIds));
+            // updatera team
+            //init skickar nya fetch calls 
+            //för mycket tryck på apin????
+            init();
+        } else {
+            const waitlistIds = JSON.parse(localStorage.getItem("pokemonWaitlist")) || [];
+
+           if (!waitlistIds.includes(pokemon.id)) {
+                waitlistIds.push(pokemon.id);
+                localStorage.setItem("pokemonWaitlist", JSON.stringify(waitlistIds));
+            loadWaitlist();
+           } else {
+            alert("This pokemon is already in your waitlist!");
+           }
+           
+        }
+    });
+    // Lägg till "se mer info" knapp med innehåll och aria label
+    const pokemonSee = document.createElement("button");
+    pokemonSee.setAttribute("aria-label", `See more about ${pokemon.name}`);
+    const seeIcon = document.createElement("img");
+    seeIcon.src = "/assets/eye.png";
+    seeIcon.alt = "";
+    pokemonSee.appendChild(seeIcon);
+
+    //eventlistener för klick av se mer knapp
+    pokemonSee.addEventListener('click', () => {
+        // LÄGG TILL MER BREOENDE PÅ OM DET ÄR MODAL ELLER EGEN SIDA
+        //eventlistener see more
+        // navigate to see more page
+    });
+
+    // Lägger in det skapade i förälderelement
+    slot.appendChild(pokeImg);
+    slot.appendChild(slotInfo);
+    slot.appendChild(pokemonSee);
+    slot.appendChild(addToTeam);
 }
 
 
