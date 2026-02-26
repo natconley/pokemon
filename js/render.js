@@ -1,0 +1,92 @@
+/* ----render.js ---------------------------------------------------------
+   Ansvarar för att skapa och rita ut DOM-element.
+   Bara utseende - ingen datahantering eller logik, det sköts av api.js och app.js.
+   ----------------------------------------------------------------------- */
+
+// Skapar ett kort-element för en enskild Pokémon.
+// `index` används för att fördröja animationen så korten tonar in ett efter ett.
+// Använder Pokémonens primära typ för att färgsätta kortet och glödeffekten.
+// Kortet är en länk till en detaljsida (som just nu inte finns)
+function createCard(pokemon, index) {
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.style.animationDelay = `${Math.min(index, 20) * 40}ms`;
+
+  const th  = getTypeTheme(pokemon.types[0]); // Färgtema baserat på primärtyp
+  const inTeam = isInTeam(pokemon.id);          // Är denna Pokémon i Teambuilder?
+
+  // Bygg HTML-badges för varje typ, t.ex. "fire" och "flying" → <span class="badge">Fire</span><span class="badge">Flying</span>
+  const badges = pokemon.types.map(t => {
+    const bth = getTypeTheme(t);
+    return `<span class="badge" style="background:${bth.bg}; color:${bth.col};">${t}</span>`;
+  }).join('');
+
+  card.innerHTML = `
+  <div class="card-glow" style="background: linear-gradient(90deg, ${th.col}88, transparent);"></div>
+  <a class="card-link" href="detail.html?id=${pokemon.id}">
+    <div class="card-img-wrap" style="background: ${th.bg};">
+      <span class="card-number">#${String(pokemon.id).padStart(3, '0')}</span>
+      <img src="${pokemon.img}" alt="${pokemon.name}" loading="lazy" />
+    </div>
+    <div class="card-info">
+      <div class="card-name">${pokemon.name}</div>
+      <div class="card-types-row">
+        <div class="card-types">${badges}</div>
+        <button class="btn-team ${inTeam ? 'active' : ''}" data-id="${pokemon.id}" title="Add to team">Add To Team</button>
+      </div>
+    </div>
+  </a>
+`;
+
+  // Glöd-effekt vid hover med typprimärfärgen
+  card.onmouseenter = () => { card.style.boxShadow = `0 20px 50px rgba(0,0,0,.3), 0 0 35px ${th.col}28`; };
+  card.onmouseleave = () => { card.style.boxShadow = ''; };
+
+  // "Add To Team-knapp": förhindra navigering och sidans klick-händelse,
+  // och växla istället om den här Pokémonen är i teamet eller inte
+  card.querySelector('.btn-team').addEventListener('click', e => {
+    e.preventDefault(); e.stopPropagation();
+    toggleTeamMember(pokemon.id);
+  });
+
+  // Lyssna på teamändringar och uppdatera knappen på just det här kortet
+  document.addEventListener('teamchange', e => {
+  if (e.detail.id === pokemon.id) {
+    card.querySelector('.btn-team').classList.toggle('active', isInTeam(pokemon.id));
+  }
+});
+  return card;
+}
+
+// Skapar en klickbar filter-chip för en Pokémon-typ.
+// Anropar `onClick(type)` när användaren klickar.
+// Färgsätter chipet baserat på typen, eller grått om typen är okänd.
+function createChip(type, onClick) {
+  const th   = getTypeTheme(type);
+  const chip = document.createElement('div');
+  chip.className    = 'chip';
+  chip.dataset.type = type;
+  chip.textContent  = type;
+  chip.style.cssText = `background:${th.bg}; border-color:${th.col}; color:${th.col};`;
+  chip.addEventListener('click', () => onClick(type));
+  return chip;
+}
+
+// Ritar ut en lista av Pokémon-kort i gridEl. Rensar först befintliga kort.
+// Om listan är tom visas ett meddelande istället.
+// Rensar befintliga kort och bygger nya med ett DocumentFragment
+// för bättre prestanda (lägger till allt på en gång i DOM:en).
+function renderGrid(gridEl, entries) {
+  gridEl.innerHTML = '';
+
+  if (!entries.length) {
+    gridEl.innerHTML = `<div class="empty"><span>?</span>No Pokémon found</div>`;
+    return;
+  }
+
+  const fragment = document.createDocumentFragment();
+  entries.forEach(({ pokemon }, i) => {
+    fragment.appendChild(createCard(pokemon, i));
+  });
+  gridEl.appendChild(fragment);
+}
