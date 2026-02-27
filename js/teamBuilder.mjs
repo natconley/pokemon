@@ -1,15 +1,15 @@
-            // TO DO
-// Lägg till try/catch i async functions
-// Gör klart suggested
+// TO DO
 // team stats/bars
 // team info
 // random??
 // design på fyllda kort
+// Weakness använder fallbackpool, ändra till näst lägsta stat
+// lägg till text om varför pokemon i suggestions valdes?
 
 
 // TEAM GALLERY
 const fillRandom = document.getElementById("randomTeam");
-const teamOverviewContainer = document.querySelector("teamOverview");
+const teamOverviewContainer = document.querySelector(".teamOverview");
 const teamSlots = document.querySelectorAll(".teamSlot");
 const emptyText = document.getElementById("teamEmpty");
 
@@ -25,52 +25,89 @@ const waitlistContainer = document.querySelector(".waitlist")
 
 // SUGGESTED TEAMMEMBERS
 const suggestionInfo = document.getElementById("suggestionInfo");
-const sugSlot = document.querySelectorAll(".sugSlot");
+const suggestedContainer = document.querySelector(".suggested");
+
+// POKEMON POOLS FOR SUGGESTIONS
+// hårdkodade alternativ för dynamiska teamresultat
+// pokemon id
+const typePools = {
+    water: [9, 130, 134],
+    fire: [6, 59, 136],
+    electric: [26, 135, 181],
+    ground: [232, 330, 445],
+    ice: [131, 471, 473],
+    fighting: [68, 106, 448],
+    fairy: [282, 468, 700]
+};
+
+const fallbackPool = [149, 248, 373, 143, 197, 445, 150];
+
+const specialAttackers = [65, 94, 196];
+const physicalAttackers = [149, 248, 373];
+
+const weaknessPools = {
+    hp: [143, 242, 134],
+    attack: [68, 149, 445],
+    defense: [205, 208, 227],
+    "special-attack": [65, 94, 150],
+    "special-defense": [197, 242, 378],
+    speed: [101, 135, 142]
+};
 
 
 // LOAD TEAM
 async function loadTeam() {
-    // Hämtar id från localStorage, converterar från sträng. Om inget är sparat är teamIds en tom array
-    //   OBS: item heter här pokemonTeam
-    const teamIds = JSON.parse(localStorage.getItem("pokemonTeam")) || [];
-    // Promise.all tillåter att data hämtas från alla idn sparade i localStorage
-    const pokemonData = await Promise.all(
-        // map omvandlar alla idn till fetch calls
-        teamIds.map(id => fetchPokemon(id))
-    );
-    //Placerar ut informationen i egna slots
-    teamSlots.forEach((slot, index) => {
-        // Om pokemon finns sparat för att fylla platsen, fyll, annars låt vara tom
-        if (pokemonData[index]) {
-            renderFilledSlot(slot, pokemonData[index]);
+    try {
+        // Hämtar id från localStorage, converterar från sträng. Om inget är sparat är teamIds en tom array
+        //   OBS: item heter här pokemonTeam
+        const teamIds = JSON.parse(localStorage.getItem("pokemonTeam")) || [];
+        // Promise.all tillåter att data hämtas från alla idn sparade i localStorage
+        const pokemonData = await Promise.all(
+            // map omvandlar alla idn till fetch calls
+            teamIds.map(id => fetchPokemon(id))
+        );
+        //Placerar ut informationen i egna slots
+        teamSlots.forEach((slot, index) => {
+            // Om pokemon finns sparat för att fylla platsen, fyll, annars låt vara tom
+            if (pokemonData[index]) {
+                renderFilledSlot(slot, pokemonData[index]);
+            } else {
+                renderEmptySlot(slot, index);
+            }
+        });
+        // Göm text om tomt team om en eller fler pokemon finns
+        if (teamIds.length > 0) {
+            emptyText.classList.add("hidden");
         } else {
-            renderEmptySlot(slot, index);
+            emptyText.classList.remove("hidden");
         }
-    });
-    // Göm text om tomt team om en eller fler pokemon finns
-    if (teamIds.length > 0) {
-        emptyText.classList.add("hidden");
-    } else {
-        emptyText.classList.remove("hidden");
+        // return för användning i loadStats
+        return pokemonData;
+    } catch {
+        console.error("Error loading team:", error);
+        // return empty array för at loadsuggested och teamstats inte ska crasha
+        return [];
     }
-    // return för användning i loadStats
-    return pokemonData;
 }
 
 // FETCH POKEMON FROM API
 async function fetchPokemon(id) {
-    // Hämtar data från API
-    const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
-    // Validerar att information kunde hämtas
-    // response.ok = statskod 200 - 299, !response.ok = alla andra statuskoder
-    // loadTeam renderar null som empty slot
-    if (!response.ok) {
-        console.error(`Failed to fetch Pokémon with ID ${id}`);
+    try {
+        // Hämtar data från API
+        const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
+        // Validerar att information kunde hämtas
+        // response.ok = statskod 200 - 299, !response.ok = alla andra statuskoder
+        if (!response.ok) {
+            throw new Error(`Failed to fetch Pokémon ID ${id}. Status: ${response.status}`);
+        }
+        // Omvandlar till JSON
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error("Error fetching Pokémon", error);
+        // loadTeam renderar null som empty slot
         return null;
     }
-    // Omvandlar till JSON
-    const data = await response.json();
-    return data;
 }
 
 
@@ -126,13 +163,13 @@ function renderFilledSlot(slot, pokemon) {
         // confirmationsmeddelande
         const confirmed = confirm(`Do you want to remove ${pokemon.name} from your team?`);
         if (confirmed) {
-            const teamIds = JSON.parse(localStorage.getItem("pokemonTeam"));
+            const teamIds = JSON.parse(localStorage.getItem("pokemonTeam")) || [];
             // hämtar de idn som är lika med de idn som finns kvar
             const updatedTeam = teamIds.filter(id => id !== pokemon.id);
             // skickar tillbaks uppdaterad array
             localStorage.setItem("pokemonTeam", JSON.stringify(updatedTeam));
-            // återställer tom slot utseende
-            renderEmptySlot(slot);
+            // återställer tom plats och skapar nya suggestions
+            init();
         }
     });
 
@@ -205,29 +242,36 @@ function loadStats(pokemonData) {
 
 // LOAD WAITLIST
 async function loadWaitlist() {
-    // Hämta id fron localStorage, convertera till sträng. Om inget är sparat är waitlistIds en tom array
-    // OBS: item heter här pokemonWaitlist
-    const waitlistIds = JSON.parse(localStorage.getItem("pokemonWaitlist")) || [];
-    // om det inte finns sparade pokemons, gör ingenting
-    if (waitlistIds.length === 0) {
+    try {
+        // Hämta id fron localStorage, convertera till sträng. Om inget är sparat är waitlistIds en tom array
+        // OBS: item heter här pokemonWaitlist
+        const waitlistIds = JSON.parse(localStorage.getItem("pokemonWaitlist")) || [];
+        // om det inte finns sparade pokemons, gör ingenting
+        if (waitlistIds.length === 0) {
+            //lägg tillbaks info för tom lista
+            waitlistInfo.classList.remove("hidden");
+            return;
+        }
+        // Töm waitlist på placeholders
+        waitlistContainer.innerHTML = "";
+        // fyll slots med pokemons
+        // Promise.all tillåter att data hämtas från alla idn sparade i localStorage
+        const pokemonData = await Promise.all(
+            // map omvandlar alla idn till fetch calls
+            waitlistIds.map(id => fetchPokemon(id))
+        );
+        //Skapar och placerar ut informationen i egna slots
+        pokemonData.forEach(pokemon => {
+            if (pokemon) {
+                const slot = document.createElement("li");
+                renderFilledCarousel(slot, pokemon);
+                waitlistContainer.appendChild(slot);
+            }
+        });
+    } catch (error) {
+        console.error("Could not load waitlist:", error);
         return;
     }
-    // Töm waitlist på placeholders
-    waitlistContainer.innerHTML = "";
-    // fyll slots med pokemons
-    // Promise.all tillåter att data hämtas från alla idn sparade i localStorage
-    const pokemonData = await Promise.all(
-        // map omvandlar alla idn till fetch calls
-        waitlistIds.map(id => fetchPokemon(id))
-    );
-    //Skapar och placerar ut informationen i egna slots
-    pokemonData.forEach(pokemon => {
-        if (pokemon) {
-            const slot = document.createElement("li");
-            renderFilledCarousel(slot, pokemon);
-            waitlistContainer.appendChild(slot);
-        }
-    });
 }
 
 // FILL WAITLIST SLOT W. POKE INFO (img, name, id, types, actions)
@@ -348,85 +392,80 @@ function renderFilledCarousel(slot, pokemon) {
     slot.appendChild(addToTeam);
 }
 
-async function loadSuggested() {
-    // hårdkodade alternativ för dynamiska teamresultat
-    // pokemon id
-    const typePools = {
-        water: [9, 130, 134],
-        fire: [6, 59, 136],
-        electric: [26, 135, 181],
-        ground: [232, 330, 445],
-        ice: [131, 471, 473],
-        fighting: [68, 106, 448],
-        fairy: [282, 468, 700]
-    };
+async function loadSuggested(pokemonData, teamStats) {
+    try {
+        // ser till att pokemon finns & att id är rätt
+        const validPokemon = pokemonData.filter(pokemon => pokemon !== null);
+        const teamIds = validPokemon.map(pokemon => pokemon.id);
+        // TYPE suggestion
+        // Brigittas weakness calculator är mere specifik/bättre, men skulle kräva upp till 12 API anrop beroende på lagkonstellation
+        // Ändra till Brigittas version om tid finns över (Type weakness istället för Type Coverage)
 
-    const specialAttackers = [65, 94, 196];
-    const physicalAttackers = [149, 248, 373];
+        // takes keys(types) from typePools and finds a non match in team.
+        const missingType = Object.keys(typePools).find(type => !teamStats.types.includes(type));
 
-    const weaknessPools = {
-        hp: [143, 242, 134],
-        attack: [68, 149, 445],
-        defense: [205, 208, 227],
-        "special-attack": [65, 94, 150],
-        "special-defense": [197, 242, 378],
-        speed: [101, 135, 142]
-    };
+        // get pokemon pool for missing type, if types from pool is covered, pick from fallbackPool
+        const typePool = missingType ? typePools[missingType] : fallbackPool;
+        // remove pokemon on team from pool
+        const availableTypePool = typePool.filter(id => !teamIds.includes(id));
+        //randomize type pool pick
+        const typeSuggestionId = availableTypePool[Math.floor(Math.random() * availableTypePool.length)];
 
-    // TYPE suggestion
-    // Brigittas weakness calculator är mere specifik/bättre, men skulle kräva upp till 12 API anrop beroende på lagkonstellation
-    // Ändra till Brigittas version om tid finns över (Type weakness istället för Type Coverage)
+        // BALANCE suggestion
+        let balanceSuggestionId;
+        // if physical attack is higher than special attack, suggest special attacker, else suggest physical attacker
+        if (teamStats.attack > teamStats["special-attack"]) {
+            // remove from pokemon pool, pokemon already in team
+            const availableSpecialAttackers = specialAttackers.filter(id => !teamIds.includes(id));
+            // pick random pokemon from pokemon in pool, not in team
+            balanceSuggestionId = availableSpecialAttackers[Math.floor(Math.random() * availableSpecialAttackers.length)];
+        } else {
+            // remove pokemon already in team from suggestion pool
+            const availableAttackers = physicalAttackers.filter(id => !teamIds.includes(id));
+            // pick random pokemon from pokemon in pool, not in team
+            balanceSuggestionId = availableAttackers[Math.floor(Math.random() * availableAttackers.length)];
+        }
 
-    // takes keys(types) from typePools and finds a non match in team.
-    const missingType = Object.keys(typePools).find(type => !teamStats.types.includes(type));
-     // get pokemon pool for missing type
-     const typePool = typePools[missingType];  
-    //randomize type pool pick
-    const typeSuggestionId = typePool[Math.floor(Math.random() * typePool.length)];
-    // fetch type suggestion pick
-    // render first slot ---- OR ----- find other two suggestions and render all at once?
-
-    // BALANCE suggestion
-    let balanceSuggestionId;
-    // if physical attack is higher than special attack, suggest special attacker, else suggest physical attacker
-    if (teamStats.attack > teamStats["special-attack"]) {
-        // remove from pokemon pool, pokemon already in team
-        const availableSpecialAttackers = specialAttackers.filter(id => !teamIds.includes(id));
-        // pick random pokemon from pokemon in pool, not in team
-        balanceSuggestionId = availableSpecialAttackers[Math.floor(Math.random() * availableSpecialAttackers.length)];
-    } else {
+        // STAT WEAKNESS suggestion (lowest stat)
+        // reduce compares stats and keeps the lowest, weakestStat is name of found lowest stat
+        const weakestStat = Object.keys(weaknessPools).reduce((lowest, current) => {
+            // if current stat is lower than lowest so far, replace as lowest, if not keep previous lowest
+            return teamStats[current] < teamStats[lowest] ? current : lowest;
+        });
         // remove pokemon already in team from suggestion pool
-        const availableAttackers = physicalAttackers.filter(id => !teamIds.includes(id));
-        // pick random pokemon from pokemon in pool, not in team
-        balanceSuggestionId = availableAttackers[Math.floor(Math.random() * availableAttackers.length)];
+        let availablePool = weaknessPools[weakestStat].filter(id => !teamIds.includes(id));
+        // pick random from suggestion pool
+        let weaknessSuggestionId = availablePool[Math.floor(Math.random() * availablePool.length)];
+        // if all suggested are in team, use fallbackpool
+        // -------alternatively change to next lowest stat if theres an available pokemon in it ????
+        if (availablePool.length === 0) {
+            availablePool = fallbackPool.filter(id => !teamIds.includes(id));
+            weaknessSuggestionId = availablePool[Math.floor(Math.random() * availablePool.length)];
+        }
+
+        suggestedContainer.innerHTML = "";
+
+        const suggestionData = await Promise.all([
+            fetchPokemon(typeSuggestionId),
+            fetchPokemon(balanceSuggestionId),
+            fetchPokemon(weaknessSuggestionId)
+        ]);
+
+        suggestionData.forEach(pokemon => {
+            if (pokemon) {
+                const slot = document.createElement("li");
+                renderFilledSuggestions(slot, pokemon);
+                suggestedContainer.appendChild(slot);
+            }
+        });
+    } catch (error) {
+        console.error("Could not load suggestions:", error);
+        return;
     }
-
-    // STAT WEAKNESS suggestion (lowest stat)
-    // reduce compares stats and keeps the lowest, weakestStat is name of found lowest stat
-    const weakestStat = Object.keys(weaknessPools).reduce((lowest, current) => {
-        // if current stat is lower than lowest so far, replace as lowest, if not keep previous lowest
-        return teamStats[current] < teamStats[lowest] ? current : lowest;
-    });
-    // remove pokemon already in team from suggestion pool
-    const availablePool = weaknessPools[weakestStat].filter(id => !teamIds.includes(id));
-    // pick random from suggestion pool
-    const weaknessSuggestionId = availablePool[Math.floor(Math.random() * availablePool.length)];
-
-    const suggestionData = await Promise.all([
-        fetchPokemon(typeSuggestionId),
-        fetchPokemon(balanceSuggestionId),
-        fetchPokemon(weaknessSuggestionId)
-    ]);
-
-    // Töm suggestions på tidigare innehåll
-    // fyll i slots med pokemons
-    // fetch suggestions ids med fetchpokemon
-    // skapa och placera ut information i egna slots
-    // move on to render
 }
 
 function renderFilledSuggestions(slot, pokemon) {
-     // Tömmer kortets tidigare innehåll, innerHTML bör inte vara en risk här
+    // Tömmer kortets tidigare innehåll, innerHTML bör inte vara en risk här
     slot.innerHTML = "";
     // Ändrar class från empty till filled
     slot.classList.remove("sugSlot--empty");
@@ -486,14 +525,14 @@ function renderFilledSuggestions(slot, pokemon) {
         } else {
             const waitlistIds = JSON.parse(localStorage.getItem("pokemonWaitlist")) || [];
 
-           if (!waitlistIds.includes(pokemon.id)) {
+            if (!waitlistIds.includes(pokemon.id)) {
                 waitlistIds.push(pokemon.id);
                 localStorage.setItem("pokemonWaitlist", JSON.stringify(waitlistIds));
-            loadWaitlist();
-           } else {
-            alert("This pokemon is already in your waitlist!");
-           }
-           
+                loadWaitlist();
+            } else {
+                alert("This pokemon is already in your waitlist!");
+            }
+
         }
     });
     // Lägg till "se mer info" knapp med innehåll och aria label
@@ -522,11 +561,15 @@ function renderFilledSuggestions(slot, pokemon) {
 
 // LOAD DATA ON PAGE
 async function init() {
-    //Hämta team data från loadTeam
-    const pokemonData = await loadTeam();
-    const teamStats = loadStats(pokemonData);
-    await loadWaitlist();
-    await loadSuggested();
+    try {
+        //Hämta team data från loadTeam
+        const pokemonData = await loadTeam();
+        const teamStats = loadStats(pokemonData);
+        await loadWaitlist();
+        await loadSuggested(pokemonData, teamStats);
+    } catch (error) {
+        console.error("Error initializing page:", error);
+    }
 }
 
 init();
