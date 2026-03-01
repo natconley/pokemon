@@ -15,9 +15,11 @@ const emptyText = document.getElementById("teamEmpty");
 
 // TEAM INFO
 const teamStatbars = document.querySelector(".teamStatbars");
-const teamInfoPros = document.querySelector(".teamInfoPros");
+const teamInfoTypes = document.querySelector(".teamInfoPros");
 const teamInfoCons = document.querySelector(".teamInfoCons");
+const teamInfoPros = document.querySelector(".teamInfoPros");
 const teamInfoTips = document.querySelector(".teamInfoTips");
+const typeBarFill = document.getElementById("typeBarFill");
 
 // WAITLIST (TEAM FULL)
 const waitlistInfo = document.getElementById("waitlistInfo");
@@ -52,6 +54,16 @@ const weaknessPools = {
     "special-attack": [65, 94, 150],
     "special-defense": [197, 242, 378],
     speed: [101, 135, 142]
+};
+
+// Ändrar namnen på stats
+const statDisplayNames = {
+    hp: "HP",
+    attack: "Attack",
+    defense: "Defense",
+    "special-attack": "Special Attack",
+    "special-defense": "Special Defense",
+    speed: "Speed"
 };
 
 
@@ -557,7 +569,111 @@ function renderFilledSuggestions(slot, pokemon) {
     slot.appendChild(addToTeam);
 }
 
+function loadTeamInfo(pokemonData, teamStats) {
+    // TYPE COVERAGE
+    // NGN text om resultatet???
 
+    // set för att endast spara unika värden, spread operator för att omvandla till array
+    const uniqueTypes = [...new Set(teamStats.types)];
+    // score för att kunna bedöma type spread
+    const score = uniqueTypes.length;
+    const typesAll = document.createElement("ul");
+    // för varje unik typ, skapa en type badge, append till ul
+    uniqueTypes.forEach(item => {
+        const uniqueBadge = document.createElement("li");
+        uniqueBadge.textContent = item;
+        typesAll.appendChild(uniqueBadge);
+    });
+
+    teamInfoTypes.appendChild(typesAll);
+    // grafens höjd baserad på type spread
+    typeBarFill.style.height = `${(score / 6) * 100}%`;
+
+    // STRENGTHS
+    // two highest stats - special note if highest stats are above a certain threshold
+    // Defense/attack balance if within range
+
+    // töm container på tidigare innehåll
+    teamInfoPros.innerHTML = "";
+    // sorterar stats baserat på värde
+    const sortedStats = Object.keys(teamStats)
+        // filtrerar bort types från stats
+        .filter(key => key !== "types")
+        // b först för att gå högst till lägst
+        .sort((a, b) => teamStats[b] - teamStats[a]);
+    // två högsta stats
+    const highest = sortedStats[0];
+    const secondHighest = sortedStats[1];
+    // skapa meddelande baserat på resultat
+    const bestFeature = document.createElement("p");
+    bestFeature.textContent = `Your team excels in ${statDisplayNames[highest]} and ${statDisplayNames[secondHighest]}!`;
+    // flytta in i div container
+    teamInfoPros.appendChild(bestFeature);
+
+ // Se om balanserad attack
+    // balanserad om range på +/- 50%
+    //ena är inte mer än * 1.5 av andra
+ const balanceAttack = teamStats.attack <= teamStats["special-attack"] * 1.5 &&
+    teamStats["special-attack"] <= teamStats.attack * 1.5;
+// se om balanserad defense, samma range som attack
+const balanceDefense = teamStats.defense <= teamStats["special-defense"] * 1.5 &&
+    teamStats["special-defense"] <= teamStats.defense * 1.5;
+
+    // om båda är balanserade, skapa p och skriv det, append till div elementet
+    if (balanceAttack && balanceDefense) {
+        const balanceText = document.createElement("p");
+        balanceText.textContent = "Your team has balanced offensive and defensive coverage! Good job!";
+        teamInfoPros.appendChild(balanceText);
+        // om bara attack har balans, skapa p och skriv det, append till div elementet
+    } else if (balanceAttack) {
+        const balanceText = document.createElement("p");
+        balanceText.textContent = "Your team has balanced offensive coverage!";
+        // flytta in i div container
+        teamInfoPros.appendChild(balanceText);
+        // om bara defense har balans, skapa p och skriv det, append till div elementet
+    } else if (balanceDefense) {
+         // skapa p element för att skriva om balansen
+        const balanceText = document.createElement("p");
+        balanceText.textContent = "Your team has balanced defensive coverage!";
+        teamInfoPros.appendChild(balanceText);
+    }
+
+    // WEAKNESS
+    const lowest = sortedStats[6];
+    const secondLowest = sortedStats[5];
+    // skapa meddelande baserat på resultat
+    const worstFeature = document.createElement("p");
+    worstFeature.textContent = `Your team is weak in ${statDisplayNames[lowest]} and ${statDisplayNames[secondLowest]}!`;
+    // flytta in i div container
+    teamInfoCons.appendChild(worstFeature);
+
+    // ----- ändra kommentarer till "your team is heavy in special attack" etc -------
+    // om båda är balanserade, skapa p och skriv det, append till div elementet
+    if (balanceAttack === false && balanceDefense === false) {
+        const unbalancedText = document.createElement("p");
+        unbalancedText.textContent = "UH-OH! Your team has unbalanced offensive and defensive coverage!";
+        teamInfoPros.appendChild(unbalancedText);
+        // om bara attack har balans, skapa p och skriv det, append till div elementet
+    } else if (balanceAttack === false) {
+        const unbalancedText = document.createElement("p");
+        unbalancedText.textContent = "Your team has unbalanced offensive coverage!";
+        // flytta in i div container
+        teamInfoPros.appendChild(unbalancedText);
+        // om bara defense har balans, skapa p och skriv det, append till div elementet
+    } else if (balanceDefense === false) {
+         // skapa p element för att skriva om balansen
+        const unbalancedText = document.createElement("p");
+        unbalancedText.textContent = "Your team has unbalanced defensive coverage!";
+        teamInfoPros.appendChild(unbalancedText);
+    }
+
+    // Two lowest stats - special note if lowest stats are below certain threshold
+    // defense/attack balance if outside of range
+
+    // TIP
+    // Suggest swap for lowest stat "Increase your hp by swapping *pokemon name* for *pokemon name*"
+    // Suggest a pokemon for better type coverage
+}
 
 // LOAD DATA ON PAGE
 async function init() {
