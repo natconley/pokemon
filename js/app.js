@@ -85,8 +85,12 @@ function applyFiltersAndRender() {
    });
 
    const sortVal = sortEl.value;
-   if (sortVal === 'az') entries.sort((a, b) => a.name.localeCompare(b.name));
-   else if (sortVal === 'number') entries.sort((a, b) => a.id - b.id);
+   if (sortVal === 'A-Z') entries.sort((a, b) => a.name.localeCompare(b.name));
+   if (sortVal === 'number') entries.sort((a, b) => a.id - b.id);
+   if (sortVal === 'Z-A') entries.sort((a,b) => b.name.localeCompare(a.name));
+   if (sortVal === "Bywegiht") entries.sort((a,b) => a.weight - b.weight);
+   if (sortVal === "HP") entries.sort((a,b) => a.HP - b.HP);
+   
 
    // Visa bara visibleCount antal
    const visible = entries.slice(0, visibleCount);

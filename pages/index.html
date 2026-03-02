@@ -23,39 +23,42 @@
         </div>
     </div>
 
-            <!-- Navigationsfält -->
-            <div class="topbar">
-                <img src="/assets/pokeball.svg" alt="Pokeball Icon" class="icon" />
-                <span class="topbar-title">Pokédex</span>
-                <div class="topbar-right">
-                    <button id="theme-toggle" class="icon-btn" title="Toggle theme">☀️</button>
-                </div>
+    <!-- Navigationsfält -->
+    <div class="topbar">
+        <img src="/assets/pokeball.svg" alt="Pokeball Icon" class="icon" />
+        <span class="topbar-title">Pokédex</span>
+        <div class="topbar-right">
+            <button id="theme-toggle" class="icon-btn" title="Toggle theme">☀️</button>
+        </div>
+    </div>
+
+    <header>
+        <div class="controls-wrap">
+            <div class="search-wrap">
+                <input id="search" type="text" placeholder="🔍  Search Pokémon or number…" />
             </div>
+            <select id="sort-select">
+                <option value="evolutions">Evolutions</option>
+                <option value="number">Number</option>
+                <option value="A-Z">A → Z</option>
+                <option value="Z-A">Z → A</option>
+                <option value="Bywegiht">Bywegiht</option>
+                <option value="HP">HP</option>
+            </select>
+        </div>
+        <!-- Filter-chips: utanför topbar -->
+        <div class="filters" id="filters">
+            <div class="chip active" data-type="all" id="chip-all">All</div>
+            <div class="chip chip-team" data-type="team" id="chip-team">Teambuilder</div>
+        </div>
+    </header>
 
-            <header>
-                <div class="controls-wrap">
-                    <div class="search-wrap">
-                        <input id="search" type="text" placeholder="🔍  Search Pokémon or number…" />
-                    </div>
-                    <select id="sort-select">
-                        <option value="evolutions">Evolutions</option>
-                        <option value="number">Number</option>
-                        <option value="az">A–Z</option>
-                    </select>
-                </div>
-                <!-- Filter-chips: utanför topbar -->
-                <div class="filters" id="filters">
-                    <div class="chip active" data-type="all" id="chip-all">All</div>
-                    <div class="chip chip-team" data-type="team" id="chip-team">Teambuilder</div>
-                </div>
-            </header>
-
-            <!-- Kortnätet: utanför topbar -->
-            <div class="grid" id="grid"></div>
-<div class="grid" id="grid"></div>
-<div class="load-more-wrap">
-  <button id="load-more">Load more</button>
-</div>
+    <!-- Kortnätet: utanför topbar -->
+    <div class="grid" id="grid"></div>
+    <div class="grid" id="grid"></div>
+    <div class="load-more-wrap">
+        <button id="load-more">Load more</button>
+    </div>
     <script src="../js/themes.js"></script>
     <script src="../js/api.js"></script>
     <script src="../js/render.js"></script>
