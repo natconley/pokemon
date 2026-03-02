@@ -1,10 +1,12 @@
+// URSÄKTA MIN SVENGELSKA
+
+
 // TO DO
-// team stats/bars
-// team info
 // random??
 // design på fyllda kort
 // Weakness använder fallbackpool, ändra till näst lägsta stat
 // lägg till text om varför pokemon i suggestions valdes?
+// meddelanden i strengths och weaknesses ??
 
 
 // TEAM GALLERY
@@ -19,6 +21,7 @@ const teamInfoTypes = document.querySelector(".teamInfoTypes");
 const teamInfoCons = document.getElementById("teamInfoCons");
 const teamInfoPros = document.getElementById("teamInfoPros");
 const typeBarFill = document.getElementById("typeBarFill");
+const typeBar = document.getElementById("typeBar")
 
 // WAITLIST (TEAM FULL)
 const waitlistInfo = document.getElementById("waitlistInfo");
@@ -54,6 +57,9 @@ const weaknessPools = {
     "special-defense": [197, 242, 378],
     speed: [101, 135, 142]
 };
+
+// CACHE
+const pokemonCache = {};
 
 // Ändrar namnen på stats
 const statDisplayNames = {
@@ -103,6 +109,10 @@ async function loadTeam() {
 
 // FETCH POKEMON FROM API
 async function fetchPokemon(id) {
+    // för att minimera API calls när init körs
+    if (pokemonCache[id]) {
+        return pokemonCache[id];
+    }
     try {
         // Hämtar data från API
         const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
@@ -113,6 +123,8 @@ async function fetchPokemon(id) {
         }
         // Omvandlar till JSON
         const data = await response.json();
+        // spara i cache innan return
+        pokemonCache[id] = data;
         return data;
     } catch (error) {
         console.error("Error fetching Pokémon", error);
@@ -587,9 +599,11 @@ function loadTeamInfo(teamStats) {
     teamInfoTypes.appendChild(typesAll);
     // grafens höjd baserad på type spread
     typeBarFill.style.height = `${(score / 6) * 100}%`;
+    // ändra aria-valuenow
+    typeBarFill.setAttribute("aria-valuenow", score)
 
     // STRENGTHS
-    // two highest stats - special note if highest stats are above a certain threshold
+    // two highest stats - special note if highest stats are above a certain threshold --------- add if time ??
     // Defense/attack balance if within range
 
     // töm container på tidigare innehåll
@@ -681,39 +695,40 @@ function loadTeamInfo(teamStats) {
 
     // STATBARS ---- TILL STÖRST DEL BRIGITTAS KOD
     //Stats
-const pokeHP = document.querySelector("#pokeHP p");
-const pokeAttack = document.querySelector("#pokeAttack p");
-const pokeDefense = document.querySelector("#pokeDefense p");
-const pokeSpecialAttack = document.querySelector("#pokeSpecialAttack p");
-const pokeSpecialDefense = document.querySelector("#pokeSpecialDefense p");
-const pokeSpeed = document.querySelector("#pokeSpeed p");
+    const pokeHP = document.querySelector("#pokeHP p");
+    const pokeAttack = document.querySelector("#pokeAttack p");
+    const pokeDefense = document.querySelector("#pokeDefense p");
+    const pokeSpecialAttack = document.querySelector("#pokeSpecialAttack p");
+    const pokeSpecialDefense = document.querySelector("#pokeSpecialDefense p");
+    const pokeSpeed = document.querySelector("#pokeSpeed p");
 
-//Bars
-const hpBar = document.querySelector("#pokeHP .pokeBar");
-const attackBar = document.querySelector("#pokeAttack .pokeBar");
-const defenseBar = document.querySelector("#pokeDefense .pokeBar");
-const specialAttackBar = document.querySelector("#pokeSpecialAttack .pokeBar");
-const specialDefenseBar = document.querySelector("#pokeSpecialDefense .pokeBar");
-const speedBar = document.querySelector("#pokeSpeed .pokeBar");
+    //Bars
+    const hpBar = document.querySelector("#pokeHP .pokeBar");
+    const attackBar = document.querySelector("#pokeAttack .pokeBar");
+    const defenseBar = document.querySelector("#pokeDefense .pokeBar");
+    const specialAttackBar = document.querySelector("#pokeSpecialAttack .pokeBar");
+    const specialDefenseBar = document.querySelector("#pokeSpecialDefense .pokeBar");
+    const speedBar = document.querySelector("#pokeSpeed .pokeBar");
 
+    // ändrar innehåll till aktuell stat siffra
+    pokeHP.textContent = teamStats.hp;
+    pokeAttack.textContent = teamStats.attack;
+    pokeDefense.textContent = teamStats.defense;
+    pokeSpecialAttack.textContent = teamStats["special-attack"];
+    pokeSpecialDefense.textContent = teamStats["special-defense"];
+    pokeSpeed.textContent = teamStats.speed;
 
-pokeHP.textContent = teamStats.hp;
-pokeAttack.textContent = teamStats.attack;
-pokeDefense.textContent = teamStats.defense;
-pokeSpecialAttack.textContent = teamStats["special-attack"];
-pokeSpecialDefense.textContent = teamStats["special-defense"];
-pokeSpeed.textContent = teamStats.speed;
-
-const statBars = [
-    { stat: teamStats.hp, bar: hpBar},
-    { stat: teamStats.attack, bar: attackBar},
-    { stat: teamStats.defense, bar: defenseBar},
-    { stat: teamStats["special-attack"], bar: specialAttackBar},
-    { stat: teamStats["special-defense"], bar: specialDefenseBar},
-    { stat: teamStats.speed, bar: speedBar}
-]
-
-setProgressBar(statBars);
+    // rätt stat på rätt plats
+    const statBars = [
+        { stat: teamStats.hp, bar: hpBar },
+        { stat: teamStats.attack, bar: attackBar },
+        { stat: teamStats.defense, bar: defenseBar },
+        { stat: teamStats["special-attack"], bar: specialAttackBar },
+        { stat: teamStats["special-defense"], bar: specialDefenseBar },
+        { stat: teamStats.speed, bar: speedBar }
+    ]
+    // calling progressbar function
+    setProgressBar(statBars);
 
 }
 
