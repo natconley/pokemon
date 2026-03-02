@@ -136,15 +136,55 @@ header {
 }
 
 /* TEAM STAT BARS -- TEMPORARY */
-
+/*
 .teamStatbars {
     background-color: #1F2937;
     width: 90%;
     height: 280px;
     border-radius: 16px;
     margin: 0 5%;
+}*/
 
+/* TAGET FRÅN BRIGITTAS KOD */
+.stats {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 }
+
+/* Stats bar */
+.pokeBar {
+    width: 1%;
+    height: 30px;
+    border-radius: 30px;
+    transition: width .6s ease;
+
+    background: linear-gradient(90deg, rgba(122, 232, 201, 1) 0%, rgba(8, 145, 179, 1) 50%, rgba(248, 160, 159, 1) 100%);
+}
+
+#pokeHP>div:first-child,
+#pokeAttack>div:first-child,
+#pokeDefense>div:first-child,
+#pokeSpecialAttack>div:first-child,
+#pokeSpecialDefense>div:first-child,
+#pokeSpeed>div:first-child {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+/*Sträcken vid progressbarren*/
+#pokeHP>div:nth-child(2),
+#pokeAttack>div:nth-child(2),
+#pokeDefense>div:nth-child(2),
+#pokeSpecialAttack>div:nth-child(2),
+#pokeSpecialDefense>div:nth-child(2),
+#pokeSpeed>div:nth-child(2) {
+    height: 1px;
+    flex: 1;
+    background-color: var(--border);
+}
+
 
 /* ALT. VIEWS */
 .hidden {

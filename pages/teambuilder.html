@@ -10,8 +10,10 @@
 
 <body>
     <header></header>
-    <section class="team-builder">
-        <main>
+    <main>
+        <h1>Team Builder</h1>
+        <section class="team-builder">
+
             <h2>Your Team</h2>
             <a id="teamEmpty" href="#">Visit the Pokédex to get started on your team!</a><br>
             <button id="randomTeam">Randomize</button>
@@ -31,68 +33,116 @@
             </ul>
 
             <section class="teamInfo">
-                <h3>Team Stats</h3>
+                <h2>Team Analysis</h2>
                 <div class="teamStatbars">
+                    <!-- TAGEN FRÅN BRIGITTAS KOD -->
+                    <section class="stats">
+                        <h3>Base stats</h3>
+                        <div id="pokeHP" class="alignItems gap1rem">
+                            <div>
+                                <span class="statLabel">HP</span>
+                                <p></p>
+                            </div>
+                            <!--Linjen mellan base statsen och progressbaren. Sätts med CSS-->
+                            <!--Här sätts aria-hidden="true" eftersom det är endast ett dekorativ elemenent-->
+                            <div aria-hidden="true"></div>
+                            <!--Själva progressbaren-->
+                            <div class="pokeBar"></div>
+                        </div>
+                        <div id="pokeAttack" class="alignItems gap1rem">
+                            <div>
+                                <span class="statLabel">Attack</span>
+                                <p></p>
+                            </div>
+                            <div aria-hidden="true"></div>
+                            <div class="pokeBar"></div>
+                        </div>
+                        <div id="pokeDefense" class="alignItems gap1rem">
+                            <div>
+                                <span class="statLabel">Defense</span>
+                                <p></p>
+                            </div>
+                            <div aria-hidden="true"></div>
+                            <div class="pokeBar"></div>
+                        </div>
+                        <div id="pokeSpecialAttack" class="alignItems gap1rem">
+                            <div>
+                                <span class="statLabel">Sp. Attack</span>
+                                <p></p>
+                            </div>
+                            <div aria-hidden="true"></div>
+                            <div class="pokeBar"></div>
+                        </div>
+                        <div id="pokeSpecialDefense" class="alignItems gap1rem">
+                            <div>
+                                <span class="statLabel">Sp. Defense</span>
+                                <p></p>
+                            </div>
+                            <div aria-hidden="true"></div>
+                            <div class="pokeBar"></div>
+                        </div>
+                        <div id="pokeSpeed" class="alignItems gap1rem">
+                            <div>
+                                <span class="statLabel">Speed</span>
+                                <p></p>
+                            </div>
+                            <div aria-hidden="true"></div>
+                            <div class="pokeBar"></div>
+                        </div>
+                    </section>
+
                 </div>
-                <h4>Type Coverage</h4>
-                <p id="teamInfoTypes"></p>
-                <div class="typeBar">
+                <h3>Type Coverage</h3>
+                <div id="teamInfoTypes"></div>
+                <div class="typeBar" role="meter" aria-label="Type coverage score" aria-valuemin="0" aria-valuemax="6" aria-valuenow="0">
                     <div id="typeBarFill"></div>
                 </div>
-                <div class="teamInfoPros">
-                    <h4>Strength</h4>
+                <div id="teamInfoPros">
+                    <h3>Strengths</h3>
                 </div>
-                <div class="teamInfoCons">
-                    <h4>Weakness</h4>
+                <div id="teamInfoCons">
+                    <h3>Weaknesses</h3>
                 </div>
-                <h4>Tips</h4>
-                <p id="teamInfoTips"></p>
+
+                 <h3>Suggestions</h3>
+                <p id="suggestionInfo">Start creating your team to recieve suggested Pokémons</p>
+                <ul class="suggested">
+                    <li class="sugSlot sugSlot--empty"
+                        aria-label="Suggestion slot, empty. Create team to see complementary pokémon."><img
+                            src="/assets/q-mark.png" alt="Question Mark"></li>
+                    <li class="sugSlot sugSlot--empty"
+                        aria-label="Suggestion slot, empty. Create team to see complementary pokémon."><img
+                            src="/assets/q-mark.png" alt="Question Mark"></li>
+                    <li class="sugSlot sugSlot--empty"
+                        aria-label="Suggestion slot, empty. Create team to see complementary pokémon."><img
+                            src="/assets/q-mark.png" alt="Question Mark"></li>
+                </ul>
             </section>
-        </main>
-        <section class="carousels">
-            <h3>Waitlist</h3>
-            <p id="waitlistInfo">Save Pokémon in your waitlist when your team is full.</p>
-            <ul class="waitlist">
-                <li class="waitSlot waitSlot--empty"
-                    aria-label="Waitlist slot 1, empty. Saves pokémon when team is full."><img src="/assets/q-mark.png"
-                        alt="Question Mark"></li>
-                <li class="waitSlot waitSlot--empty"
-                    aria-label="Waitlist slot 2, empty. Saves pokémon when team is full."><img src="/assets/q-mark.png"
-                        alt="Question Mark"></li>
-                <li class="waitSlot waitSlot--empty"
-                    aria-label="Waitlist slot 3, empty. Saves pokémon when team is full."><img src="/assets/q-mark.png"
-                        alt="Question Mark"></li>
-                <li class="waitSlot waitSlot--empty"
-                    aria-label="Waitlist slot 4, empty. Saves pokémon when team is full."><img src="/assets/q-mark.png"
-                        alt="Question Mark"></li>
-                <li class="waitSlot waitSlot--empty"
-                    aria-label="Waitlist slot 5, empty. Saves pokémon when team is full."><img src="/assets/q-mark.png"
-                        alt="Question Mark"></li>
 
-            </ul>
+            <section class="carousels">
+                <h2>Waitlist</h2>
+                <p id="waitlistInfo">Save Pokémon in your waitlist when your team is full.</p>
+                <ul class="waitlist">
+                    <li class="waitSlot waitSlot--empty"
+                        aria-label="Waitlist slot 1, empty. Saves pokémon when team is full."><img
+                            src="/assets/q-mark.png" alt="Question Mark"></li>
+                    <li class="waitSlot waitSlot--empty"
+                        aria-label="Waitlist slot 2, empty. Saves pokémon when team is full."><img
+                            src="/assets/q-mark.png" alt="Question Mark"></li>
+                    <li class="waitSlot waitSlot--empty"
+                        aria-label="Waitlist slot 3, empty. Saves pokémon when team is full."><img
+                            src="/assets/q-mark.png" alt="Question Mark"></li>
+                    <li class="waitSlot waitSlot--empty"
+                        aria-label="Waitlist slot 4, empty. Saves pokémon when team is full."><img
+                            src="/assets/q-mark.png" alt="Question Mark"></li>
+                    <li class="waitSlot waitSlot--empty"
+                        aria-label="Waitlist slot 5, empty. Saves pokémon when team is full."><img
+                            src="/assets/q-mark.png" alt="Question Mark"></li>
 
-            <h3>Suggested</h3>
-            <p id="suggestionInfo">Start creating your team to recieve suggested Pokémons</p>
-            <ul class="suggested">
-                <li class="sugSlot sugSlot--empty"
-                    aria-label="Suggestion slot, empty. Create team to see complementary pokémon."><img
-                        src="/assets/q-mark.png" alt="Question Mark"></li>
-                <li class="sugSlot sugSlot--empty"
-                    aria-label="Suggestion slot, empty. Create team to see complementary pokémon."><img
-                        src="/assets/q-mark.png" alt="Question Mark"></li>
-                <li class="sugSlot sugSlot--empty"
-                    aria-label="Suggestion slot, empty. Create team to see complementary pokémon."><img
-                        src="/assets/q-mark.png" alt="Question Mark"></li>
-                <li class="sugSlot sugSlot--empty"
-                    aria-label="Suggestion slot, empty. Create team to see complementary pokémon."><img
-                        src="/assets/q-mark.png" alt="Question Mark"></li>
-                <li class="sugSlot sugSlot--empty"
-                    aria-label="Suggestion slot, empty. Create team to see complementary pokémon."><img
-                        src="/assets/q-mark.png" alt="Question Mark"></li>
-            </ul>
+                </ul>
+            </section>
         </section>
-    </section>
-
+    </main>
 
 
     <script src="/js/teamBuilder.mjs"></script>
