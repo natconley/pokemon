@@ -1,15 +1,14 @@
-/*___________________________________________________________________________________________________________________________________________*/
+/* -- SEMANTISKA ELEMENT -----------------------------*/
 main {
     padding: 0 2rem 5rem;
     max-width: 1360px;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 5rem;
 }
 
-/*Layout_____________________________________________________________________________________________________________________________________*/
-
+/* -- LAYOUT -----------------------------*/
 .alignItems {
     display: flex;
     flex-direction: row;
@@ -26,17 +25,13 @@ main {
     flex-direction: column;
 }
 
-.grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
-    gap: 1.1rem;
-    max-width: 1360px;
-    margin: 0 auto;
-}
-
 /*Gap_____________________________________________________________________________________________________________________*/
 .gap1rem {
     gap: 1rem;
+}
+
+.gap4rem {
+    gap: 4rem;
 }
 
 /*Stats bar_______________________________________________________________________________________________________________*/
@@ -77,7 +72,7 @@ main {
 #pokeSpeed>div:nth-child(2) {
     height: 1px;
     flex: 1;
-    background-color: #1C2534;
+    background-color: var(--border);
 }
 
 .pokeCard {
@@ -107,9 +102,41 @@ main {
     height: auto;
 }
 
+.pokeHero p {
+    margin-bottom: 3rem;
+}
+
 #pokeId {
     font-family: 'Press Start 2P', monospace;
     color: rgba(255, 255, 255, .18);
+}
+
+#typesSection {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+
+    margin-bottom: 5rem;
+}
+
+.pokeSection {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    /* border: 1px solid var(--border); */
+    border-radius: 22px;
+    padding: 1rem 2rem 5rem 2rem;
+}
+
+.pokeGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
+    gap: 1.1rem;
+    max-width: 1360px;
+    margin: 0 auto;
+}
+
+.title {
+    margin-bottom: 1rem;
 }
 
 /*Media queryes_________________________________________________________________________________________________________*/
@@ -128,11 +155,15 @@ main {
     #section1 {
         display: flex;
         flex-wrap: wrap;
-        gap: 4rem;
+        gap: 5rem;
     }
 
     .stats {
         flex: 1;
         order: -1
+    }
+
+    #typesSection {
+        min-width: 20rem;
     }
 }

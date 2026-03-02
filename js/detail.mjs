@@ -108,7 +108,7 @@ export async function getPokemonEvolutions(id = 1) {
 
 //export function setTextContent(){}; ?
 
-export async function renderEvolutions(evolutionArray = []) {
+/* export async function renderEvolutions(evolutionArray = []) {
 
     try {
 
@@ -137,6 +137,7 @@ export async function renderEvolutions(evolutionArray = []) {
 
             //Sätter bilden och namnet
             evolutionSprite.src = evoData.sprites.front_default;
+            evolutionSprite.alt = capitalizeString(element.name) + " sprite";
             evolutionName.textContent = capitalizeString(element.name);
             evolutionName.classList.add("card-name");
 
@@ -160,6 +161,53 @@ export async function renderEvolutions(evolutionArray = []) {
             }
 
             setPokemonType(typesName, typeDiv);
+
+        }
+
+    } catch (err) {
+
+    }
+
+}; */
+
+export async function renderEvolutions(evolutionArray = []) {
+
+    //Funktionen förväntar sig en array av objeckt som är uppbyggt på följandesätt:
+
+    /*  evolutionArray = [{
+         name: pokemon namn, 
+         url: url till pokemonen 
+     }] */
+
+
+    try {
+
+        for (const element of evolutionArray) {
+
+            //Hämtar data för varje pokemon
+            const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${element.name}`);
+
+            if (!response.ok) {
+                throw new Error("Status: " + response.status);
+            }
+
+            const evoData = await response.json();
+
+            //Bygger ett nytt objekt för varje iteration
+            //Objektet innehåller data på det sättet som createCard förväntar sig
+            const pokemon = {
+                id: evoData.id,
+                name: capitalizeString(element.name),
+                img: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${evoData.id}.png`,
+
+                //.map() plockar ut typen
+                types: evoData.types.map(t => t.type.name)
+            };
+
+            //Skickar in objektet till createCard funktionen
+            const card = createCard(pokemon, 0);
+            //kortert returneras och läggs in i pokeEvolutionDiv div:en
+            pokeEvolutionDiv.append(card);
 
         }
 
@@ -229,6 +277,16 @@ export async function getPokemonWeakness(typeArray = []) {
 
 export function getPokemonType(data) {
 
+    //Hämtar types arrayen
+    const typesArray = [data.types[0].type.name];
+
+    //Om det finns en andra typ
+    if (data.types[1]) {
+        typesArray.push(data.types[1].type.name);
+    }
+
+    return typesArray;
+
 }
 
 //Sätter pokemon typerna. Tar endast emot en array med namn
@@ -277,22 +335,20 @@ export async function fetchPokemon(id = 1) {
         const data = await response.json();
 
         pokeSprite.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`;
+        pokeSprite.alt = capitalizeString(data.name) + " artwork";
         pokeName.textContent = capitalizeString(data.name);
         document.title = capitalizeString(data.name);
 
         //Sätter 0:or och # i början av ID:t
         setPokeID(data.id, pokeId);
 
-        //Hämtar types arrayen
-        const typesdata = data.types;
-        const typesName = [data.types[0].type.name];
+        //Sätter typerna
+        const typesArray = getPokemonType(data);
+        setPokemonType(typesArray, pokeTypesDiv);
 
-        //Om det finns en andra typ
-        if (data.types[1]) {
-            typesName.push(data.types[1].type.name);
-        }
-
-        setPokemonType(typesName, pokeTypesDiv);
+        //Weakness
+        const weaknessArray = await getPokemonWeakness(data.types);
+        setPokemonType(weaknessArray, pokeWeaknessDiv);
 
         setBaseStats(pokeHP, pokeAttack, pokeDefense, pokeSpecialAttack, pokeSpecialDefense, pokeSpeed, data);
 
@@ -316,10 +372,7 @@ export async function fetchPokemon(id = 1) {
 
         //Shiny
         shinyImg.src = data.sprites.front_shiny;
-
-        //Weakness
-        const weaknessArray = await getPokemonWeakness(typesdata);
-        setPokemonType(weaknessArray, pokeWeaknessDiv);
+        shinyImg.alt = capitalizeString(data.name) + " shiny sprite"
 
         //Evolutioner
         const evolutionArray = await getPokemonEvolutions(id);
@@ -331,10 +384,14 @@ export async function fetchPokemon(id = 1) {
 
 };
 
-fetchPokemon();
+// Hämtar URL parametrarna
 
+//window.location är ett objekt som innehåller information om den nuvarande URL:en
+//.search plockar ut allt efter ? från URL:en. tex 3 om URL:en är detail.html?id=3
+//URLSearchParams är en inbyggd klass i JavaScript som tar en query sträng och pars den till ett objekt
+const params = new URLSearchParams(window.location.search);
+//.get() är en metod på URLSearchParams som hämtar värdet för en specifik nyckel 
+const id = params.get("id");
 
-
-
-
-
+//Funktionen som hämtar infon för varje enskild pokemon
+fetchPokemon(id);

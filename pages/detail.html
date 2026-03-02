@@ -4,12 +4,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="../js/pokePage.mjs" type="module"></script>
+
+    <meta name="description" content="">
+
+    <!--Nyckelord för webcrawlers-->
+    <meta name="keywords" content="pokemon, nintendo">
+
+    <!--JavaScript-->
+    <script src="../js/detail.mjs" type="module"></script>
+
+    <!--CSS Stylesheets-->
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Nunito:wght@400;600;700;900&display=swap"
         rel="stylesheet" />
-    <link rel="stylesheet" href="../css/pokePage.css">
+    <link rel="stylesheet" href="../css/detail.css">
     <link rel="stylesheet" href="../css/styles.css">
     <link rel="stylesheet" href="../css/index.css" />
+
+    <!--Huvudsidan-->
+    <!--A canonical URL is the main, preferred, or official version of a webpage that you want search engines like Google to crawl and index. Förbättrar SEO-->
+    <link rel="canonical" href="">
 
     <title>Document</title>
 </head>
@@ -17,13 +30,13 @@
 <body>
 
     <!-- Navigationsfält -->
-    <div class="topbar">
+    <nav class="topbar">
         <img src="/assets/pokeball.svg" alt="Pokeball Icon" class="icon" />
         <span class="topbar-title">Pokédex</span>
         <div class="topbar-right">
             <button id="theme-toggle" class="icon-btn" title="Toggle theme">☀️</button>
         </div>
-    </div>
+    </nav>
 
     <main>
 
@@ -31,6 +44,7 @@
         <section class="pokeHero">
             <img src="" alt="Pokemon sprite" id="pokeSprite">
             <div>
+                <!--Byt till <header> elementet?-->
                 <div class="alignItems flex-wrap gap1rem">
                     <h1 id="pokeName">Pokemon name</h1>
                     <span id="pokeId">Pokemon id</span>
@@ -39,26 +53,28 @@
                 <!--Description-->
                 <p id="pokeDescription"></p>
 
-                <button class="btn-team">Add To Team</button>
+                <button class="btn-team" aria-label="Adds pokemon to team">Add To Team</button>
             </div>
         </section>
 
-        <div id="section1">
+        <section id="section1">
             <!--Types & weaknesses-->
-            <section class="flex-column gap1rem">
-                <div class="flex-column gap1rem">
-                    <h2>Type</h2>
+            <section id="typesSection">
+                <div>
+                    <h2 class="title">Type</h2>
                     <div id="pokeTypesDiv">
                     </div>
                 </div>
-                <div class="flex-column gap1rem">
-                    <h2>Weaknesses</h2>
+                <div>
+                    <h2 class="title">Weaknesses</h2>
                     <div id="pokeWeaknessDiv">
                     </div>
                 </div>
             </section>
 
             <!--Base stats-->
+
+            <!--Finns tydligen en <progress> html tag-->
             <section class="stats">
                 <h2>Base stats</h2>
                 <div id="pokeHP" class="alignItems gap1rem">
@@ -67,7 +83,8 @@
                         <p></p>
                     </div>
                     <!--Linjen mellan base statsen och progressbaren. Sätts med CSS-->
-                    <div></div>
+                    <!--Här sätts aria-hidden="true" eftersom det är endast ett dekorativ elemenent-->
+                    <div aria-hidden="true"></div>
                     <!--Själva progressbaren-->
                     <div class="pokeBar"></div>
                 </div>
@@ -76,7 +93,7 @@
                         <h3>Attack</h3>
                         <p></p>
                     </div>
-                    <div></div>
+                    <div aria-hidden="true"></div>
                     <div class="pokeBar"></div>
                 </div>
                 <div id="pokeDefense" class="alignItems gap1rem">
@@ -84,7 +101,7 @@
                         <h3>Defense</h3>
                         <p></p>
                     </div>
-                    <div></div>
+                    <div aria-hidden="true"></div>
                     <div class="pokeBar"></div>
                 </div>
                 <div id="pokeSpecialAttack" class="alignItems gap1rem">
@@ -92,7 +109,7 @@
                         <h3>Sp. Attack</h3>
                         <p></p>
                     </div>
-                    <div></div>
+                    <div aria-hidden="true"></div>
                     <div class="pokeBar"></div>
                 </div>
                 <div id="pokeSpecialDefense" class="alignItems gap1rem">
@@ -100,7 +117,7 @@
                         <h3>Sp. Defense</h3>
                         <p></p>
                     </div>
-                    <div></div>
+                    <div aria-hidden="true"></div>
                     <div class="pokeBar"></div>
                 </div>
                 <div id="pokeSpeed" class="alignItems gap1rem">
@@ -108,29 +125,29 @@
                         <h3>Speed</h3>
                         <p></p>
                     </div>
-                    <div></div>
+                    <div aria-hidden="true"></div>
                     <div class="pokeBar"></div>
                 </div>
             </section>
-        </div>
+        </section>
 
         <!--Evolutions-->
         <section>
-            <h2>Evolution chain</h2>
-            <div id="pokeEvolution" class="grid">
+            <h2 class="title">Evolution chain</h2>
+            <div id="pokeEvolution" class="pokeGrid">
             </div>
         </section>
 
         <!--Shiny-->
         <section id="shiny">
-            <h2>Shiny</h2>
+            <h2 class="title">Shiny</h2>
             <img src="" alt="Shiny sprite">
         </section>
 
         <!--Traits-->
         <section>
-            <h2>Traits</h2>
-            <div class="grid">
+            <h2 class="title">Traits</h2>
+            <div class="pokeGrid pokeSection">
                 <div>
                     <h3>Height</h3>
                     <p id="pokeHeight"></p>
@@ -152,11 +169,13 @@
 
         <!--Works well with-->
         <section>
-            <h3>Works well with</h3>
-            <img src="" alt="Suggested pokeSprite">
-            <img src="" alt="Suggested pokeSprite">
-            <img src="" alt="Suggested pokeSprite">
-            <img src="" alt="Suggested pokeSprite">
+            <h2 class="title">Works well with</h2>
+            <div class="pokeGrid">
+                <img src="" alt="Suggested pokeSprite">
+                <img src="" alt="Suggested pokeSprite">
+                <img src="" alt="Suggested pokeSprite">
+                <img src="" alt="Suggested pokeSprite">
+            </div>
         </section>
 
     </main>
