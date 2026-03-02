@@ -93,7 +93,7 @@ let entries = POKEMON.filter(p => {
   if (activeType === 'team' && !isInTeam(p.id)) return false;
   if (activeType !== 'all' && activeType !== 'team' && !p.types.includes(activeType)) return false;
 
-  const typeMatch = checkedTypes.length === 0 || p.types.some(type => checkedTypes.includes(type));
+  const typeMatch = checkedTypes.length === 0 || checkedTypes.every(type => p.types.includes(type));
   const hpMatch = !hpsliderval || p.HP > hpsliderval;
   const attMatch = !attsliderval || p.attack > attsliderval;
   const defMatch = !defsliderval || p.defence > defsliderval;

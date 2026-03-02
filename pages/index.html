@@ -47,25 +47,37 @@
             </select>
         </div>
         <div id="filtersdrop">
-            <button onclick="showfilters()" class="filtersbtn">Filters</button>
+            <button onclick="showfilters()" class="filtersbtn">Advanced Filters
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-arrow-down-icon lucide-arrow-down">
+                    <path d="M12 5v14" />
+                    <path d="m19 12-7 7-7-7" />
+                </svg>
+            </button>
             <ul id="typelist" class="typelist">
             </ul>
             <div id="filterssliders">
-                <label id="hpsliderlabel">HP :</label>
-                <input type="number" id="hpnumber" min="1" max="500" value="0">
-                <input class="statslider" type="range" min="1" max="500" id="hpslider" value="0">
-                <label id="defsliderlabel">defence:</label>
-                <input type="number" id="defnumber" min="1" max="500" value="0">
-                <input class="statslider" type="range" min="1" max="500" id="defslider" value="0">
-                <label id="attsliderlabel">attack:</label>
-                <input type="number" id="attnumber" min="1" max="500" value="0">
-                <input class="statslider" type="range" min="1" max="500" id="attslider" value="0">
-                <label id="speedsliderlabel">speed:</label>
-                <input type="number" id="speednumber" min="1" max="500" value="0">
-                <input class="statslider" type="range" min="1" max="500" id="speedslider" value="0">
-                <label id="weightsliderlabel">weight:</label>
-                <input type="number" id="weightnumber" min="1" max="500" value="0">
-                <input class="statslider" type="range" min="1" max="500" id="weightslider" value="0">
+                <label id="hpsliderlabel">HP :
+                    <input class="statsinput" type="number" id="hpnumber" min="1" max="500" value="0">
+                    <input class="statslider" type="range" min="1" max="500" id="hpslider" value="0">
+                </label>
+                <label id="defsliderlabel">defence:
+                    <input class="statsinput" type="number" id="defnumber" min="1" max="500" value="0">
+                    <input class="statslider" type="range" min="1" max="500" id="defslider" value="0">
+                </label>
+                <label id="attsliderlabel">attack:
+                    <input class="statsinput" type="number" id="attnumber" min="1" max="500" value="0">
+                    <input class="statslider" type="range" min="1" max="500" id="attslider" value="0">
+                </label>
+                <label id="speedsliderlabel">speed:
+                    <input class="statsinput" type="number" id="speednumber" min="1" max="500" value="0">
+                    <input class="statslider" type="range" min="1" max="500" id="speedslider" value="0">
+                </label>
+                <label id="weightsliderlabel">weight:
+                    <input class="statsinput" type="number" id="weightnumber" min="1" max="500" value="0">
+                    <input class="statslider" type="range" min="1" max="500" id="weightslider" value="0">
+                </label>
             </div>
         </div>
         <!-- Filter-chips: utanför topbar -->
