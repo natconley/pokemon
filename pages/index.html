@@ -38,13 +38,35 @@
                 <input id="search" type="text" placeholder="🔍  Search Pokémon or number…" />
             </div>
             <select id="sort-select">
-                <option value="evolutions">Evolutions</option>
-                <option value="number">Number</option>
                 <option value="A-Z">A → Z</option>
                 <option value="Z-A">Z → A</option>
+                <option value="number">Number</option>
+                <option value="evolutions">Evolutions</option>
                 <option value="Bywegiht">Bywegiht</option>
                 <option value="HP">HP</option>
             </select>
+        </div>
+        <div id="filtersdrop">
+            <button onclick="showfilters()" class="filtersbtn">Filters</button>
+            <ul id="typelist" class="typelist">
+            </ul>
+            <div id="filterssliders">
+                <label id="hpsliderlabel">HP :</label>
+                <input type="number" id="hpnumber" min="1" max="500" value="0">
+                <input class="statslider" type="range" min="1" max="500" id="hpslider" value="0">
+                <label id="defsliderlabel">defence:</label>
+                <input type="number" id="defnumber" min="1" max="500" value="0">
+                <input class="statslider" type="range" min="1" max="500" id="defslider" value="0">
+                <label id="attsliderlabel">attack:</label>
+                <input type="number" id="attnumber" min="1" max="500" value="0">
+                <input class="statslider" type="range" min="1" max="500" id="attslider" value="0">
+                <label id="speedsliderlabel">speed:</label>
+                <input type="number" id="speednumber" min="1" max="500" value="0">
+                <input class="statslider" type="range" min="1" max="500" id="speedslider" value="0">
+                <label id="weightsliderlabel">weight:</label>
+                <input type="number" id="weightnumber" min="1" max="500" value="0">
+                <input class="statslider" type="range" min="1" max="500" id="weightslider" value="0">
+            </div>
         </div>
         <!-- Filter-chips: utanför topbar -->
         <div class="filters" id="filters">
@@ -63,6 +85,7 @@
     <script src="../js/api.js"></script>
     <script src="../js/render.js"></script>
     <script src="../js/app.js"></script>
+    <script src="../js/filters.js"></script>
 </body>
 
 </html>

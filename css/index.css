@@ -220,3 +220,30 @@ header {
   background: var(--surface);
   color: var(--text);
 }
+/*gömma check box i filters*/
+.type-filter input {
+  display: none;
+}
+
+.type-filter span {
+  font-size: .78rem;
+  font-weight: 800;
+  padding: .28rem .85rem;
+  border: 2px solid #ccc;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.type-filter input:checked + span {
+  background-color: #ff6b6b;
+  border-color: #ff6b6b;
+  color: white;
+  font-weight: bold;
+}
+#typelist{
+  display: flex;
+  flex-wrap: wrap;
+  list-style-type: none;
+  gap:1rem;
+}

@@ -76,13 +76,33 @@ function buildTypeChips() {
 // Filtrera, sortera och rendera
 function applyFiltersAndRender() {
    const q = (searchEl.value || '').trim().toLowerCase();
+   
+   const hpsliderval = Number(document.getElementById(`hpslider`).value);
 
-   let entries = POKEMON.filter(p => {
-      if (activeType === 'team' && !isInTeam(p.id)) return false;
-      if (activeType !== 'all' && activeType !== 'team' && !p.types.includes(activeType)) return false;
-      if (!q) return true;
-      return p.name.toLowerCase().includes(q) || String(p.id).includes(q);
-   });
+  const defsliderval = Number(document.getElementById(`defslider`).value);
+
+  const attsliderval = Number(document.getElementById(`attslider`).value);
+
+  const weightsliderval = Number(document.getElementById(`weightslider`).value);
+
+  const speedsliderval = Number(document.getElementById(`speedslider`).value);
+
+  const checkedTypes = Array.from(document.querySelectorAll(".filterlist:checked")).map(cb => cb.value);
+
+let entries = POKEMON.filter(p => {
+  if (activeType === 'team' && !isInTeam(p.id)) return false;
+  if (activeType !== 'all' && activeType !== 'team' && !p.types.includes(activeType)) return false;
+
+  const typeMatch = checkedTypes.length === 0 || p.types.some(type => checkedTypes.includes(type));
+  const hpMatch = !hpsliderval || p.HP > hpsliderval;
+  const attMatch = !attsliderval || p.attack > attsliderval;
+  const defMatch = !defsliderval || p.defence > defsliderval;
+  const weightMatch = !weightsliderval || p.weight > weightsliderval;
+  const speedMatch = !speedsliderval || p.speed > speedsliderval;
+  const searchMatch = !q || p.name.toLowerCase().includes(q) || String(p.id).includes(q);
+
+  return typeMatch && hpMatch && attMatch && defMatch && weightMatch && speedMatch && searchMatch;
+});
 
    const sortVal = sortEl.value;
    if (sortVal === 'A-Z') entries.sort((a, b) => a.name.localeCompare(b.name));

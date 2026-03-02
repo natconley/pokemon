@@ -90,3 +90,10 @@ function renderGrid(gridEl, entries) {
   });
   gridEl.appendChild(fragment);
 }
+//sliders and inputs are linked together and an event listner for the sliders to call a filter function
+document.querySelectorAll(".statslider").forEach(slider =>{
+  slider.addEventListener(`input`, () => {
+    document.getElementById(slider.id.replace(`slider`, `number`)).value = slider.value;
+    applyFiltersAndRender();
+  });
+});

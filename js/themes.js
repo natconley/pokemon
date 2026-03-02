@@ -18,3 +18,11 @@ function initTheme() {
   });
 }
 initTheme();
+function showfilters() {
+  const typelist = document.getElementById(`typelist`);
+  const filtersliders = document.getElementById(`filterssliders`);
+  const isVisible = filtersliders.style.display === 'block';
+
+  typelist.style.display = isVisible ? 'none' : 'flex';
+  filtersliders.style.display = isVisible ? 'none' : 'block';
+}
