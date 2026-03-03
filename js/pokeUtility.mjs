@@ -1,3 +1,42 @@
+// FETCH POKEMON FROM API (Natalies funktion)
+export async function fetchPokemon(id) {
+    try {
+        // Hämtar data från API
+        const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
+        // Validerar att information kunde hämtas
+        // response.ok = statskod 200 - 299, !response.ok = alla andra statuskoder
+        if (!response.ok) {
+            throw new Error(`Failed to fetch Pokémon ID ${id}. Status: ${response.status}`);
+        }
+        // Omvandlar till JSON
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error("Error fetching Pokémon", error);
+        // loadTeam renderar null som empty slot
+        return null;
+    }
+}
+
+export async function fetchType(id) {
+    try {
+        // Hämtar data från API
+        const response = await fetch(`https://pokeapi.co/api/v2/type/${id}`);
+        // Validerar att information kunde hämtas
+        // response.ok = statskod 200 - 299, !response.ok = alla andra statuskoder
+        if (!response.ok) {
+            throw new Error(`Failed to fetch Pokémon ID ${id}. Status: ${response.status}`);
+        }
+        // Omvandlar till JSON
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error("Error fetching type", error);
+        // loadTeam renderar null som empty slot
+        return null;
+    }
+}
+
 //Gör förstabokstaven till storbokstav
 export function capitalizeString(string = "") {
     //1.charAt() hämtar första bokstaven
@@ -14,6 +53,51 @@ export function setPokeID(id = 0, span = "") {
     return span.textContent = "#" + id.toString().padStart(4, '0');
 
 }
+
+export function getPokemonType(data) {
+
+    //Hämtar types arrayen
+    const typesArray = [data.types[0].type.name];
+
+    //Om det finns en andra typ
+    if (data.types[1]) {
+        typesArray.push(data.types[1].type.name);
+    }
+
+    return typesArray;
+
+}
+
+//Sätter pokemon typerna. Tar endast emot en array med namn
+export function setPokemonType(typesArray = [], div) {
+
+    div.classList.add("card-types");
+
+    typesArray.forEach(element => {
+        const th = getTypeTheme(element);
+
+        const span = document.createElement("span");
+        span.textContent = capitalizeString(element);
+
+        span.style.paddingRight = "3rem";
+        span.classList.add("badge");
+        span.style.cssText = `background:${th.bg}; border-color:${th.col}; color:${th.col};`;
+        div.append(span);
+    })
+
+};
+
+//Skicka in html elementen + parsade JSON objektet dvs javascript objektet
+export function setBaseStats(hp, attack, defense, spAttack, spDefense, speed, data) {
+
+    hp.textContent = data.stats[0].base_stat;
+    attack.textContent = data.stats[1].base_stat;
+    defense.textContent = data.stats[2].base_stat;
+    spAttack.textContent = data.stats[3].base_stat;
+    spDefense.textContent = data.stats[4].base_stat;
+    speed.textContent = data.stats[5].base_stat;
+
+};
 
 //Beräknar progressbarens längd
 export function setProgressBar(array = []) {

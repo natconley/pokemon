@@ -1,4 +1,4 @@
-import { capitalizeString, setPokeID, setProgressBar } from "./pokeUtility.mjs"
+import { fetchPokemon, fetchType, getPokemonType, setPokemonType, capitalizeString, setPokeID, setBaseStats, setProgressBar } from "./pokeUtility.mjs"
 
 //Basic info
 const pokeSprite = document.getElementById("pokeSprite");
@@ -37,6 +37,26 @@ const pokeHeight = document.getElementById("pokeHeight");
 const pokeWeight = document.getElementById("pokeWeight");
 const pokeAbility = document.getElementById("pokeAbility");
 
+//
+const suggestionsDiv = document.querySelector("#suggestions div");
+
+const TYPES = ["Normal", "Fire", "Water", "Electric", "Grass", "Ice", "Fighting", "Poison", "Ground", "Flying", "Psychic", "Bug", "Rock", "Ghost", "Dragon", "Dark", "Steel", "Fairy"];
+
+// POKEMON POOLS FOR SUGGESTIONS
+// hårdkodade alternativ för dynamiska teamresultat
+// pokemon id
+
+const specialAttackers = [65, 94, 196];
+const physicalAttackers = [149, 248, 373];
+
+const weaknessPools = {
+    hp: [143, 242, 134],
+    attack: [68, 149, 445],
+    defense: [205, 208, 227],
+    "special-attack": [65, 94, 150],
+    "special-defense": [197, 242, 378],
+    speed: [101, 135, 142]
+};
 
 function renderPokemonDescription(data) {
     // Hämtar flavor text
@@ -97,6 +117,7 @@ export async function getPokemonEvolutions(id = 1) {
 
         //För att slippa två seperata API anrop till samma endpoint
         renderPokemonDescription(data);
+
 
         return evolutions;
 
@@ -193,6 +214,8 @@ export async function renderEvolutions(evolutionArray = []) {
 
             const evoData = await response.json();
 
+            setCard()
+
             //Bygger ett nytt objekt för varje iteration
             //Objektet innehåller data på det sättet som createCard förväntar sig
             const pokemon = {
@@ -225,16 +248,18 @@ export async function getPokemonWeakness(typeArray = []) {
         //Här används objekt istället för arrayer för att lättare kunna söka eftere element utan att loopa 
         let typesMultipliers = {};
 
+        console.log(typeArray);
+
         for (const element of typeArray) {
 
-            const response = await fetch(`https://pokeapi.co/api/v2/type/${element.type.name}`);
+            const response = await fetch(`https://pokeapi.co/api/v2/type/${element}`);
 
             if (!response.ok) {
                 throw new Error("Status: " + response.status);
             }
 
             //Destructuring
-            const { damage_relations } = await response.json();
+            const { id, damage_relations } = await response.json();
 
             //Loopar igenom double_damage_from arrayen
             damage_relations.double_damage_from.forEach(element => {
@@ -259,6 +284,7 @@ export async function getPokemonWeakness(typeArray = []) {
 
         //Gör om objektet till en array genom Object.entries
         const results = Object.entries(typesMultipliers);
+
         //De slutliga värdena sparas i den här arrayen
         const doubleDamage = [];
 
@@ -275,64 +301,100 @@ export async function getPokemonWeakness(typeArray = []) {
 
 };
 
-export function getPokemonType(data) {
+const typePools = {
+    normal: [143, 242, 446],
+    fire: [6, 59, 136],
+    water: [9, 130, 134],
+    electric: [26, 135, 181],
+    grass: [3, 154, 470],
+    ice: [131, 471, 473],
+    fighting: [68, 106, 448],
+    poison: [89, 110, 454],
+    ground: [232, 330, 445],
+    flying: [18, 142, 384],
+    psychic: [65, 150, 282],
+    bug: [212, 291, 748],
+    rock: [141, 248, 377],
+    ghost: [94, 302, 487],
+    dragon: [149, 373, 445],
+    dark: [197, 248, 359],
+    steel: [205, 208, 376],
+    fairy: [282, 468, 700]
+};
 
-    //Hämtar types arrayen
-    const typesArray = [data.types[0].type.name];
+export async function getSugesstedPokemon(weaknessArray = [], stats = []) {
 
-    //Om det finns en andra typ
-    if (data.types[1]) {
-        typesArray.push(data.types[1].type.name);
+    try {
+
+        let suggestions = [];
+        let result = [];
+
+        //hämtar pokemon typer som är starka mot pokemonens svagheter
+        //Tex Bulbasaur är svag mot eld. Då kommer den hämta pokemon typerna som är starka mot eld
+        const suggestedTypes = await getPokemonWeakness(weaknessArray);
+
+        //Hämtar alla rekommendationer från typePoolen för de rekommenderade typerna
+        for (const element of suggestedTypes) {
+            //Spread operatorn gör så att alla id:n sparas på samma nivå och det blir inte en array av arrayer
+            suggestions.push(...typePools[element]);
+        }
+
+        //begrönsar rekommendationerna till 5 stycken
+        for (let i = 0; i < 5; i++) {
+            //randomize type pool pick
+            const id = suggestions[Math.floor(Math.random() * suggestions.length)];
+            if (!result.includes(id)) {
+                result.push(id);
+            }
+        }
+
+        return result;
+
+    } catch (err) {
+
     }
-
-    return typesArray;
 
 }
 
-//Sätter pokemon typerna. Tar endast emot en array med namn
-export function setPokemonType(pokeArray = [], div) {
+//Formaterar datat på sättet som createCard funktionen förväntar sig
+export async function setCard(pokeArray = [], div) {
 
-    div.classList.add("card-types");
+    try {
 
-    pokeArray.forEach(element => {
-        const th = getTypeTheme(element);
+        for (const element of pokeArray) {
 
-        const span = document.createElement("span");
-        span.textContent = capitalizeString(element);
+            const data = await fetchPokemon(element);
+            //Bygger ett nytt objekt för varje iteration
+            //Objektet innehåller data på det sättet som createCard förväntar sig
+            const pokemon = {
+                id: data.id,
+                name: capitalizeString(element.name),
+                img: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${data.id}.png`,
 
-        span.style.paddingRight = "3rem";
-        span.classList.add("badge");
-        span.style.cssText = `background:${th.bg}; border-color:${th.col}; color:${th.col};`;
-        div.append(span);
-    })
+                //.map() plockar ut typen
+                types: data.types.map(t => t.type.name)
+            };
 
-};
+            //Skickar in objektet till createCard funktionen
+            const card = createCard(pokemon, 0);
+            //kortert returneras och läggs in i pokeEvolutionDiv div:en
+            div.append(card);
 
-//Skicka in html elementen + parsade JSON objektet dvs javascript objektet
-export function setBaseStats(hp, attack, defense, spAttack, spDefense, speed, data) {
+        }
 
-    hp.textContent = data.stats[0].base_stat;
-    attack.textContent = data.stats[1].base_stat;
-    defense.textContent = data.stats[2].base_stat;
-    spAttack.textContent = data.stats[3].base_stat;
-    spDefense.textContent = data.stats[4].base_stat;
-    speed.textContent = data.stats[5].base_stat;
+    } catch (err) {
 
-};
+    }
+
+}
 
 //Hämtar pokemon infon
-export async function fetchPokemon(id = 1) {
+export async function renderPokemonDetail(id = 1) {
 
     try {
 
         //Ha kvar fetch requesten här men rendera ut allting seperat
-        const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`)
-
-        if (!response.ok) {
-            throw new Error("Status: " + response.status);
-        }
-
-        const data = await response.json();
+        const data = await fetchPokemon(id);
 
         pokeSprite.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`;
         pokeSprite.alt = capitalizeString(data.name) + " artwork";
@@ -347,7 +409,7 @@ export async function fetchPokemon(id = 1) {
         setPokemonType(typesArray, pokeTypesDiv);
 
         //Weakness
-        const weaknessArray = await getPokemonWeakness(data.types);
+        const weaknessArray = await getPokemonWeakness(typesArray);
         setPokemonType(weaknessArray, pokeWeaknessDiv);
 
         setBaseStats(pokeHP, pokeAttack, pokeDefense, pokeSpecialAttack, pokeSpecialDefense, pokeSpeed, data);
@@ -365,18 +427,22 @@ export async function fetchPokemon(id = 1) {
         //Sätter progressbaren utifrån pokemon statsen
         setProgressBar(pokeStats);
 
-        //Abilities
-        pokeHeight.textContent = data.height
-        pokeWeight.textContent = data.weight;
-        pokeAbility.textContent = capitalizeString(data.abilities[0].ability.name);
+        //Evolutioner
+        const evolutionArray = await getPokemonEvolutions(id);
+        renderEvolutions(evolutionArray);
 
         //Shiny
         shinyImg.src = data.sprites.front_shiny;
         shinyImg.alt = capitalizeString(data.name) + " shiny sprite"
 
-        //Evolutioner
-        const evolutionArray = await getPokemonEvolutions(id);
-        renderEvolutions(evolutionArray);
+        //Abilities
+        pokeHeight.textContent = data.height
+        pokeWeight.textContent = data.weight;
+        pokeAbility.textContent = capitalizeString(data.abilities[0].ability.name);
+
+        //Suggestions
+        const suggestions = await getSugesstedPokemon(weaknessArray, pokeStats);
+        setCard(suggestions, suggestionsDiv);
 
     } catch (err) {
 
@@ -394,4 +460,4 @@ const params = new URLSearchParams(window.location.search);
 const id = params.get("id");
 
 //Funktionen som hämtar infon för varje enskild pokemon
-fetchPokemon(id);
+renderPokemonDetail(id);
