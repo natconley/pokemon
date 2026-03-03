@@ -7,6 +7,7 @@
 // Weakness använder fallbackpool, ändra till näst lägsta stat
 // lägg till text om varför pokemon i suggestions valdes?
 // meddelanden i strengths och weaknesses ??
+// eventlistener för pokemon details
 
 
 // TEAM GALLERY
@@ -17,11 +18,11 @@ const emptyText = document.getElementById("teamEmpty");
 
 // TEAM INFO
 const teamStatbars = document.querySelector(".teamStatbars");
-const teamInfoTypes = document.querySelector(".teamInfoTypes");
+const teamInfoTypes = document.getElementById("teamInfoTypes");
 const teamInfoCons = document.getElementById("teamInfoCons");
 const teamInfoPros = document.getElementById("teamInfoPros");
 const typeBarFill = document.getElementById("typeBarFill");
-const typeBar = document.getElementById("typeBar")
+const typeBar = document.querySelector(".typeBar")
 
 // WAITLIST (TEAM FULL)
 const waitlistInfo = document.getElementById("waitlistInfo");
@@ -144,24 +145,50 @@ function renderFilledSlot(slot, pokemon) {
     // Ändrar aria-label
     slot.setAttribute("aria-label", `Team member: #${pokemon.id}: ${pokemon.name}`);
 
+    // eventlistener for button visibility toggle
+    slot.addEventListener("click", () => { 
+        slot.classList.toggle("active");
+    });
+
+    // skapar container för bilder och knappar
+    const imgWrapper = document.createElement("div");
+    imgWrapper.classList.add("imgWrapper");
+
+    const btnGroup = document.createElement("div");
+    btnGroup.classList.add("btnGroup")
+
+    imgWrapper.appendChild(btnGroup);
+
     // Skapar bild till slot
     const pokeImg = document.createElement("img");
     pokeImg.src = pokemon.sprites.front_default;
     pokeImg.alt = pokemon.name;
 
+    imgWrapper.appendChild(pokeImg);
+
     // Lägger till namn och id i ny div
     const slotInfo = document.createElement("div");
+    slotInfo.classList.add("slotInfo");
+
+    const nameRow = document.createElement("div");
+    nameRow.classList.add("slotNameRow");
+
     const pokeName = document.createElement("p");
+    pokeName.classList.add("pokemonName")
     pokeName.textContent = pokemon.name;
+
     const pokeId = document.createElement("p");
+    pokeId.classList.add("pokemonId")
     pokeId.textContent = `#${pokemon.id}`;
 
-    slotInfo.appendChild(pokeName);
-    slotInfo.appendChild(pokeId);
+    // append till container div
+    nameRow.appendChild(pokeName);
+    nameRow.appendChild(pokeId);
 
     // lägger till types i listformat
     const typesAll = document.createElement("ul");
-    // loopar igenom types för att ta ut namn på alla types
+    typesAll.classList.add("pokemonTypes");
+    // loopar igenom types för att ta fram namn
     pokemon.types.forEach(item => {
         //Skapar list items för varje type
         const pokeType = document.createElement("li");
@@ -170,19 +197,29 @@ function renderFilledSlot(slot, pokemon) {
         // lägger till li i ul
         typesAll.appendChild(pokeType);
     });
+
+    // append till gemensam div
+    slotInfo.appendChild(nameRow);
     slotInfo.appendChild(typesAll);
+
 
     // DELETE TEAM MEMBER
     //Lägg till radera-knapp med innehåll och aria label
     const pokemonDelete = document.createElement("button");
+    pokemonDelete.classList.add("btnDeletePokemon")
     pokemonDelete.setAttribute("aria-label", `Remove ${pokemon.name} from team`);
     const deleteIcon = document.createElement("img");
     deleteIcon.src = "/assets/trash.png";
     deleteIcon.alt = "";
     pokemonDelete.appendChild(deleteIcon);
 
+    // lägger till knapp i bildcontainer för placering
+    btnGroup.appendChild(pokemonDelete);
+
     // event listener för att radera lagmedlem
-    pokemonDelete.addEventListener("click", () => {
+    pokemonDelete.addEventListener("click", (event) => {
+        // to not listen to slot event listener
+        event.stopPropagation();
         // confirmationsmeddelande
         const confirmed = confirm(`Do you want to remove ${pokemon.name} from your team?`);
         if (confirmed) {
@@ -198,6 +235,7 @@ function renderFilledSlot(slot, pokemon) {
 
     // Lägg till "se mer info" knapp med innehåll och aria label
     const pokemonSee = document.createElement("button");
+    pokemonSee.classList.add("btnSeeMore");
     pokemonSee.setAttribute("aria-label", `See more about ${pokemon.name}`);
     const seeIcon = document.createElement("img");
     seeIcon.src = "/assets/eye.png";
@@ -205,17 +243,20 @@ function renderFilledSlot(slot, pokemon) {
     pokemonSee.appendChild(seeIcon);
 
     //eventlistener för klick av se mer knapp
-    pokemonSee.addEventListener('click', () => {
+    pokemonSee.addEventListener('click', (event) => {
+        // to not listen to slot event listener
+        event.stopPropagation();
         // LÄGG TILL MER BREOENDE PÅ OM DET ÄR MODAL ELLER EGEN SIDA
         //eventlistener see more
         // navigate to see more page
     });
 
-    // Lägger in det skapade i förälderelement
-    slot.appendChild(pokeImg);
+    // lägger till knapp i bildcontainer för placering
+    btnGroup.appendChild(pokemonSee);
+
+    // Lägger till containers i container
+    slot.appendChild(imgWrapper);
     slot.appendChild(slotInfo);
-    slot.appendChild(pokemonDelete);
-    slot.appendChild(pokemonSee);
 }
 
 
@@ -307,23 +348,49 @@ function renderFilledCarousel(slot, pokemon) {
     // Ändrar aria-label
     slot.setAttribute("aria-label", `Saved pokémon: #${pokemon.id}: ${pokemon.name}`);
 
+    // eventlistener for button visibility toggle
+    slot.addEventListener("click", () => { 
+        slot.classList.toggle("active");
+    });
+
+    // skapar container för bilder och knappar
+    const imgWrapper = document.createElement("div");
+    imgWrapper.classList.add("imgWrapper");
+
+    const btnGroup = document.createElement("div");
+    btnGroup.classList.add("btnGroup");
+
+    imgWrapper.appendChild(btnGroup);
+
     // Skapar bild till slot
     const pokeImg = document.createElement("img");
     pokeImg.src = pokemon.sprites.front_default;
     pokeImg.alt = pokemon.name;
 
+    imgWrapper.appendChild(pokeImg);
+
     // Lägger till namn och id i ny div
     const slotInfo = document.createElement("div");
+    slotInfo.classList.add("slotInfo");
+
+    const nameRow = document.createElement("div");
+    nameRow.classList.add("slotNameRow");
+
     const pokeName = document.createElement("p");
+    pokeName.classList.add("pokemonName");
     pokeName.textContent = pokemon.name;
+
     const pokeId = document.createElement("p");
+    pokeId.classList.add("pokemonId");
     pokeId.textContent = `#${pokemon.id}`;
 
-    slotInfo.appendChild(pokeName);
-    slotInfo.appendChild(pokeId);
+    nameRow.appendChild(pokeName);
+    nameRow.appendChild(pokeId);
+
 
     // lägger till types i listformat
     const typesAll = document.createElement("ul");
+    typesAll.classList.add("pokemonTypes");
     // loopar igenom types för att ta ut namn på alla types
     pokemon.types.forEach(item => {
         //Skapar list items för varje type
@@ -333,6 +400,8 @@ function renderFilledCarousel(slot, pokemon) {
         // lägger till li i ul
         typesAll.appendChild(pokeType);
     });
+    // append alla till container div
+    slotInfo.appendChild(nameRow);
     slotInfo.appendChild(typesAll);
 
     // DELETE FROM WAITLIST
@@ -344,8 +413,13 @@ function renderFilledCarousel(slot, pokemon) {
     deleteIcon.alt = "";
     pokemonDelete.appendChild(deleteIcon);
 
+    // lägger till knapp i bildcontainer för placering
+    btnGroup.appendChild(pokemonDelete);
+
     // event listener för att radera från sparade
-    pokemonDelete.addEventListener("click", () => {
+    pokemonDelete.addEventListener("click", (event) => {
+        // to not listen to slot event listener
+        event.stopPropagation();
         // confirmation message
         const confirmed = confirm(`Do you want to remove ${pokemon.name} from your waitlist?`);
         if (confirmed) {
@@ -359,16 +433,22 @@ function renderFilledCarousel(slot, pokemon) {
         }
     });
 
+    // ADD TO TEAM
     //Lägg till "add to team" knapp med innehåll och aria label
     const addToTeam = document.createElement("button");
+    addToTeam.classList.add("addToTeam");
     addToTeam.setAttribute("aria-label", `Add ${pokemon.name} to your team`);
     const plusIcon = document.createElement("img");
     plusIcon.src = "/assets/plus.png";
     plusIcon.alt = "";
     addToTeam.appendChild(plusIcon);
+    // lägger till knapp i bildcontainer för placering
+    btnGroup.appendChild(addToTeam);
 
     // Event listener för att lägga till pokemon i team
-    addToTeam.addEventListener("click", () => {
+    addToTeam.addEventListener("click", (event) => {
+        // to not listen to slot event listener
+        event.stopPropagation();
         //Ta reda på om Det finns plats att lägga till i team (under 6 finns plats, annars fullt)
         // Hämtar id från localStorage, converterar från sträng.       
         const teamIds = JSON.parse(localStorage.getItem("pokemonTeam")) || [];
@@ -394,11 +474,13 @@ function renderFilledCarousel(slot, pokemon) {
 
     // Lägg till "se mer info" knapp med innehåll och aria label
     const pokemonSee = document.createElement("button");
+    pokemonSee.classList.add("btnSeeMore");
     pokemonSee.setAttribute("aria-label", `See more about ${pokemon.name}`);
     const seeIcon = document.createElement("img");
     seeIcon.src = "/assets/eye.png";
     seeIcon.alt = "";
     pokemonSee.appendChild(seeIcon);
+    btnGroup.appendChild(pokemonSee);
 
     //eventlistener för klick av se mer knapp
     pokemonSee.addEventListener('click', () => {
@@ -408,11 +490,9 @@ function renderFilledCarousel(slot, pokemon) {
     });
 
     // Lägger in det skapade i förälderelement
-    slot.appendChild(pokeImg);
+    slot.appendChild(imgWrapper);
     slot.appendChild(slotInfo);
-    slot.appendChild(pokemonDelete);
-    slot.appendChild(pokemonSee);
-    slot.appendChild(addToTeam);
+    
 }
 
 async function loadSuggested(pokemonData, teamStats) {
@@ -496,22 +576,49 @@ function renderFilledSuggestions(slot, pokemon) {
     // Ändrar aria-label
     slot.setAttribute("aria-label", `Suggested pokémon: #${pokemon.id}: ${pokemon.name}`);
 
+    // eventlistener for button visibility toggle
+    slot.addEventListener("click", () => { 
+        slot.classList.toggle("active");
+    });
+
+    // skapar container för bilder och knappar
+    const imgWrapper = document.createElement("div");
+    imgWrapper.classList.add("imgWrapper");
+
+    const btnGroup = document.createElement("div");
+    btnGroup.classList.add("btnGroup");
+
+    imgWrapper.appendChild(btnGroup);
+
     // Skapar bild till slot
     const pokeImg = document.createElement("img");
     pokeImg.src = pokemon.sprites.front_default;
     pokeImg.alt = pokemon.name;
 
+    imgWrapper.appendChild(pokeImg);
+
+    // lägger till namn och id i ny div
     const slotInfo = document.createElement("div");
+    slotInfo.classList.add("slotInfo");
+
+    const nameRow = document.createElement("div");
+    nameRow.classList.add("slotNameRow");
+
     const pokeName = document.createElement("p");
+    pokeName.classList.add("pokemonName");
     pokeName.textContent = pokemon.name;
+
     const pokeId = document.createElement("p");
+    pokeId.classList.add("pokemonId");
     pokeId.textContent = `#${pokemon.id}`;
 
-    slotInfo.appendChild(pokeName);
-    slotInfo.appendChild(pokeId);
+    // append till container
+    nameRow.appendChild(pokeName);
+    nameRow.appendChild(pokeId);
 
     // lägger till types i listformat
     const typesAll = document.createElement("ul");
+    typesAll.classList.add("pokemonTypes");
     // loopar igenom types för att ta ut namn på alla types
     pokemon.types.forEach(item => {
         //Skapar list items för varje type
@@ -521,18 +628,27 @@ function renderFilledSuggestions(slot, pokemon) {
         // lägger till li i ul
         typesAll.appendChild(pokeType);
     });
+
+    // append till gemensam div
+    slotInfo.appendChild(nameRow);
     slotInfo.appendChild(typesAll);
+
 
     //Lägg till "add to team" knapp med innehåll och aria label
     const addToTeam = document.createElement("button");
+    addToTeam.classList.add("addToTeam");
     addToTeam.setAttribute("aria-label", `Add ${pokemon.name} to your team`);
     const plusIcon = document.createElement("img");
     plusIcon.src = "/assets/plus.png";
     plusIcon.alt = "";
     addToTeam.appendChild(plusIcon);
 
+    btnGroup.appendChild(addToTeam);
+
     // Event listener för att lägga till pokemon i team
-    addToTeam.addEventListener("click", () => {
+    addToTeam.addEventListener("click", (event) => {
+        // to not listen to slot event listener
+        event.stopPropagation();
         //Ta reda på om Det finns plats att lägga till i team (under 6 finns plats, annars fullt)
         // Hämtar id från localStorage, converterar från sträng.       
         const teamIds = JSON.parse(localStorage.getItem("pokemonTeam")) || [];
@@ -560,27 +676,36 @@ function renderFilledSuggestions(slot, pokemon) {
     });
     // Lägg till "se mer info" knapp med innehåll och aria label
     const pokemonSee = document.createElement("button");
+    pokemonSee.classList.add("btnSeeMore");
     pokemonSee.setAttribute("aria-label", `See more about ${pokemon.name}`);
     const seeIcon = document.createElement("img");
     seeIcon.src = "/assets/eye.png";
     seeIcon.alt = "";
     pokemonSee.appendChild(seeIcon);
 
+    btnGroup.appendChild(pokemonSee);
+
     //eventlistener för klick av se mer knapp
-    pokemonSee.addEventListener('click', () => {
+    pokemonSee.addEventListener('click', (event) => {
+        // to not listen to slot event listener
+        event.stopPropagation();
         // LÄGG TILL MER BREOENDE PÅ OM DET ÄR MODAL ELLER EGEN SIDA
         //eventlistener see more
         // navigate to see more page
     });
 
     // Lägger in det skapade i förälderelement
-    slot.appendChild(pokeImg);
+    slot.appendChild(imgWrapper);
     slot.appendChild(slotInfo);
-    slot.appendChild(pokemonSee);
-    slot.appendChild(addToTeam);
+
 }
 
 function loadTeamInfo(teamStats) {
+    console.log("teamInfoPros:", teamInfoPros)
+    console.log("teamInfoCons:", teamInfoCons)
+    console.log("teamInfoTypes:", teamInfoTypes)
+    console.log("typeBar:", typeBar)
+    console.log("typeBarFill:", typeBarFill)
     // TYPE COVERAGE
     // NGN text om resultatet???
 

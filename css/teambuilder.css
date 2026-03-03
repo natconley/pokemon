@@ -72,10 +72,6 @@ header {
     opacity: 70%;
 }
 
-.teamOverviewFilled {
-    opacity: 100%;
-}
-
 #randomTeam {
     border: 1.8px solid #0891B2;
     border-radius: 16px;
@@ -95,9 +91,6 @@ header {
 }
 
 .waitlist li {
-    height: 120px;
-    min-width: 100px;
-    max-width: 150px;
     background-color: #1b232e;
     border-radius: 16px;
     margin: 0.3rem;
@@ -105,23 +98,21 @@ header {
 
 .waitlist img {
     width: 100%;
-    height: 100%;
-    object-fit: contain;
+    height: auto;
+    object-fit: cover;
+    padding: 7px;
     display: block;
-    opacity: 30%;
+    opacity: 70%;
 }
 
 .suggested {
-    display: flex;
-    flex-direction: row;
-    overflow-y: scroll;
-    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    margin: 0 auto;
+    max-width: 430px;
 }
 
 .suggested li {
-    height: 120px;
-    min-width: 100px;
-    max-width: 150px;
     background-color: #1b232e;
     border-radius: 16px;
     margin: 0.3rem;
@@ -134,6 +125,80 @@ header {
     display: block;
     opacity: 30%;
 }
+
+.teamSlot--filled {
+ cursor: pointer;
+}
+
+.slotInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 5px;
+}
+
+.pokemonName, .pokemonId {
+    margin: 0;
+}
+.slotNameRow {
+    display: flex;
+    flex-direction: row;
+    gap: 3px;
+}
+
+.pokemonTypes {
+    display: flex;
+    flex-direction: row;
+}
+
+.imgWrapper img {
+    opacity: 100%;
+    padding: 0;
+}
+
+.imgWrapper {
+    position: relative;
+    overflow: hidden;
+    border-radius: 16px 16px 0 0;
+}
+
+.btnGroup {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    padding: 0;
+    background-color: #080a0f3d;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+}
+
+.btnGroup img {
+    height: 44px;
+    padding: 5px;
+}
+
+.teamSlot--filled.active .btnGroup {
+    transform: translateY(0);
+}
+
+.sugSlot--filled.active .btnGroup {
+    transform: translateY(0);
+}
+
+.waitSlot--filled.active .btnGroup {
+    transform: translateY(0);
+}
+.btnGroup button {
+    background-color: transparent;
+    border: none;
+}
+
+
+
 
 /* TEAM STAT BARS -- TEMPORARY */
 /*
