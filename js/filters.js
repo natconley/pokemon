@@ -1,6 +1,7 @@
 /*En funktion som hämtar alla typer för filter "tjuvat styling från api.js och funktionen getTypeTheme()" 
 sen rendrar de i html index fil*/
 async function poketypes() {
+  try {
   const response = await fetch(`https://pokeapi.co/api/v2/type`);
   const results = await response.json();
   const typesarray = results.results.map(result => result.name);
@@ -38,7 +39,12 @@ async function poketypes() {
       }
       applyFiltersAndRender();
     });
-  });
+  });}
+  catch (error) {
+    console.log("failed to load pokemon types");
+    const typeList = document.getElementById("typelist");
+    typeList.innerText = 'Failure in connection';
+  }
 }
 poketypes();
 //display filters function
