@@ -37,9 +37,10 @@ const pokeHeight = document.getElementById("pokeHeight");
 const pokeWeight = document.getElementById("pokeWeight");
 const pokeAbility = document.getElementById("pokeAbility");
 
+const ID = new URLSearchParams(window.location.search).get('id');
 
 //Hämtar pokemon beskrivning
-export function getPokeDescription(id = 1) {
+export function getPokeDescription(id = ID) {
     fetch(`https://pokeapi.co/api/v2/pokemon-species/${id}`)
         .then(res => res.json())
         .then(data => {
@@ -57,9 +58,8 @@ export function getPokeDescription(id = 1) {
         })
         .catch()
 };
-
 //Hämtar en pokemons alla evolutioner
-export function getPokemonEvolutions(id = 1) {
+export function getPokemonEvolutions(id = ID) {
     return fetch(`https://pokeapi.co/api/v2/pokemon-species/${id}`)
         .then(res => res.json())
         //API anrop till URL:en som finns JSON objektet
@@ -225,7 +225,7 @@ export function setPokemonType(pokeArray = [], div) {
 };
 
 //Hämtar pokemon infon
-export function fetchPokemon(id = 1) {
+export function fetchPokemon(id = ID) {
     fetch(`https://pokeapi.co/api/v2/pokemon/${id}`)
         .then(res => res.json())
         .then(data => {
