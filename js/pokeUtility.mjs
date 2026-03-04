@@ -54,6 +54,43 @@ export async function fetchType(type = "") {
 
 }
 
+export async function fetchSpecies(id = 1) {
+
+    try {
+
+        //Lägger till typerna i session storage för att minska API anropen
+        if (!sessionStorage.getItem(`species_${id}`)) {
+
+            // Hämtar data från API
+            const response = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${id}`);
+            // Validerar att information kunde hämtas
+            // response.ok = statskod 200 - 299, !response.ok = alla andra statuskoder
+            if (!response.ok) {
+                throw new Error(`Failed to fetch Pokémon species ${id}. Status: ${response.status}`);
+            }
+            // Omvandlar till JSON
+            const data = await response.json();
+
+            sessionStorage.setItem(`species_${id}`, JSON.stringify(data));
+
+            return data;
+
+        } else {
+
+            const data = sessionStorage.getItem(`species_${id}`);
+            return JSON.parse(data);
+
+        }
+
+    } catch (error) {
+        console.error("Error fetching species", error);
+        // loadTeam renderar null som empty slot
+        return null;
+    }
+
+}
+
+
 //Gör förstabokstaven till storbokstav
 export function capitalizeString(string = "") {
     //1.charAt() hämtar första bokstaven

@@ -1,4 +1,4 @@
-import { fetchPokemon, fetchType, getPokemonType, setPokemonType, capitalizeString, setPokeID, setBaseStats, setProgressBar } from "./pokeUtility.mjs"
+import { fetchPokemon, fetchType, fetchSpecies, getPokemonType, setPokemonType, capitalizeString, setPokeID, setBaseStats, setProgressBar } from "./pokeUtility.mjs"
 
 //Basic info
 const pokeSprite = document.getElementById("pokeSprite");
@@ -99,18 +99,18 @@ export async function getPokemonEvolutions(id = 1) {
 
     try {
 
-        const response = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${id}`);
-        if (!response.ok) {
-            throw new Error("Status: " + response.status);
-        }
-        const data = await response.json();
+        const response = await fetchSpecies(id);
 
         // Andra anropet (URL från första svaret)
-        const evoRes = await fetch(data.evolution_chain.url);
-        if (!evoRes.ok) {
+        const data = await fetch(response.evolution_chain.url);
+
+        if (!data.ok) {
             throw new Error("Status: " + response.status);
         }
-        const evoData = await evoRes.json();
+
+        const evoData = await data.json();
+
+        console.log(evoData);
 
         //Tom array som samlar namnen och url på alla evolutioner
         const evolutions = [];
@@ -136,10 +136,6 @@ export async function getPokemonEvolutions(id = 1) {
         }
 
         parseChain(evoData.chain);
-
-        //För att slippa två seperata API anrop till samma endpoint
-        renderPokemonDescription(data);
-
 
         return evolutions;
 
@@ -359,8 +355,6 @@ export async function getPokemonStrengths(typeArray = []) {
             if (value > 1) { doubleDamage.push(key) }
         };
 
-        console.log(doubleDamage);
-
         //Ingenting händer med resultatet här, utan värdet returneras endast. Detta för att göra funkitonen återanvändbar
         return doubleDamage;
 
@@ -451,6 +445,10 @@ export async function renderPokemonDetail(id = 1) {
 
         //Sätter 0:or och # i början av ID:t
         setPokeID(data.id, pokeId);
+
+        //För att slippa två seperata API anrop till samma endpoint
+        const description = await fetchSpecies(id);
+        renderPokemonDescription(description);
 
         //Sätter typerna
         const typesArray = getPokemonType(data);
