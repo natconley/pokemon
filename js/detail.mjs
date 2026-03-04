@@ -23,8 +23,9 @@ const specialDefenseBar = document.querySelector("#pokeSpecialDefense .pokeBar")
 const speedBar = document.querySelector("#pokeSpeed .pokeBar");
 
 //Type
-const pokeWeaknessDiv = document.getElementById("pokeWeaknessDiv");
-const pokeTypesDiv = document.getElementById("pokeTypesDiv");
+const pokeTypesDiv = document.querySelector("#typesSection>div:nth-child(1)>div");
+const pokeWeaknessDiv = document.querySelector("#typesSection>div:nth-child(2)>div");
+const pokeStrengthsDiv = document.querySelector("#typesSection>div:nth-child(3)>div");
 
 //Evoluiton 
 const pokeEvolutionDiv = document.getElementById("pokeEvolution");
@@ -37,7 +38,7 @@ const pokeHeight = document.getElementById("pokeHeight");
 const pokeWeight = document.getElementById("pokeWeight");
 const pokeAbility = document.getElementById("pokeAbility");
 
-//
+//Suggestions
 const suggestionsDiv = document.querySelector("#suggestions div");
 
 const TYPES = ["Normal", "Fire", "Water", "Electric", "Grass", "Ice", "Fighting", "Poison", "Ground", "Flying", "Psychic", "Bug", "Rock", "Ghost", "Dragon", "Dark", "Steel", "Fairy"];
@@ -56,6 +57,27 @@ const weaknessPools = {
     "special-attack": [65, 94, 150],
     "special-defense": [197, 242, 378],
     speed: [101, 135, 142]
+};
+
+const typePools = {
+    normal: [143, 242, 446],
+    fire: [6, 59, 136],
+    water: [9, 130, 134],
+    electric: [26, 135, 181],
+    grass: [3, 154, 470],
+    ice: [131, 471, 473],
+    fighting: [68, 106, 448],
+    poison: [89, 110, 454],
+    ground: [232, 330, 445],
+    flying: [18, 142, 384],
+    psychic: [65, 150, 282],
+    bug: [212, 291, 748],
+    rock: [141, 248, 377],
+    ghost: [94, 302, 487],
+    dragon: [149, 373, 445],
+    dark: [197, 248, 359],
+    steel: [205, 208, 376],
+    fairy: [282, 468, 700]
 };
 
 function renderPokemonDescription(data) {
@@ -248,8 +270,6 @@ export async function getPokemonWeakness(typeArray = []) {
         //Här används objekt istället för arrayer för att lättare kunna söka eftere element utan att loopa 
         let typesMultipliers = {};
 
-        console.log(typeArray);
-
         for (const element of typeArray) {
 
             const response = await fetch(`https://pokeapi.co/api/v2/type/${element}`);
@@ -301,25 +321,65 @@ export async function getPokemonWeakness(typeArray = []) {
 
 };
 
-const typePools = {
-    normal: [143, 242, 446],
-    fire: [6, 59, 136],
-    water: [9, 130, 134],
-    electric: [26, 135, 181],
-    grass: [3, 154, 470],
-    ice: [131, 471, 473],
-    fighting: [68, 106, 448],
-    poison: [89, 110, 454],
-    ground: [232, 330, 445],
-    flying: [18, 142, 384],
-    psychic: [65, 150, 282],
-    bug: [212, 291, 748],
-    rock: [141, 248, 377],
-    ghost: [94, 302, 487],
-    dragon: [149, 373, 445],
-    dark: [197, 248, 359],
-    steel: [205, 208, 376],
-    fairy: [282, 468, 700]
+//Hämtar vilka typer en pokemon är svag mot
+export async function getPokemonStrengths(typeArray = []) {
+
+    try {
+
+        //Här används objekt istället för arrayer för att lättare kunna söka eftere element utan att loopa 
+        let typesMultipliers = {};
+
+        for (const element of typeArray) {
+
+            const response = await fetch(`https://pokeapi.co/api/v2/type/${element}`);
+
+            if (!response.ok) {
+                throw new Error("Status: " + response.status);
+            }
+
+            //Destructuring
+            const { id, damage_relations } = await response.json();
+
+            //Loopar igenom double_damage_from arrayen
+            damage_relations.double_damage_to.forEach(element => {
+
+                //1. (typesMultipliers[element.name] || 1) kollar om nyckeln med namnet element.name (tex "fire") redan finns
+                //2. Om nyckeln inte finns sätts default värdet till 1
+                //3. Multipliceras med 2 eftersom den här typen gör x2 skada
+                //4. Om nyckeln inte fanns sedan innan läggs den in i objektet typesMultipliers
+
+                typesMultipliers[element.name] = (typesMultipliers[element.name] || 1) * 2
+            })
+
+            damage_relations.half_damage_to.forEach(element => {
+                typesMultipliers[element.name] = (typesMultipliers[element.name] || 1) * 0.5
+            })
+
+            damage_relations.no_damage_to.forEach(element => {
+                typesMultipliers[element.name] = (typesMultipliers[element.name] || 1) * 0
+            })
+
+        };
+
+        //Gör om objektet till en array genom Object.entries
+        const results = Object.entries(typesMultipliers);
+
+        //De slutliga värdena sparas i den här arrayen
+        const doubleDamage = [];
+
+        for (const [key, value] of results) {
+            if (value > 1) { doubleDamage.push(key) }
+        };
+
+        console.log(doubleDamage);
+
+        //Ingenting händer med resultatet här, utan värdet returneras endast. Detta för att göra funkitonen återanvändbar
+        return doubleDamage;
+
+    } catch (err) {
+
+    }
+
 };
 
 export async function getSugesstedPokemon(weaknessArray = [], stats = []) {
@@ -411,6 +471,10 @@ export async function renderPokemonDetail(id = 1) {
         //Weakness
         const weaknessArray = await getPokemonWeakness(typesArray);
         setPokemonType(weaknessArray, pokeWeaknessDiv);
+
+        //Strengths
+        const strengthsArray = await getPokemonStrengths(typesArray);
+        setPokemonType(strengthsArray, pokeStrengthsDiv);
 
         setBaseStats(pokeHP, pokeAttack, pokeDefense, pokeSpecialAttack, pokeSpecialDefense, pokeSpeed, data);
 
