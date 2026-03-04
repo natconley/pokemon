@@ -272,14 +272,8 @@ export async function getPokemonWeakness(typeArray = []) {
 
         for (const element of typeArray) {
 
-            const response = await fetch(`https://pokeapi.co/api/v2/type/${element}`);
-
-            if (!response.ok) {
-                throw new Error("Status: " + response.status);
-            }
-
             //Destructuring
-            const { id, damage_relations } = await response.json();
+            const { id, damage_relations } = await fetchType(element);
 
             //Loopar igenom double_damage_from arrayen
             damage_relations.double_damage_from.forEach(element => {
@@ -331,14 +325,8 @@ export async function getPokemonStrengths(typeArray = []) {
 
         for (const element of typeArray) {
 
-            const response = await fetch(`https://pokeapi.co/api/v2/type/${element}`);
-
-            if (!response.ok) {
-                throw new Error("Status: " + response.status);
-            }
-
             //Destructuring
-            const { id, damage_relations } = await response.json();
+            const { id, damage_relations } = await fetchType(element);
 
             //Loopar igenom double_damage_from arrayen
             damage_relations.double_damage_to.forEach(element => {

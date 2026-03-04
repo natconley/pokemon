@@ -18,23 +18,40 @@ export async function fetchPokemon(id) {
     }
 }
 
-export async function fetchType(id) {
+export async function fetchType(type = "") {
+
     try {
-        // Hämtar data från API
-        const response = await fetch(`https://pokeapi.co/api/v2/type/${id}`);
-        // Validerar att information kunde hämtas
-        // response.ok = statskod 200 - 299, !response.ok = alla andra statuskoder
-        if (!response.ok) {
-            throw new Error(`Failed to fetch Pokémon ID ${id}. Status: ${response.status}`);
+
+        //Lägger till typerna i session storage för att minska API anropen
+        if (!sessionStorage.getItem(type)) {
+
+            // Hämtar data från API
+            const response = await fetch(`https://pokeapi.co/api/v2/type/${type}`);
+            // Validerar att information kunde hämtas
+            // response.ok = statskod 200 - 299, !response.ok = alla andra statuskoder
+            if (!response.ok) {
+                throw new Error(`Failed to fetch Pokémon type ${type}. Status: ${response.status}`);
+            }
+            // Omvandlar till JSON
+            const data = await response.json();
+
+            sessionStorage.setItem(type, JSON.stringify(data));
+
+            return data;
+
+        } else {
+
+            const data = sessionStorage.getItem(type);
+            return JSON.parse(data);
+
         }
-        // Omvandlar till JSON
-        const data = await response.json();
-        return data;
+
     } catch (error) {
         console.error("Error fetching type", error);
         // loadTeam renderar null som empty slot
         return null;
     }
+
 }
 
 //Gör förstabokstaven till storbokstav
