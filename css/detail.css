@@ -1,0 +1,204 @@
+/* -- SEMANTISKA ELEMENT -----------------------------*/
+main {
+    padding: 0 2rem 5rem;
+    max-width: 1360px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 5rem;
+}
+
+/* -- LAYOUT -----------------------------*/
+.alignItems {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.flex-wrap {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.flex-column {
+    display: flex;
+    flex-direction: column;
+}
+
+/* -- GAP -----------------------------*/
+.gap1rem {
+    gap: 1rem;
+}
+
+.gap4rem {
+    gap: 4rem;
+}
+
+/* -- STATUS BAR -----------------------------*/
+#statsSection {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+
+.pokeBar {
+    width: 1%;
+    height: 30px;
+    border-radius: 30px;
+    transition: width .6s ease;
+
+    background: linear-gradient(90deg, rgba(122, 232, 201, 1) 0%, rgba(8, 145, 179, 1) 50%, rgba(248, 160, 159, 1) 100%);
+}
+
+#pokeHP>div:first-child,
+#pokeAttack>div:first-child,
+#pokeDefense>div:first-child,
+#pokeSpecialAttack>div:first-child,
+#pokeSpecialDefense>div:first-child,
+#pokeSpeed>div:first-child {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    margin-bottom: 1rem;
+}
+
+/*Sträcken vid progressbarren*/
+#pokeHP>div:nth-child(2),
+#pokeAttack>div:nth-child(2),
+#pokeDefense>div:nth-child(2),
+#pokeSpecialAttack>div:nth-child(2),
+#pokeSpecialDefense>div:nth-child(2),
+#pokeSpeed>div:nth-child(2) {
+    display: none;
+}
+
+.pokeCard {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+}
+
+.pokeCard img {
+    height: fit-content;
+    width: fit-content;
+}
+
+/* -- HERO -----------------------------*/
+.pokeHero {
+    margin-top: 5rem;
+
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
+
+.pokeHero img {
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+}
+
+.pokeHero p {
+    margin-bottom: 3rem;
+}
+
+#pokeId {
+    font-family: 'Press Start 2P', monospace;
+    color: rgba(255, 255, 255, .18);
+}
+
+/* -- FIRST SECTION -----------------------------*/
+#typesSection {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+
+    margin-bottom: 5rem;
+}
+
+.pokeSection {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    /* border: 1px solid var(--border); */
+    border-radius: 22px;
+    padding: 1rem 2rem 5rem 2rem;
+}
+
+.pokeGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
+    gap: 1.1rem;
+    max-width: 1360px;
+    margin: 0 auto;
+}
+
+.title {
+    margin-bottom: 1rem;
+}
+
+
+/* --MEDIA QUERYS -----------------------------*/
+/*Smartphones (portrait)*/
+@media only screen and (min-width: 480px) {
+
+    #statsSection>div {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+
+        gap: 1rem;
+    }
+
+    #pokeHP>div:first-child,
+    #pokeAttack>div:first-child,
+    #pokeDefense>div:first-child,
+    #pokeSpecialAttack>div:first-child,
+    #pokeSpecialDefense>div:first-child,
+    #pokeSpeed>div:first-child {
+
+        margin-bottom: 0;
+    }
+
+    #pokeHP>div:nth-child(2),
+    #pokeAttack>div:nth-child(2),
+    #pokeDefense>div:nth-child(2),
+    #pokeSpecialAttack>div:nth-child(2),
+    #pokeSpecialDefense>div:nth-child(2),
+    #pokeSpeed>div:nth-child(2) {
+        display: block;
+
+        height: 1px;
+        flex: 1;
+        background-color: var(--border);
+    }
+
+}
+
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 992px) {
+    .pokeHero {
+        gap: 3rem;
+    }
+
+    .pokeHero p {
+        max-width: 30rem;
+    }
+
+    #section1 {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5rem;
+    }
+
+    #statsSection {
+        flex: 1;
+        order: -1
+    }
+
+    #typesSection {
+        min-width: 20rem;
+    }
+}
