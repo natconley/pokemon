@@ -21,7 +21,7 @@ function createCard(pokemon, index) {
     return `<span class="badge" style="background:${bth.bg}; color:${bth.col};">${t}</span>`;
   }).join('');
 
-  card.innerHTML = `
+  card.innerHTML= `
   <div class="card-glow" style="background: linear-gradient(90deg, ${th.col}88, transparent);"></div>
   <a class="card-link" href="pokePage.html?id=${pokemon.id}">
     <div class="card-img-wrap" style="background: ${th.bg};">
@@ -32,7 +32,7 @@ function createCard(pokemon, index) {
       <div class="card-name">${pokemon.name}</div>
       <div class="card-types-row">
         <div class="card-types">${badges}</div>
-        <button class="btn-team ${inTeam ? 'active' : ''}" data-id="${pokemon.id}" title="Add to team">Add To Team</button>
+        <button class="btn-team" ${inTeam ? 'active' : ''}" data-id="${pokemon.id}" title="Add to team">Add To Team</button>
       </div>
     </div>
   </a>
@@ -90,3 +90,4 @@ function renderGrid(gridEl, entries) {
   });
   gridEl.appendChild(fragment);
 }
+//
