@@ -62,28 +62,28 @@ const weaknessPools = {
 // från andreas api.js 
 // TYPE färger och function
 const TYPE = {
-  fire:     { col: '#ff6b35', bg: 'rgba(204, 133, 107, 0.14)'  },
-  water:    { col: '#4fc3f7', bg: 'rgba(79,195,247,.14)'  },
-  electric: { col: '#f7d02c', bg: 'rgba(247,208,44,.14)'  },
-  grass:    { col: '#78c850', bg: 'rgba(120,200,80,.14)'  },
-  psychic:  { col: '#f85888', bg: 'rgba(248,88,136,.14)'  },
-  normal:   { col: '#c8c8a0', bg: 'rgba(168,168,120,.14)' },
-  poison:   { col: '#c060c0', bg: 'rgba(160,64,160,.14)'  },
-  rock:     { col: '#c8b040', bg: 'rgba(184,160,56,.14)'  },
-  fighting: { col: '#e04030', bg: 'rgba(192,48,40,.14)'   },
-  ice:      { col: '#98d8d8', bg: 'rgba(152,216,216,.14)' },
-  dragon:   { col: '#7038f8', bg: 'rgba(112,56,248,.14)'  },
-  ghost:    { col: '#9070b8', bg: 'rgba(112,88,152,.14)'  },
-  steel:    { col: '#c0c0e0', bg: 'rgba(184,184,208,.14)' },
-  dark:     { col: '#907060', bg: 'rgba(112,88,72,.14)'   },
-  ground:   { col: '#d4b070', bg: 'rgba(210,180,100,.14)' },
-  flying:   { col: '#8090d0', bg: 'rgba(128,144,208,.14)' },
-  fairy:    { col: '#ffaec9', bg: 'rgba(255,174,201,.14)' },
-  bug:      { col: '#a8b820', bg: 'rgba(168,184,32,.14)'  },
+    fire: { col: '#ff6b35', bg: 'rgba(204, 133, 107, 0.14)' },
+    water: { col: '#4fc3f7', bg: 'rgba(79,195,247,.14)' },
+    electric: { col: '#f7d02c', bg: 'rgba(247,208,44,.14)' },
+    grass: { col: '#78c850', bg: 'rgba(120,200,80,.14)' },
+    psychic: { col: '#f85888', bg: 'rgba(248,88,136,.14)' },
+    normal: { col: '#c8c8a0', bg: 'rgba(168,168,120,.14)' },
+    poison: { col: '#c060c0', bg: 'rgba(160,64,160,.14)' },
+    rock: { col: '#c8b040', bg: 'rgba(184,160,56,.14)' },
+    fighting: { col: '#e04030', bg: 'rgba(192,48,40,.14)' },
+    ice: { col: '#98d8d8', bg: 'rgba(152,216,216,.14)' },
+    dragon: { col: '#7038f8', bg: 'rgba(112,56,248,.14)' },
+    ghost: { col: '#9070b8', bg: 'rgba(112,88,152,.14)' },
+    steel: { col: '#c0c0e0', bg: 'rgba(184,184,208,.14)' },
+    dark: { col: '#907060', bg: 'rgba(112,88,72,.14)' },
+    ground: { col: '#d4b070', bg: 'rgba(210,180,100,.14)' },
+    flying: { col: '#8090d0', bg: 'rgba(128,144,208,.14)' },
+    fairy: { col: '#ffaec9', bg: 'rgba(255,174,201,.14)' },
+    bug: { col: '#a8b820', bg: 'rgba(168,184,32,.14)' },
 };
 
 function getTypeTheme(type) {
-  return TYPE[type] || { col: '#aaa', bg: 'rgba(180,180,180,.12)' };
+    return TYPE[type] || { col: '#aaa', bg: 'rgba(180,180,180,.12)' };
 }
 
 // CACHE
@@ -173,13 +173,17 @@ function renderFilledSlot(slot, pokemon) {
     slot.setAttribute("aria-label", `Team member: #${pokemon.id}: ${pokemon.name}`);
 
     // eventlistener for button visibility toggle
-    slot.addEventListener("click", () => { 
+    slot.addEventListener("click", () => {
         slot.classList.toggle("active");
     });
 
     // skapar container för bilder och knappar
     const imgWrapper = document.createElement("div");
     imgWrapper.classList.add("imgWrapper");
+    // hämtar primärtypens färg
+    const wrapperTheme = getTypeTheme(pokemon.types[0].type.name);
+    // sätter primärtypens färg som bakgrund
+    imgWrapper.style.background = wrapperTheme.bg;
 
     const btnGroup = document.createElement("div");
     btnGroup.classList.add("btnGroup")
@@ -188,7 +192,9 @@ function renderFilledSlot(slot, pokemon) {
 
     // Skapar bild till slot
     const pokeImg = document.createElement("img");
-    pokeImg.src = pokemon.sprites.front_default;
+    pokeImg.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png`;
+    // laddar bild när den är påväg att synas   
+    pokeImg.loading = "lazy";
     pokeImg.alt = pokemon.name;
 
     imgWrapper.appendChild(pokeImg);
@@ -383,13 +389,17 @@ function renderFilledCarousel(slot, pokemon) {
     slot.setAttribute("aria-label", `Saved pokémon: #${pokemon.id}: ${pokemon.name}`);
 
     // eventlistener for button visibility toggle
-    slot.addEventListener("click", () => { 
+    slot.addEventListener("click", () => {
         slot.classList.toggle("active");
     });
 
     // skapar container för bilder och knappar
     const imgWrapper = document.createElement("div");
     imgWrapper.classList.add("imgWrapper");
+    // hämtar primärtypens färg
+    const wrapperTheme = getTypeTheme(pokemon.types[0].type.name);
+    // sätter primärtypens färg som bakgrund
+    imgWrapper.style.background = wrapperTheme.bg;
 
     const btnGroup = document.createElement("div");
     btnGroup.classList.add("btnGroup");
@@ -398,7 +408,9 @@ function renderFilledCarousel(slot, pokemon) {
 
     // Skapar bild till slot
     const pokeImg = document.createElement("img");
-    pokeImg.src = pokemon.sprites.front_default;
+    pokeImg.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png`;
+    // laddar bild när den är påväg att synas   
+    pokeImg.loading = "lazy";
     pokeImg.alt = pokemon.name;
 
     imgWrapper.appendChild(pokeImg);
@@ -532,7 +544,7 @@ function renderFilledCarousel(slot, pokemon) {
     // Lägger in det skapade i förälderelement
     slot.appendChild(imgWrapper);
     slot.appendChild(slotInfo);
-    
+
 }
 
 async function loadSuggested(pokemonData, teamStats) {
@@ -543,7 +555,7 @@ async function loadSuggested(pokemonData, teamStats) {
         // TYPE suggestion
         // Brigittas weakness calculator är mer specifik/bättre, men skulle kräva upp till 12 API anrop beroende på lagkonstellation
         // Ändra till Brigittas version om tid finns över (Type weakness istället för Type Coverage)
-       
+
         // om pokemon i team, ta bort text
         if (validPokemon.length === 0) {
             suggestionInfo.classList.remove("hidden");
@@ -624,13 +636,17 @@ function renderFilledSuggestions(slot, pokemon) {
     slot.setAttribute("aria-label", `Suggested pokémon: #${pokemon.id}: ${pokemon.name}`);
 
     // eventlistener for button visibility toggle
-    slot.addEventListener("click", () => { 
+    slot.addEventListener("click", () => {
         slot.classList.toggle("active");
     });
 
     // skapar container för bilder och knappar
     const imgWrapper = document.createElement("div");
     imgWrapper.classList.add("imgWrapper");
+    // hämtar primärtypens färg
+    const wrapperTheme = getTypeTheme(pokemon.types[0].type.name);
+    // sätter primärtypens färg som bakgrund
+    imgWrapper.style.background = wrapperTheme.bg;
 
     const btnGroup = document.createElement("div");
     btnGroup.classList.add("btnGroup");
@@ -639,7 +655,9 @@ function renderFilledSuggestions(slot, pokemon) {
 
     // Skapar bild till slot
     const pokeImg = document.createElement("img");
-    pokeImg.src = pokemon.sprites.front_default;
+    pokeImg.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png`;
+    // laddar bild när den är påväg att synas   
+    pokeImg.loading = "lazy";
     pokeImg.alt = pokemon.name;
 
     imgWrapper.appendChild(pokeImg);
@@ -767,6 +785,7 @@ function loadTeamInfo(teamStats) {
     // score för att kunna bedöma type spread
     const score = uniqueTypes.length;
     const typesAll = document.createElement("ul");
+    typesAll.classList.add("typeSpread");
     // för varje unik typ, skapa en type badge, append till ul
     uniqueTypes.forEach(type => {
         const uniqueBadge = document.createElement("li");

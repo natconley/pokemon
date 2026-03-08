@@ -3,6 +3,7 @@
     margin: 0;
     padding: 0;
 }
+
 /*
 html {
     background-color: #111827;
@@ -15,22 +16,24 @@ h1 {
     font-size: 1.6rem;
     font-weight: 400;
 }
+
 h2 {
     font-size: 1.3rem;
     font-weight: 600;
 }
+
 h3 {
     font-size: 1.1rem;
     font-weight: 500;
 }
 
 main {
-   padding: 0 0.8rem 5rem;
-   max-width: 1360px;
-   margin: 0 auto;
-   display: flex;
-   flex-direction: column;
-   gap: 2rem;
+    padding: 0 0.8rem 5rem;
+    max-width: 1360px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
 }
 
 .statLabel {
@@ -74,7 +77,7 @@ header {
 }
 
 .teamSlot--filled {
- cursor: pointer;
+    cursor: pointer;
 }
 
 .teamOverview {
@@ -83,9 +86,10 @@ header {
     margin: 0 auto;
     max-width: 430px;
     gap: 0.6rem;
-    
+
 }
-.teamOverview li {
+
+.teamOverview li, .suggested li {
     background-color: var(--surface);
     border-radius: 16px;
     min-width: 0;
@@ -95,13 +99,40 @@ header {
 
 }
 
+/* Samma som andreas, front page*/
+.pokemonId {
+    font-family: 'Press Start 2P', monospace;
+    font-size: .8rem;
+    color: rgba(255, 255, 255, .18);
+}
+
 .imgWrapper {
     position: relative;
     overflow: hidden;
     width: 100%;
-   flex-shrink: 0;
-   background-color: var(--surface);
-   margin-bottom: 1rem;
+    flex-shrink: 0;
+    background-color: var(--surface);
+    margin-bottom: 1rem;
+    border-radius: 16px 16px 0 0;
+    overflow: hidden;
+
+}
+
+/* Samma som andreas styling, front page*/
+.imgWrapper img {
+    width: 90px;
+    height: 90px;
+    object-fit: contain;
+    display: flex;
+    justify-self: center;
+    filter: drop-shadow(0 6px 18px var(--shadow));
+    transition: transform .3s cubic-bezier(.34, 1.56, .64, 1);
+    z-index: 0;
+}
+
+/* lägg till i mediaqueries*/
+.imgWrapper img:hover {
+    transform: translateY(-5px) scale(1.07);
 }
 
 /*---SUGGESTIONS----------------------*/
@@ -135,35 +166,34 @@ header {
 
 /* CTA Buttons*/
 .btnGroup {
+    z-index: 1;
     position: absolute;
     bottom: 0;
     left: 0;
     width: 100%;
     display: flex;
     justify-content: center;
-    gap: 8px;
-    padding: 0;
+    gap: 5px;
+
     background-color: #080a0f3d;
     transform: translateY(100%);
     transition: transform 0.3s ease;
 }
 
 .btnGroup img {
-    height: 44px;
+    height: 42px;
+    width: 42px;
     padding: 5px;
+    filter: drop-shadow(0 2px 5px #000000);
 }
 
-.teamSlot--filled.active .btnGroup {
-    transform: translateY(0);
-}
-
-.sugSlot--filled.active .btnGroup {
-    transform: translateY(0);
-}
-
+.teamSlot--filled.active .btnGroup,
+.sugSlot--filled.active .btnGroup,
 .waitSlot--filled.active .btnGroup {
     transform: translateY(0);
 }
+
+
 .btnGroup button {
     background-color: transparent;
     border: none;
@@ -179,9 +209,14 @@ header {
 }
 
 /* Stats bar */
+
+.stats p {
+ font-size: 0.95rem;
+ color: var(--muted);
+}
 .pokeBar {
     width: 1%;
-    height: 30px;
+    height: 16px;
     border-radius: 30px;
     transition: width .6s ease;
 
@@ -211,14 +246,40 @@ header {
     background-color: var(--border);
 }
 
+.alignItems {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.gap1rem {
+     gap: 1rem;
+}
+
 /* TEAM TYPES*/
+.pokemonTypes {
+    display: flex;
+    flex-wrap: wrap;
+    
+}
 
 .pokemonTypes li {
     padding: 2px 10px;
     border-radius: 16px;
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     text-transform: capitalize;
+    width: fit-content;
+    margin: 1px;
 }
+
+.typeSpread li {
+    padding: 2px 10px;
+    border-radius: 16px;
+    font-size: 0.85rem;
+    text-transform: capitalize;
+    width: fit-content;
+    margin: 1px;
+}
+
 .typesInfoContainer {
     display: grid;
     grid-template-columns: 2fr 1fr;
@@ -234,7 +295,7 @@ header {
     flex-direction: column;
     flex-wrap: wrap;
     height: 200px;
-   
+
 }
 
 .typeBar {
@@ -253,9 +314,10 @@ header {
     left: 0;
     width: 100%;
     height: 0;
-    background: var(--accent);
+    background: linear-gradient(145deg, rgba(122, 232, 201, 1) 0%, rgba(122, 232, 201, 0.884)  20%, rgba(8, 145, 179, 1) 60%, rgba(248, 161, 159, 0.637) 80%,  rgba(248, 160, 159, 1) 100%);
     transition: height 0.6s ease;
 }
+
 /* ALT. VIEWS */
 .hidden {
     display: none;
