@@ -1,17 +1,19 @@
+/* TEMPORARY FOR LAYOUT PURPOSES */
+header {
+    height: 80px;
+    background-color: #0F172A;
+    border-bottom: 1px solid #1F2937;
+    margin-bottom: 20px;
+}
+
+/* MISC. ------------------------------------------*/
+
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
 
-/*
-html {
-    background-color: #111827;
-    color: #F3F4F6;
-    line-height: 1.5;
-    font-family: "Inter", sans-serif;
-}
-*/
 h1 {
     font-size: 1.6rem;
     font-weight: 400;
@@ -20,37 +22,20 @@ h1 {
 h2 {
     font-size: 1.3rem;
     font-weight: 600;
-    margin-bottom: 5px;
-}
-
- h2 {
-    margin-bottom: 2rem;
     border-bottom: 1px solid var(--border);
 }
+
+.teamDisplay h2,
+.waitlistCarousel h2 {
+    margin-bottom: 1rem;
+}
+
+
 
 h3 {
     font-size: 1.1rem;
     font-weight: 500;
     padding-bottom: 0.3rem;
-}
-
-h4 {
-    margin-top: 0.5rem;
-    font-weight: 600;
-}
-
-main {
-    padding: 0 0.8rem 5rem;
-    max-width: 1360px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 1rem;
-
-}
-
-.statLabel {
-    font-weight: 400;
 }
 
 ul {
@@ -64,43 +49,22 @@ a {
     margin: 0 1rem;
 }
 
-button {
-    cursor: pointer;
-    font-size: 0.8rem;
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
+.hidden {
+    display: none;
 }
 
-/* TEMPORARY FOR LAYOUT PURPOSES */
-header {
-    height: 80px;
-    background-color: #0F172A;
-    border-bottom: 1px solid #1F2937;
-    margin-bottom: 20px;
-}
-
-/* ------TEAM OVERVIEW ------------------------------------*/
-/*teamslot - frågetecken img*/
-.teamSlot--empty img {
-    width: 100%;
-    height: auto;
-    object-fit: cover;
-    padding: 7px;
-    display: block;
-    opacity: 70%;
-}
-
-.teamSlot--filled,
-.sugSlot--filled,
-.waitSlot--filled {
-    cursor: pointer;
-    background-color: var(--surface);
-    border-radius: 16px;
-    min-width: 90px;
+/* LAYOUT ---------------------------------------*/
+main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 1rem 5rem;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
-    min-height: 180px;
-    max-height: 225px;
+    gap: 2rem;
+}
+
+.teamDisplay {
+    width: 100%;
 }
 
 .teamOverview {
@@ -111,152 +75,27 @@ header {
     max-width: 430px;
 }
 
-/*
-.teamDisplay {
-
+.teamInfo {
+    max-width: 700px;
+    margin: 0 auto;
+    width: 100%;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: space-around;
-    width: fit-content;
-    max-width: 430px;
-    margin: 0 auto;
-    padding-bottom: 1rem;
-
-}
-*/
-.teamDisplay h2 {
-    align-self: flex-start;
-    margin-left: 0;
-}
-
-/* Samma som andreas, front page*/
-.pokemonId {
-    font-family: 'Press Start 2P', monospace;
-    font-size: .8rem;
-    color: rgba(255, 255, 255, .18);
-}
-
-.imgWrapper {
-    display: flex;
-    justify-content: center;
-    align-content: center;
-    position: relative;
-    overflow: hidden;
-    width: 100%;
-    flex-shrink: 0;
-    background-color: var(--surface);
-    border-radius: 16px 16px 0 0;
-
-}
-
-/* Samma som andreas styling, front page*/
-.imgWrapper img {
-    width: 90px;
-    height: 90px;
-    object-fit: contain;
-    display: flex;
-    justify-self: center;
-    filter: drop-shadow(0 6px 18px var(--shadow));
-    transition: transform .3s cubic-bezier(.34, 1.56, .64, 1);
-    z-index: 0;
-}
-
-/* lägg till i mediaqueries*/
-.imgWrapper img:hover {
-    transform: translateY(-5px) scale(1.07);
-}
-
-/* TEAM ANALYSIS -----------------------*/
-
-#teamInfoPros {
-    border-radius: 16px;
-    border: 2px solid rgba(122, 232, 201, 1);
-    background-color: rgba(122, 232, 201, 0.103);
-    padding: 1rem;
-    
-}
-
-#teamInfoCons {
-    border-radius: 16px;
-    border: 2px solid rgba(248, 160, 159, 1);
-    background-color: rgba(248, 161, 159, 0.082);
-    padding: 1rem;
-}
-
-#typeCoverageDescription {
-    padding-bottom: 1rem;
-    margin-bottom: 1rem;
-}
-
-
-.teamAnalysis p {
-    font-weight: lighter;
-}
-
-.teamInfo {
-    padding-top: 1rem;
-
-}
-
-/*---SUGGESTIONS----------------------*/
-.suggested {
-
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    margin: 0 auto;
-    gap: 10px;
-    max-width: 430px;
-    /*
-    display: flex;
-    gap: 0.5rem;
-    justify-content: center;
-    max-width: 430px;*/
-}
-
-/*
-.suggested li {
-    background-color: var(--surface);
-    border-radius: 16px;
-    margin: 0.3rem;
-    width: 30vw;
-}
-*/
-.suggestionArea {
-    border-top: 1px solid var(--border);
-    padding-top: 1rem;
-    margin-top: 1rem;
-}
-
-/*---WAITLIST------------------------*/
-
-.waitlist {
-    display: flex;
-    flex-direction: row;
-    
-    overflow-y: scroll;
-    width: 100%;
-}
-
-.waitlist li {
-    background-color: var(--surface);
-    border-radius: 16px;
-    margin: 0.3rem;
-    width: 30vw;
-    max-width: 133px;
+    gap: 2rem;
 }
 
 .waitlistCarousel {
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 1rem;
-    margin-bottom: 1rem;
-  
-    display: flex;
-    flex-direction: column;
-    
+    max-width: 700px;
+    margin: 0 auto;
+    width: 100%;
 }
 
-
+.teamBuilder {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    width: 100%;
+}
 
 /* CTA Buttons*/
 .btnGroup {
@@ -273,11 +112,22 @@ header {
     transition: transform 0.3s ease;
 }
 
-.btnGroup img {
+.btnGroup button img {
     height: 42px;
     width: 42px;
     padding: 5px;
     filter: drop-shadow(0 2px 5px #000000);
+}
+
+.btnGroup button {
+    background-color: transparent;
+    border: none;
+}
+
+button {
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-family: 'Nunito', sans-serif;
 }
 
 .teamSlot--filled.active .btnGroup,
@@ -286,37 +136,161 @@ header {
     transform: translateY(0);
 }
 
+/* TEAM OVERVIEW---------------------------------------*/
 
-.btnGroup button {
-    background-color: transparent;
-    border: none;
+/* Cards/images */
+
+.teamOverview {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    margin: 0 auto;
+    max-width: 430px;
+    gap: 0.6rem;
 }
 
-/*---STATBARS----------------------*/
+.teamSlot--empty {
+    border-radius: 16px;
+    overflow: hidden;
+    min-height: 160px;
+    background-color: var(--surface);
+}
 
-/* TAGET FRÅN BRIGITTAS KOD */
+/*tomt lag, frågetecken img*/
+.teamSlot--empty img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    padding: 7px;
+    opacity: 70%;
+}
+
+.teamSlot--filled {
+    border-radius: 16px;
+    overflow: hidden;
+    min-height: 160px;
+    background-color: var(--surface);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+}
+
+.imgWrapper {
+    position: relative;
+    overflow: hidden;
+    border-radius: 16px 16px 0 0;
+    width: 100%;
+}
+
+.imgWrapper img {
+    display: block;
+    opacity: 100%;
+    padding: 7px;
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    margin: 0 auto;
+}
+
+/* Name/Id */
+
+.pokemonId {
+    font-family: 'Press Start 2P', monospace;
+    font-size: .8rem;
+    color: rgba(255, 255, 255, .18);
+}
+
+/* Type badges*/
+
+.pokemonTypes {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.pokemonTypes li {
+    padding: 2px 10px;
+    border-radius: 16px;
+    font-size: 0.85rem;
+    text-transform: capitalize;
+    width: fit-content;
+    margin: 3px;
+}
+
+
+/* TEAM ANALYSIS -------------------------------------*/
+
+.typeCoverage h3, .analysisContainer h3, .suggestionArea h3 {
+    margin-bottom: 1rem;
+}
+
+/* Type Coverage */
+
+.typeCoverage {
+    max-width: 560px;
+    width: 100%;
+    margin: 0 auto;
+}
+.typesInfoContainer {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.typeCoverage p {
+    text-align: center;
+    font-weight: 200;
+}
+
+#teamInfoTypes ul {
+    display: flex;
+    gap: 1.4rem;
+    flex-wrap: wrap;
+}
+
+#teamInfoTypes li {
+    padding: 2px 10px;
+    border-radius: 16px;
+    font-size: 0.85rem;
+    text-transform: capitalize;
+    width: fit-content;
+}
+
+.typeBar {
+    width: 100%;
+    height: 20px;
+    background-color: var(--surface2);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+}
+
+#typeBarFill {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 0;
+    background: linear-gradient(145deg,  rgb(255, 163, 161) 0%, rgb(255, 163, 161) 10%, rgb(132, 253, 219) 60%, rgb(133, 255, 220) 100%);
+    transition: height 0.6s ease; 
+}
+
+
+
+/* Base Stats/ statbars */
+
 .stats {
-    
-    min-width: 300px;
+    width: 100%;
     max-width: 560px;
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    /*border-bottom: 1px solid var(--border);*/
-    padding-bottom: 1rem;
-    margin-bottom: 1rem;
+    margin: 0 auto;
 
 }
-
-/* Stats bar */
 
 .stats p {
     font-size: 0.95rem;
     color: var(--muted);
-}
-
-.teamStatbars {
-    
 }
 
 .pokeBar {
@@ -324,7 +298,6 @@ header {
     height: 16px;
     border-radius: 30px;
     transition: width .6s ease;
-
     background: linear-gradient(90deg, rgba(122, 232, 201, 1) 0%, rgba(8, 145, 179, 1) 50%, rgba(248, 160, 159, 1) 100%);
 }
 
@@ -361,94 +334,102 @@ header {
     gap: 1rem;
 }
 
-/* TEAM TYPES*/
-.pokemonTypes {
-    display: flex;
-    flex-wrap: wrap;
-
-}
-
-.pokemonTypes li {
-    padding: 2px 10px;
-    border-radius: 16px;
-    font-size: 0.85rem;
-    text-transform: capitalize;
-    width: fit-content;
-    margin: 3px;
-}
-
-.typeSpread li {
-    padding: 2px 10px;
-    border-radius: 16px;
-    font-size: 0.85rem;
-    text-transform: capitalize;
-    width: fit-content;
-    margin: 1px;
-}
-
-.typesInfoContainer {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    align-items: center;
+/* Team Analysis */
+.analysisContainer {
+    max-width: 560px;
+    width: 100%;
     margin: 0 auto;
-    padding: 1rem 0;
-    max-width: 500px;
-}
-
-.typeCoverage p {
-    display: flex;
-    justify-self: center;
-}
-
-#teamInfoTypes ul {
-    display: flex;
-    gap: 1rem;
-    flex-direction: column;
-    flex-wrap: wrap;
-    height: 200px;
-}
-
-.typeBar {
-    width: 20px;
-    height: 200px;
-    background-color: var(--surface2);
-    border-radius: 16px 16px 0 0;
-    overflow: hidden;
-    position: relative;
-    display: flex;
-    justify-self: center;
-    align-self: center;
-
 }
 
 .teamAnalysis {
     display: flex;
     flex-direction: column;
-    justify-self: center;
     gap: 1rem;
 }
 
-#typeBarFill {
-    position: absolute;
-    bottom: 0;
-    left: 0;
+#teamInfoPros, #teamInfoCons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+#teamInfoPros p, #teamInfoCons p {
+    border-radius: 35px;
+    padding: 1rem 1.5rem;
+    width: fit-content;
+    font-weight: lighter;
+}
+
+#teamInfoPros p {
+    color: rgba(122, 232, 201, 1);
+    background-color: rgba(122, 232, 201, 0.103);
+}
+
+#teamInfoCons p {
+    color: rgba(248, 160, 159, 1);
+    background-color: rgba(248, 161, 159, 0.082);
+}
+
+/* Suggestions */
+
+.suggestionArea {
+    max-width: 560px;
+    margin: 0 auto;
+}
+
+.suggested {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    margin: 0 auto;
+    gap: 0.6rem;
+    max-width: 430px;
+}
+
+.sugSlot--filled {
+    cursor: pointer;
+    background-color: var(--surface);
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* WAITLIST----------------------------------------*/
+
+.waitlist {
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 0.6rem;
+    padding: 0.3rem 0;
     width: 100%;
-    height: 0;
-    background: linear-gradient(145deg, rgba(122, 232, 201, 1) 0%, rgba(122, 232, 201, 0.884) 20%, rgba(8, 145, 179, 1) 60%, rgba(248, 161, 159, 0.637) 80%, rgba(248, 160, 159, 1) 100%);
-    transition: height 0.6s ease;
 }
 
-/* ALT. VIEWS */
-.hidden {
-    display: none;
+.waitlist li {
+    background-color: var(--surface);
+    border-radius: 16px;
+    flex-shrink: 0;
+    width: 30vw;
+    max-width: 133px;
 }
 
+.waitSlot--filled {
+    cursor: pointer;
+    background-color: var(--surface);
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    width: 30vw;
+}
 
-/* MEDIA QUERIES ----------------------------------*/
+.waitSlot--filled .pokemonTypes li {
+    width: fit-content;
+}
 
-@media (min-width: 400px) {
+/* MEDIA QUERIES---------------------------------*/
 
-
+@media (min-width: 420px) {
     .slotNameRow {
         display: flex;
         flex-direction: row-reverse;
@@ -457,116 +438,103 @@ header {
     }
 
     .pokemonId {
-        display: flex;
         align-self: center;
     }
-
-    .pokeBar {
-        height: 20px
-    }
-
-    main {
-        padding: 0 1.3rem 5rem;
-    }
-
-    .imgWrapper img {
-        width: 110px;
-        height: 110px;
-        padding: 5px;
-    }
-
-
 }
 
 @media (min-width: 600px) {
-    .stats {
-        justify-self: center;
-        min-width: 560px;
+    main {
+        padding: 0 1.5rem 5rem;
     }
-
 }
 
 @media (min-width: 750px) {
-    .stats {
-        min-width: 320px;
-        border-bottom: none;
-    }
-
     .resLayout {
         display: flex;
-        justify-content: space-around;
-        border-bottom: 1px solid var(--border);
-        margin-bottom: 1rem;
+        flex-direction: row;
+        gap: 2rem;
+        align-items: flex-start;
+        width: 100%;
     }
 
-    .typeCoverage {
-        min-width: 320px;
+    .stats {
+        min-width: 300px;
+        max-width: none;
+        margin: 0;
+        flex: 1;
     }
-
-    #typeCoverageDescription {
-        border-bottom: none;
+    
+    .typesInfoContainer {
+        flex: 1;
+        margin: 0;
+        min-width: 300px;
+        max-width: 0;
     }
 
     .teamAnalysis {
+        display: flex;
         flex-direction: row;
-        justify-content: center;
-        gap: 1rem;
+        gap: 2rem;
+        align-items: flex-start;
     }
 
-    .teamAnalysis p {
-        
+    #teamInfoPros, #teamInfoCons {
+        flex: 1;
+        min-width: 0;
+
     }
 
-    .imgWrapper img {
-        width: 110px;
-        height: 110px;
+    .analysisContainer {
+        width: 100%;
+        max-width: none;
     }
+
+    .suggestionArea {
+        width: 100%;
+        max-width: none;
+    }
+
+    .teamInfo, .waitlistCarousel {
+        width: 100%;
+        max-width: none;
+    }
+
+    .resLayout, .analysisContainer, .suggestionArea, .waitlist {
+        max-width: 700px;
+        margin: 0 auto;
+    }
+    
 }
 
 @media (min-width: 900px) {
-    .teamDisplay {
-        width: fit-content;
-        justify-self: center;
-        
-    }   
 
+    /* LAYOUT */
+    .resLayout,
+    .analysisContainer,
+    .suggestionArea {
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    .resLayout, .teamAnalysis {
+        gap: 3rem;
+    }
+
+    .typesInfoContainer, .stats {
+        min-width: 330px;
+    }
+
+
+    /* TEAM OVERVIEW */
     .teamOverview {
-        max-width: 900px;
         display: flex;
+        max-width: 100%;
         justify-content: center;
     }
 
+    .teamSlot--empty,
     .teamSlot--filled {
-        min-width: 130px;
+        width: 130px;
     }
 
-    
-
-    .teamInfo {
-        width:fit-content;
-        justify-self: center;
-        padding-top: 2rem;
-    }
-
-    .resLayout {
-        justify-content: space-between;
-    }
-    .teamAnalysis {
-        margin: 2rem 0;
-        max-width: 830px;
-    }
-
-    .stats {
-        min-width: 400px;
-    }
-
-    h3 {
-        padding-bottom: 0.5rem;
-    }
-
-    .suggested {
-        max-width: 500px;
-        gap: 20px;
-        padding-bottom: 2rem;
-    }
 }

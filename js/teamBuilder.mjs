@@ -217,7 +217,7 @@ function renderFilledSlot(slot, pokemon) {
     // append till container div
     nameRow.appendChild(pokeId);
     nameRow.appendChild(pokeName);
-    
+
 
     // lägger till types i listformat
     const typesAll = document.createElement("ul");
@@ -286,7 +286,7 @@ function renderFilledSlot(slot, pokemon) {
         event.stopPropagation();
         // navigera till ny sida
         window.location.href = `../pages/detail.html?id=${pokemon.id}`;
-        
+
     });
 
     // lägger till knapp i bildcontainer för placering
@@ -433,7 +433,7 @@ function renderFilledCarousel(slot, pokemon) {
 
     nameRow.appendChild(pokeId);
     nameRow.appendChild(pokeName);
-    
+
 
 
     // lägger till types i listformat
@@ -501,6 +501,9 @@ function renderFilledCarousel(slot, pokemon) {
     addToTeam.addEventListener("click", (event) => {
         // to not listen to slot event listener
         event.stopPropagation();
+        // fråga om de vill lägga till i team, om nej - återgå
+        const confirmed = confirm(`Add ${pokemon.name} to your team?`);
+        if (!confirmed) return;
         //Ta reda på om Det finns plats att lägga till i team (under 6 finns plats, annars fullt)
         // Hämtar id från localStorage, converterar från sträng.       
         const teamIds = JSON.parse(localStorage.getItem("pokemonTeam")) || [];
@@ -517,8 +520,7 @@ function renderFilledCarousel(slot, pokemon) {
             localStorage.setItem("pokemonWaitlist", JSON.stringify(updatedWaitlist));
             // återställer utseendet på tom slot
             // OBS : ÄNDRA TILL TA BORT SLOT HELT
-            loadTeam();
-            loadWaitlist();
+            init();
         } else {
             alert("Your team is full! Remove a Pokémon to add another.");
         }
@@ -534,13 +536,13 @@ function renderFilledCarousel(slot, pokemon) {
     pokemonSee.appendChild(seeIcon);
     btnGroup.appendChild(pokemonSee);
 
-     //eventlistener för klick av se mer knapp
+    //eventlistener för klick av se mer knapp
     pokemonSee.addEventListener('click', (event) => {
         // to not listen to slot event listener
         event.stopPropagation();
         // navigera till ny sida
         window.location.href = `../pages/detail.html?id=${pokemon.id}`;
-        
+
     });
 
     // Lägger in det skapade i förälderelement
@@ -684,7 +686,7 @@ function renderFilledSuggestions(slot, pokemon) {
     // append till container
     nameRow.appendChild(pokeId);
     nameRow.appendChild(pokeName);
-    
+
 
     // lägger till types i listformat
     const typesAll = document.createElement("ul");
@@ -727,15 +729,20 @@ function renderFilledSuggestions(slot, pokemon) {
         // Hämtar id från localStorage, converterar från sträng.       
         const teamIds = JSON.parse(localStorage.getItem("pokemonTeam")) || [];
         if (teamIds.length < 6) {
+            const confirmed = confirm(`Add ${pokemon.name} to your team?`)
+            if (!confirmed) return
             // lägg till i team array
             teamIds.push(pokemon.id);
             // skickar tillbaks uppdaterad pokemonTeam
             localStorage.setItem("pokemonTeam", JSON.stringify(teamIds));
             // updatera team
-            //init skickar nya fetch calls 
-            //för mycket tryck på apin????
+            //init laddar om sidan
             init();
+
         } else {
+            const confirmedWaitlist = confirm(`Add ${pokemon.name} to the waitlist?`)
+            if (!confirmedWaitlist) return
+
             const waitlistIds = JSON.parse(localStorage.getItem("pokemonWaitlist")) || [];
 
             if (!waitlistIds.includes(pokemon.id)) {
@@ -745,7 +752,6 @@ function renderFilledSuggestions(slot, pokemon) {
             } else {
                 alert("This pokemon is already in your waitlist!");
             }
-
         }
     });
     // Lägg till "se mer info" knapp med innehåll och aria label
@@ -759,7 +765,7 @@ function renderFilledSuggestions(slot, pokemon) {
 
     btnGroup.appendChild(pokemonSee);
 
-     //eventlistener för klick av se mer knapp
+    //eventlistener för klick av se mer knapp
     pokemonSee.addEventListener('click', (event) => {
         // to not listen to slot event listener
         event.stopPropagation();
@@ -774,14 +780,9 @@ function renderFilledSuggestions(slot, pokemon) {
 }
 
 function loadTeamInfo(teamStats) {
-    console.log("teamInfoPros:", teamInfoPros)
-    console.log("teamInfoCons:", teamInfoCons)
-    console.log("teamInfoTypes:", teamInfoTypes)
-    console.log("typeBar:", typeBar)
-    console.log("typeBarFill:", typeBarFill)
     // TYPE COVERAGE
     // NGN text om resultatet???
-
+    teamInfoTypes.innerHTML = "";
     // set för att endast spara unika värden, spread operator för att omvandla till array
     const uniqueTypes = [...new Set(teamStats.types)];
     // score för att kunna bedöma type spread
@@ -839,10 +840,12 @@ function loadTeamInfo(teamStats) {
     // två högsta stats
     const highest = sortedStats[0];
     const secondHighest = sortedStats[1];
-    // skapa rubrik
-    const strengthHeading = document.createElement("h3");
-    strengthHeading.textContent = "Strengths";
-    teamInfoPros.appendChild(strengthHeading);
+
+    // skapa rubrik 
+    /* const strengthHeading = document.createElement("h3");
+     strengthHeading.textContent = "Strengths";
+     teamInfoPros.appendChild(strengthHeading); */
+
     // skapa meddelande baserat på resultat
     const bestFeature = document.createElement("p");
     bestFeature.textContent = `Your team excels in ${statDisplayNames[highest]} and ${statDisplayNames[secondHighest]}!`;
@@ -884,9 +887,10 @@ function loadTeamInfo(teamStats) {
     const lowest = sortedStats[5];
     const secondLowest = sortedStats[4];
     // skapa rubrik
+    /*
     const weaknessHeading = document.createElement("h3");
     weaknessHeading.textContent = "Weaknesses";
-    teamInfoCons.appendChild(weaknessHeading);
+    teamInfoCons.appendChild(weaknessHeading); */
     // skapa meddelande baserat på resultat
     const worstFeature = document.createElement("p");
     worstFeature.textContent = `Your team's weakest stat is ${statDisplayNames[lowest]}, second weakest is ${statDisplayNames[secondLowest]}.`;

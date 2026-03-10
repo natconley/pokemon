@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="eng">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pokémon Team Builder</title>
-    <link rel="stylesheet" type="text/css" href="/css/teambuilder.css">
-    <link rel="stylesheet" type="text/css" href="/css/styles.css">
+    <link rel="stylesheet" type="text/css" href="../css/teambuilder.css">
+    <link rel="stylesheet" type="text/css" href="../css/styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -43,7 +43,7 @@
                     <div class="teamStatbars">
                         <!-- TAGEN FRÅN BRIGITTAS KOD -->
                         <section class="stats">
-                            <h3>Base stats</h3>
+                            <h3>BASE STATS</h3>
                             <div id="pokeHP" class="alignItems gap1rem">
                                 <div>
                                     <span class="statLabel">HP</span>
@@ -99,7 +99,7 @@
                     </div>
 
                     <section class="typeCoverage">
-                        <h3>Type Coverage</h3>
+                        <h3>TYPE COVERAGE</h3>
                         <div class="typesInfoContainer">
                             <div id="teamInfoTypes"></div>
                             <div class="typeBar" role="meter" aria-label="Type coverage score" aria-valuemin="0"
@@ -107,20 +107,24 @@
                                 <div id="typeBarFill"></div>
                                 <span id="typeBarLabel"></span>
                             </div>
+                            <div id="typeCoverageDescription"></div>
                         </div>
-                        <div id="typeCoverageDescription"></div>
+                        
                     </section>
                 </div>
 
-                <section class="teamAnalysis">
+                <section class="analysisContainer">
+                    <h3>ANALYSIS</h3>
+                    <div class="teamAnalysis">
                     <div id="teamInfoPros">
                     </div>
                     <div id="teamInfoCons">
                     </div>
+                    </div>
                 </section>
 
                 <section class="suggestionArea">
-                    <h3>Suggestions</h3>
+                    <h3>SUGGESTIONS</h3>
                     <p id="suggestionInfo">Start creating your team to recieve suggested Pokémons</p>
                     <ul class="suggested">
                         <li class="sugSlot sugSlot--empty"
