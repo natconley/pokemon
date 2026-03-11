@@ -6,7 +6,7 @@
 // Weakness använder fallbackpool, ändra till näst lägsta stat
 // lägg till text om varför pokemon i suggestions valdes?
 // meddelanden i strengths och weaknesses ??
-
+// se över funktion för att minska kod som dubliceras, ex. render
 
 import { capitalizeString, setPokeID } from '../pokeUtility.mjs';
 
@@ -34,6 +34,7 @@ const suggestedContainer = document.querySelector(".suggested");
 // hårdkodade alternativ för dynamiska teamresultat
 // pokemon id
 const typePools = {
+    steel: [823, 376, 448],
     water: [9, 130, 134],
     fire: [6, 59, 136],
     electric: [26, 135, 181],
@@ -169,10 +170,19 @@ function renderFilledSlot(slot, pokemon) {
     slot.classList.add("teamSlot--filled");
     // Ändrar aria-label
     slot.setAttribute("aria-label", `Team member: #${pokemon.id}: ${pokemon.name}`);
+    // för att kunna 'tab' igenom korten
+    slot.setAttribute("tabindex", "0");
 
     // eventlistener for button visibility toggle
     slot.addEventListener("click", () => {
         slot.classList.toggle("active");
+    });
+
+    //keydown för tillgänglighet
+    slot.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+            slot.classList.toggle("active");
+        }
     });
 
     // skapar container för bilder och knappar
@@ -386,10 +396,19 @@ function renderFilledCarousel(slot, pokemon) {
     slot.classList.add("waitSlot--filled");
     // Ändrar aria-label
     slot.setAttribute("aria-label", `Saved pokémon: #${pokemon.id}: ${pokemon.name}`);
+    // för att kunna 'tab' igenom korten
+    slot.setAttribute("tabindex", "0");
 
     // eventlistener for button visibility toggle
     slot.addEventListener("click", () => {
         slot.classList.toggle("active");
+    });
+
+    //keydown för tillgänglighet
+    slot.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+            slot.classList.toggle("active");
+        }
     });
 
     // skapar container för bilder och knappar
@@ -504,6 +523,11 @@ function renderFilledCarousel(slot, pokemon) {
         // fråga om de vill lägga till i team, om nej - återgå
         const confirmed = confirm(`Add ${pokemon.name} to your team?`);
         if (!confirmed) return;
+        // Kolla om pokemon är i team, alert om den är det
+        if (teamIds.includes(pokemon.id)) {
+            alert(`${pokemon.name} is already in your team!`);
+            return;
+        }
         //Ta reda på om Det finns plats att lägga till i team (under 6 finns plats, annars fullt)
         // Hämtar id från localStorage, converterar från sträng.       
         const teamIds = JSON.parse(localStorage.getItem("pokemonTeam")) || [];
@@ -518,8 +542,6 @@ function renderFilledCarousel(slot, pokemon) {
             const updatedWaitlist = waitlistIds.filter(id => id !== pokemon.id);
             // skickar tillbaks uppdaterad pokemonWaitlist
             localStorage.setItem("pokemonWaitlist", JSON.stringify(updatedWaitlist));
-            // återställer utseendet på tom slot
-            // OBS : ÄNDRA TILL TA BORT SLOT HELT
             init();
         } else {
             alert("Your team is full! Remove a Pokémon to add another.");
@@ -552,20 +574,24 @@ function renderFilledCarousel(slot, pokemon) {
 }
 
 async function loadSuggested(pokemonData, teamStats) {
-    try {
-        // ser till att pokemon finns & att id är rätt
-        const validPokemon = pokemonData.filter(pokemon => pokemon !== null);
-        const teamIds = validPokemon.map(pokemon => pokemon.id);
-        // TYPE suggestion
-        // Brigittas weakness calculator är mer specifik/bättre, men skulle kräva upp till 12 API anrop beroende på lagkonstellation
-        // Ändra till Brigittas version om tid finns över (Type weakness istället för Type Coverage)
+    // töm på tidigare innehåll
+    suggestedContainer.innerHTML = "";
+    // ser till att pokemon finns & att id är rätt
+    const validPokemon = pokemonData.filter(pokemon => pokemon !== null);
+    const teamIds = validPokemon.map(pokemon => pokemon.id);
+    // TYPE suggestion
+    // Brigittas weakness calculator är mer specifik/bättre, men skulle kräva upp till 12 API anrop beroende på lagkonstellation
+    // Ändra till Brigittas version om tid finns över (Type weakness istället för Type Coverage)
 
-        // om pokemon i team, ta bort text
-        if (validPokemon.length === 0) {
-            suggestionInfo.classList.remove("hidden");
-            return;
-        }
-        suggestionInfo.classList.add("hidden");
+    // om pokemon, ta bort text
+    if (validPokemon.length === 0) {
+        suggestionInfo.classList.remove("hidden");
+        return;
+    }
+    suggestionInfo.classList.add("hidden");
+
+    try {
+
 
         // takes keys(types) from typePools and finds a non match in team.
         const missingType = Object.keys(typePools).find(type => !teamStats.types.includes(type));
@@ -609,8 +635,6 @@ async function loadSuggested(pokemonData, teamStats) {
             weaknessSuggestionId = availablePool[Math.floor(Math.random() * availablePool.length)];
         }
 
-        suggestedContainer.innerHTML = "";
-
         const suggestionData = await Promise.all([
             fetchPokemon(typeSuggestionId),
             fetchPokemon(balanceSuggestionId),
@@ -638,10 +662,19 @@ function renderFilledSuggestions(slot, pokemon) {
     slot.classList.add("sugSlot--filled");
     // Ändrar aria-label
     slot.setAttribute("aria-label", `Suggested pokémon: #${pokemon.id}: ${pokemon.name}`);
+    // för att kunna 'tab' igenom korten
+    slot.setAttribute("tabindex", "0");
 
     // eventlistener for button visibility toggle
     slot.addEventListener("click", () => {
         slot.classList.toggle("active");
+    });
+
+    //keydown för tillgänglighet
+    slot.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+            slot.classList.toggle("active");
+        }
     });
 
     // skapar container för bilder och knappar
@@ -725,9 +758,15 @@ function renderFilledSuggestions(slot, pokemon) {
     addToTeam.addEventListener("click", (event) => {
         // to not listen to slot event listener
         event.stopPropagation();
-        //Ta reda på om Det finns plats att lägga till i team (under 6 finns plats, annars fullt)
         // Hämtar id från localStorage, converterar från sträng.       
         const teamIds = JSON.parse(localStorage.getItem("pokemonTeam")) || [];
+        // Kolla om pokemon är i team, alert om den är det
+        if (teamIds.includes(pokemon.id)) {
+            alert(`${pokemon.name} is already in your team!`);
+            return;
+        }
+
+        //Ta reda på om Det finns plats att lägga till i team (under 6 finns plats, annars fullt)
         if (teamIds.length < 6) {
             const confirmed = confirm(`Add ${pokemon.name} to your team?`)
             if (!confirmed) return
@@ -740,7 +779,8 @@ function renderFilledSuggestions(slot, pokemon) {
             init();
 
         } else {
-            const confirmedWaitlist = confirm(`Add ${pokemon.name} to the waitlist?`)
+            // fråga om att lägga till i waitlist
+            const confirmedWaitlist = confirm(`Your team is full. Add ${pokemon.name} to the waitlist?`)
             if (!confirmedWaitlist) return
 
             const waitlistIds = JSON.parse(localStorage.getItem("pokemonWaitlist")) || [];
@@ -782,6 +822,15 @@ function renderFilledSuggestions(slot, pokemon) {
 function loadTeamInfo(teamStats) {
     // TYPE COVERAGE
     // NGN text om resultatet???
+    // nollställer info om inga pokemon i team/ stats är 0
+    if (teamStats.types.length === 0) {
+        teamInfoTypes.innerHTML = "";
+        typeBarFill.style.height = "0%";
+        typeDescription.innerHTML = "";
+        teamInfoPros.innerHTML = "";
+        teamInfoCons.innerHTML = "";
+        return;
+    }
     teamInfoTypes.innerHTML = "";
     // set för att endast spara unika värden, spread operator för att omvandla till array
     const uniqueTypes = [...new Set(teamStats.types)];
@@ -807,6 +856,9 @@ function loadTeamInfo(teamStats) {
     // ändra aria-valuenow
     typeBarFill.setAttribute("aria-valuenow", score)
 
+    // töm på tidigare text
+    typeDescription.innerHTML = "";
+
     const typeBarDescription = document.createElement("p");
 
     if (score <= 2) {
@@ -823,7 +875,7 @@ function loadTeamInfo(teamStats) {
         typeBarDescription.textContent = "Your team has great type coverage!";
     }
 
-    typeDescription.appendChild(typeBarDescription)
+    typeDescription.appendChild(typeBarDescription);
 
     // STRENGTHS
     // two highest stats - special note if highest stats are above a certain threshold --------- add if time ??

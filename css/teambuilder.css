@@ -30,7 +30,9 @@ h2 {
     margin-bottom: 1rem;
 }
 
-
+.typeCoverage h3 {
+    margin-top: 1rem;
+}
 
 h3 {
     font-size: 1.1rem;
@@ -105,8 +107,7 @@ main {
     left: 0;
     width: 100%;
     display: flex;
-    justify-content: center;
-    gap: 5px;
+    justify-content: space-evenly;
     background-color: #080a0f3d;
     transform: translateY(100%);
     transition: transform 0.3s ease;
@@ -148,7 +149,7 @@ button {
     gap: 0.6rem;
 }
 
-.teamSlot--empty {
+.teamSlot--empty, .waitSlot--empty {
     border-radius: 16px;
     overflow: hidden;
     min-height: 160px;
@@ -156,7 +157,7 @@ button {
 }
 
 /*tomt lag, frågetecken img*/
-.teamSlot--empty img {
+.teamSlot--empty img, .waitSlot--empty img {
     width: 100%;
     height: auto;
     object-fit: cover;
@@ -481,7 +482,6 @@ button {
     #teamInfoPros, #teamInfoCons {
         flex: 1;
         min-width: 0;
-
     }
 
     .analysisContainer {
@@ -504,6 +504,9 @@ button {
         margin: 0 auto;
     }
     
+    .typeCoverage h3 {
+        margin-top: 0;
+    }
 }
 
 @media (min-width: 900px) {
