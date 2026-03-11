@@ -362,6 +362,7 @@ async function loadWaitlist() {
         if (waitlistIds.length === 0) {
             //lägg tillbaks info för tom lista
             waitlistInfo.classList.remove("hidden");
+            waitlistContainer.innerHTML = "";
             return;
         }
         waitlistInfo.classList.add("hidden");
@@ -520,6 +521,8 @@ function renderFilledCarousel(slot, pokemon) {
     addToTeam.addEventListener("click", (event) => {
         // to not listen to slot event listener
         event.stopPropagation();
+         // Hämtar id från localStorage, converterar från sträng.       
+        const teamIds = JSON.parse(localStorage.getItem("pokemonTeam")) || [];
         // fråga om de vill lägga till i team, om nej - återgå
         const confirmed = confirm(`Add ${pokemon.name} to your team?`);
         if (!confirmed) return;
@@ -529,8 +532,6 @@ function renderFilledCarousel(slot, pokemon) {
             return;
         }
         //Ta reda på om Det finns plats att lägga till i team (under 6 finns plats, annars fullt)
-        // Hämtar id från localStorage, converterar från sträng.       
-        const teamIds = JSON.parse(localStorage.getItem("pokemonTeam")) || [];
         if (teamIds.length < 6) {
             // lägg till i team array
             teamIds.push(pokemon.id);
@@ -851,8 +852,9 @@ function loadTeamInfo(teamStats) {
     });
 
     teamInfoTypes.appendChild(typesAll);
+
     // grafens höjd baserad på type spread
-    typeBarFill.style.height = `${(score / 6) * 100}%`;
+    typeBarFill.style.width = `${(score / 7) * 100}%`;
     // ändra aria-valuenow
     typeBarFill.setAttribute("aria-valuenow", score)
 
@@ -863,12 +865,10 @@ function loadTeamInfo(teamStats) {
 
     if (score <= 2) {
         typeBarDescription.textContent = "Your team has very limited type coverage.";
-    } else if (score === 3) {
+    } else if (score <= 4) {
         typeBarDescription.textContent = "Your team has limited type coverage.";
-    } else if (score === 4) {
-        typeBarDescription.textContent = "Your team has decent type coverage.";
     } else if (score === 5) {
-        typeBarDescription.textContent = "Your teams' type coverage is pretty good!";
+        typeBarDescription.textContent = "Your team has decent type coverage.";
     } else if (score === 6) {
         typeBarDescription.textContent = "Your team has good type coverage.";
     } else if (score >= 7) {
@@ -900,7 +900,7 @@ function loadTeamInfo(teamStats) {
 
     // skapa meddelande baserat på resultat
     const bestFeature = document.createElement("p");
-    bestFeature.textContent = `Your team excels in ${statDisplayNames[highest]} and ${statDisplayNames[secondHighest]}!`;
+    bestFeature.textContent = `Your team's highest stats are ${statDisplayNames[highest]} and ${statDisplayNames[secondHighest]}!`;
     // flytta in i div container
     teamInfoPros.appendChild(bestFeature);
 
@@ -916,19 +916,19 @@ function loadTeamInfo(teamStats) {
     // om båda är balanserade, skapa p och skriv det, append till div elementet
     if (balanceAttack && balanceDefense) {
         const balanceText = document.createElement("p");
-        balanceText.textContent = "Your team has balanced offensive and defensive coverage! Good job!";
+        balanceText.textContent = "Your team has balanced offensive and defensive coverage.";
         teamInfoPros.appendChild(balanceText);
         // om bara attack har balans, skapa p och skriv det, append till div elementet
     } else if (balanceAttack) {
         const balanceText = document.createElement("p");
-        balanceText.textContent = "Your team has balanced offensive coverage!";
+        balanceText.textContent = "Your team has balanced offensive coverage.";
         // flytta in i div container
         teamInfoPros.appendChild(balanceText);
         // om bara defense har balans, skapa p och skriv det, append till div elementet
     } else if (balanceDefense) {
         // skapa p element för att skriva om balansen
         const balanceText = document.createElement("p");
-        balanceText.textContent = "Your team has balanced defensive coverage!";
+        balanceText.textContent = "Your team has balanced defensive coverage.";
         teamInfoPros.appendChild(balanceText);
     }
 
