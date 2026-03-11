@@ -14,6 +14,7 @@ header {
     padding: 0;
 }
 
+
 h1 {
     font-size: 1.6rem;
     font-weight: 400;
@@ -30,14 +31,16 @@ h2 {
     margin-bottom: 1rem;
 }
 
-.typeCoverage h3 {
-    margin-top: 1rem;
-}
-
 h3 {
     font-size: 1.1rem;
     font-weight: 500;
     padding-bottom: 0.3rem;
+}
+
+h4 {
+    font-weight: 700;
+    font-size: 1.05rem;
+    margin-bottom: 0.5rem;
 }
 
 ul {
@@ -48,7 +51,7 @@ a {
     color: var(--text);
     text-decoration: none;
     font-size: 1rem;
-    margin: 0 1rem;
+    margin-bottom: 1rem;
 }
 
 .hidden {
@@ -99,7 +102,26 @@ main {
     width: 100%;
 }
 
-/* CTA Buttons*/
+.resLayout {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* Layout styles */
+.stats, .typeCoverage, .analysisContainer, .suggestionArea {
+    
+    background: linear-gradient(180deg, #13142e 0%, #0e0f22 100%);
+    padding: 0.8rem;
+    border-radius: 16px;
+    border: 1px solid #191a3a;
+}
+
+.teamInfo h3 {
+    border-bottom: 1px solid #1c1d3f;
+}
+
+/* CTA Buttons----------------------------------------------------*/
 .btnGroup {
     z-index: 1;
     position: absolute;
@@ -192,10 +214,14 @@ button {
     margin: 0 auto;
 }
 
+/*från andreas*/
+.teamSlot--filled:hover, .sugSlot--filled:hover, .waitSlot--filled:hover { transform: translateY(-7px) scale(1.025); border-color: rgba(255,255,255,.16); }
+[data-theme="light"] .card:hover { border-color: rgba(0,0,0,.15); }
+
 /* Name/Id */
 
 .pokemonId {
-    font-family: 'Press Start 2P', monospace;
+    line-height: 2.1;
     font-size: .8rem;
     color: rgba(255, 255, 255, .18);
 }
@@ -235,6 +261,7 @@ button {
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    align-items: flex-start;
 }
 
 .typeCoverage p {
@@ -244,7 +271,7 @@ button {
 
 #teamInfoTypes ul {
     display: flex;
-    gap: 1.4rem;
+    gap: .4rem;
     flex-wrap: wrap;
 }
 
@@ -256,6 +283,7 @@ button {
     width: fit-content;
 }
 
+/*
 .typeBar {
     width: 100%;
     height: 20px;
@@ -274,8 +302,7 @@ button {
     background: linear-gradient(145deg,  rgb(255, 163, 161) 0%, rgb(255, 163, 161) 10%, rgb(132, 253, 219) 60%, rgb(133, 255, 220) 100%);
     transition: height 0.6s ease; 
 }
-
-
+    */
 
 /* Base Stats/ statbars */
 
@@ -351,24 +378,32 @@ button {
 #teamInfoPros, #teamInfoCons {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    align-self: center;
+    border-radius: 12px;
+    padding: 1rem;
+    min-width: 300px;
+    max-width: 380px;
+    width: 100%;
 }
 
-#teamInfoPros p, #teamInfoCons p {
-    border-radius: 35px;
-    padding: 1rem 1.5rem;
-    width: fit-content;
-    font-weight: lighter;
+
+#teamInfoPros {
+    background-color: rgba(131, 214, 108, 0.103);
+    border: 1px solid rgba(131, 214, 108, 0.411);
 }
 
-#teamInfoPros p {
-    color: rgba(122, 232, 201, 1);
-    background-color: rgba(122, 232, 201, 0.103);
+#teamInfoCons {
+    background-color: rgba(214, 108, 108, 0.103);
+    border: 1px solid rgba(214, 108, 108, 0.411);
 }
 
-#teamInfoCons p {
-    color: rgba(248, 160, 159, 1);
-    background-color: rgba(248, 161, 159, 0.082);
+.statName {
+    font-weight: 600;
+}
+
+.statDescription {
+    font-weight: 300;
+    margin-bottom: 1rem;
 }
 
 /* Suggestions */
@@ -447,6 +482,9 @@ button {
     main {
         padding: 0 1.5rem 5rem;
     }
+    .stats, .typeCoverage, .analysisContainer, .suggestionArea {
+        padding: 1rem;
+    }
 }
 
 @media (min-width: 750px) {
@@ -459,7 +497,7 @@ button {
     }
 
     .stats {
-        min-width: 300px;
+        min-width: 350px;
         max-width: none;
         margin: 0;
         flex: 1;
@@ -523,10 +561,17 @@ button {
         gap: 3rem;
     }
 
-    .typesInfoContainer, .stats {
-        min-width: 330px;
+    main {
+        max-width: 1100px;
     }
 
+    .stats {
+        min-width: 350px;
+    }
+
+    .typeCoverage {
+        max-width: 300px;
+    }
 
     /* TEAM OVERVIEW */
     .teamOverview {
@@ -537,7 +582,13 @@ button {
 
     .teamSlot--empty,
     .teamSlot--filled {
-        width: 130px;
+        width: 150px;
+        z-index: 1;
+    }
+
+    .imgWrapper img {
+        width: 110px;
+        height: 110px;
     }
 
 }
