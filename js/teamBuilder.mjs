@@ -18,8 +18,9 @@ const emptyText = document.getElementById("teamEmpty");
 const teamInfoTypes = document.getElementById("teamInfoTypes");
 const teamInfoCons = document.getElementById("teamInfoCons");
 const teamInfoPros = document.getElementById("teamInfoPros");
-const typeBarFill = document.getElementById("typeBarFill");
-const typeBar = document.querySelector(".typeBar")
+
+// const typeBarFill = document.getElementById("typeBarFill");
+// const typeBar = document.querySelector(".typeBar")
 const typeDescription = document.getElementById("typeCoverageDescription");
 
 // WAITLIST (TEAM FULL)
@@ -57,6 +58,25 @@ const weaknessPools = {
     "special-defense": [197, 242, 378],
     speed: [101, 135, 142]
 };
+
+//hårdkodade statmeddelanden
+    const statStrengths = {
+        hp: "Your team can take a lot of hits.",
+        attack: "Your team can deal strong physical attacks.",
+        defense: "Your team handles physical attacks well.",
+        "special-attack": "Your team can pressure opponents with special attacks.",
+        "special-defense": "Your team can absorb special attacks effectively.",
+        speed: "Your Pokémon can outspeed many opponents."
+    }
+
+    const statWeaknesses = {
+        hp: "Your team may go down quickly.",
+        attack: "Your team may struggle to break bulky opponents.",
+        defense: "Strong physical moves may cause problems.",
+        "special-attack": "Your team may struggle to deal special damage.",
+        "special-defense": "Special attackers may deal heavy damage.",
+        speed: "Opponents may attack first in many battles."
+    }
 
 // från andreas api.js 
 // TYPE färger och function
@@ -826,7 +846,7 @@ function loadTeamInfo(teamStats) {
     // nollställer info om inga pokemon i team/ stats är 0
     if (teamStats.types.length === 0) {
         teamInfoTypes.innerHTML = "";
-        typeBarFill.style.height = "0%";
+       // typeBarFill.style.height = "0%";
         typeDescription.innerHTML = "";
         teamInfoPros.innerHTML = "";
         teamInfoCons.innerHTML = "";
@@ -853,10 +873,11 @@ function loadTeamInfo(teamStats) {
 
     teamInfoTypes.appendChild(typesAll);
 
+    /*
     // grafens höjd baserad på type spread
     typeBarFill.style.width = `${(score / 7) * 100}%`;
     // ändra aria-valuenow
-    typeBarFill.setAttribute("aria-valuenow", score)
+    typeBarFill.setAttribute("aria-valuenow", score) */
 
     // töm på tidigare text
     typeDescription.innerHTML = "";
@@ -877,33 +898,37 @@ function loadTeamInfo(teamStats) {
 
     typeDescription.appendChild(typeBarDescription);
 
-    // STRENGTHS
-    // two highest stats - special note if highest stats are above a certain threshold --------- add if time ??
-    // Defense/attack balance if within range
-
-    // töm container på tidigare innehåll
-    teamInfoPros.innerHTML = "";
-    // sorterar stats baserat på värde
+     // sorterar stats baserat på värde
     const sortedStats = Object.keys(teamStats)
         // filtrerar bort types från stats
         .filter(key => key !== "types")
         // b först för att gå högst till lägst
         .sort((a, b) => teamStats[b] - teamStats[a]);
-    // två högsta stats
-    const highest = sortedStats[0];
-    const secondHighest = sortedStats[1];
 
-    // skapa rubrik 
+    // STRENGTHS -- two highest stats 
+    // töm container på tidigare innehåll
+    teamInfoPros.innerHTML = "";
+     // skapa rubrik 
     const strengthHeading = document.createElement("h4");
      strengthHeading.textContent = "Strengths";
      teamInfoPros.appendChild(strengthHeading);
 
-    // skapa meddelande baserat på resultat
-    const bestFeature = document.createElement("p");
-    bestFeature.textContent = `Your team's highest stats are ${statDisplayNames[highest]} and ${statDisplayNames[secondHighest]}!`;
-    // flytta in i div container
-    teamInfoPros.appendChild(bestFeature);
+     // skapar p för två högsta stats och lägger in hårdkodat meddelande
+    [sortedStats[0], sortedStats[1]].forEach(stat => {
+        const statName = document.createElement("p");
+        statName.textContent = `${statDisplayNames[stat]}`;
+        statName.classList.add("statName");
 
+        const statDes = document.createElement("p");
+        statDes.textContent = statStrengths[stat];
+        statDes.classList.add("statDescription");
+
+        teamInfoPros.appendChild(statName);
+        teamInfoPros.appendChild(statDes);
+    });
+
+
+    /*     ---------------EVENTUELLT FLYTTA BALANS TILL EGEN DEL
     // Se om balanserad attack
     // balanserad om range på +/- 50%
     //ena är inte mer än * 1.5 av andra
@@ -931,24 +956,33 @@ function loadTeamInfo(teamStats) {
         balanceText.textContent = "Your team has balanced defensive coverage.";
         teamInfoPros.appendChild(balanceText);
     }
+*/
+
 
     // WEAKNESS
     // töm container
     teamInfoCons.innerHTML = "";
-    // ta fram de två lägsta stats
-    const lowest = sortedStats[5];
-    const secondLowest = sortedStats[4];
+
     // skapa rubrik
     const weaknessHeading = document.createElement("h4");
     weaknessHeading.textContent = "Weaknesses";
     teamInfoCons.appendChild(weaknessHeading); 
-    // skapa meddelande baserat på resultat
-    const worstFeature = document.createElement("p");
-    worstFeature.textContent = `Your team's weakest stat is ${statDisplayNames[lowest]}, second weakest is ${statDisplayNames[secondLowest]}.`;
-    // flytta in i div container
-    teamInfoCons.appendChild(worstFeature);
-    // Two lowest stats - special note if lowest stats are below certain threshold ???
 
+    [sortedStats[5], sortedStats[4]].forEach(stat => {
+        const statName = document.createElement("p");
+        statName.textContent = `${statDisplayNames[stat]}`;
+        statName.classList.add("statName");
+
+        const statDes = document.createElement("p");
+        statDes.textContent = statStrengths[stat];
+        statDes.classList.add("statDescription");
+
+        teamInfoCons.appendChild(statName);
+        teamInfoCons.appendChild(statDes);
+    });
+
+   
+    /* ---------------EVENTUELLT SKAPA EGEN DEL TILL BALANS?
     // om båda är obalanserade, skapa p och skriv det, append till div elementet
     if (!balanceAttack && !balanceDefense) {
         // ta reda på om physical eller special är tyngre
@@ -976,7 +1010,7 @@ function loadTeamInfo(teamStats) {
         const unbalancedText = document.createElement("p");
         unbalancedText.textContent = `Your team's defense leans heavily toward ${heavierSide}.`;
         teamInfoCons.appendChild(unbalancedText);
-    }
+    } */
 
     // STATBARS ---- TILL STÖRST DEL BRIGITTAS KOD
     //Stats
