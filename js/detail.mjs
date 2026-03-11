@@ -36,28 +36,15 @@ const shinyImg = document.querySelector("#shiny img");
 //Abilities
 const pokeHeight = document.getElementById("pokeHeight");
 const pokeWeight = document.getElementById("pokeWeight");
+const pokeCategory = document.querySelector("#TraitsSection>div>div:nth-child(3) p");
 const pokeAbility = document.getElementById("pokeAbility");
 
 //Suggestions
 const suggestionsDiv = document.querySelector("#suggestions div");
 
-const TYPES = ["Normal", "Fire", "Water", "Electric", "Grass", "Ice", "Fighting", "Poison", "Ground", "Flying", "Psychic", "Bug", "Rock", "Ghost", "Dragon", "Dark", "Steel", "Fairy"];
-
 // POKEMON POOLS FOR SUGGESTIONS
 // hårdkodade alternativ för dynamiska teamresultat
 // pokemon id
-
-const specialAttackers = [65, 94, 196];
-const physicalAttackers = [149, 248, 373];
-
-const weaknessPools = {
-    hp: [143, 242, 134],
-    attack: [68, 149, 445],
-    defense: [205, 208, 227],
-    "special-attack": [65, 94, 150],
-    "special-defense": [197, 242, 378],
-    speed: [101, 135, 142]
-};
 
 const typePools = {
     normal: [143, 242, 446],
@@ -381,8 +368,8 @@ export async function getSugesstedPokemon(weaknessArray = [], stats = []) {
             suggestions.push(...typePools[element]);
         }
 
-        //begrönsar rekommendationerna till 5 stycken
-        for (let i = 0; i < 5; i++) {
+        //begrönsar rekommendationerna till 5 stycken 
+        while (result.length < 5) {
             //randomize type pool pick
             const id = suggestions[Math.floor(Math.random() * suggestions.length)];
             if (!result.includes(id)) {
@@ -396,6 +383,12 @@ export async function getSugesstedPokemon(weaknessArray = [], stats = []) {
 
     }
 
+}
+
+export async function setPokemonCategory(id = 1, p) {
+    const category = await fetchSpecies(id);
+
+    p.textContent = category.genera[7].genus;
 }
 
 //Formaterar datat på sättet som createCard funktionen förväntar sig
@@ -460,7 +453,15 @@ export async function renderPokemonDetail(id = 1) {
 
         //Strengths
         const strengthsArray = await getPokemonStrengths(typesArray);
-        setPokemonType(strengthsArray, pokeStrengthsDiv);
+
+        //Typen normal är inte stark mot någon annan typ så arrayen kan vara tom
+        if (strengthsArray.length === 0) {
+            const span = document.createElement("span");
+            span.textContent = "None";
+            pokeStrengthsDiv.append(span);
+        } else {
+            setPokemonType(strengthsArray, pokeStrengthsDiv);
+        }
 
         setBaseStats(pokeHP, pokeAttack, pokeDefense, pokeSpecialAttack, pokeSpecialDefense, pokeSpeed, data);
 
@@ -489,6 +490,9 @@ export async function renderPokemonDetail(id = 1) {
         pokeHeight.textContent = data.height
         pokeWeight.textContent = data.weight;
         pokeAbility.textContent = capitalizeString(data.abilities[0].ability.name);
+
+        //Kategori
+        setPokemonCategory(id, pokeCategory);
 
         //Suggestions
         const suggestions = await getSugesstedPokemon(weaknessArray, pokeStats);

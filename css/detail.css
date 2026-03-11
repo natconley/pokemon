@@ -44,7 +44,7 @@ main {
 
 .pokeBar {
     width: 1%;
-    height: 30px;
+    height: 10px;
     border-radius: 30px;
     transition: width .6s ease;
 
@@ -173,6 +173,10 @@ main {
         height: 1px;
         flex: 1;
         background-color: var(--border);
+    }
+
+    .pokeBar {
+        height: 30px;
     }
 
 }
