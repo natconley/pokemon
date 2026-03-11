@@ -8,7 +8,7 @@
 // meddelanden i strengths och weaknesses ??
 // se över funktion för att minska kod som dubliceras, ex. render
 
-import { capitalizeString, setPokeID } from '../pokeUtility.mjs';
+import { capitalizeString, setPokeID } from './pokeUtility.mjs';
 
 // TEAM GALLERY
 const teamSlots = document.querySelectorAll(".teamSlot");
@@ -894,9 +894,9 @@ function loadTeamInfo(teamStats) {
     const secondHighest = sortedStats[1];
 
     // skapa rubrik 
-    /* const strengthHeading = document.createElement("h3");
+    const strengthHeading = document.createElement("h4");
      strengthHeading.textContent = "Strengths";
-     teamInfoPros.appendChild(strengthHeading); */
+     teamInfoPros.appendChild(strengthHeading);
 
     // skapa meddelande baserat på resultat
     const bestFeature = document.createElement("p");
@@ -939,10 +939,9 @@ function loadTeamInfo(teamStats) {
     const lowest = sortedStats[5];
     const secondLowest = sortedStats[4];
     // skapa rubrik
-    /*
-    const weaknessHeading = document.createElement("h3");
+    const weaknessHeading = document.createElement("h4");
     weaknessHeading.textContent = "Weaknesses";
-    teamInfoCons.appendChild(weaknessHeading); */
+    teamInfoCons.appendChild(weaknessHeading); 
     // skapa meddelande baserat på resultat
     const worstFeature = document.createElement("p");
     worstFeature.textContent = `Your team's weakest stat is ${statDisplayNames[lowest]}, second weakest is ${statDisplayNames[secondLowest]}.`;
