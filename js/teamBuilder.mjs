@@ -2,26 +2,26 @@
 
 
 // TO DO
-// random??
-// design på fyllda kort
+
 // Weakness använder fallbackpool, ändra till näst lägsta stat
 // lägg till text om varför pokemon i suggestions valdes?
 // meddelanden i strengths och weaknesses ??
+// se över funktion för att minska kod som dubliceras, ex. render
 
+import { capitalizeString, setPokeID } from './pokeUtility.mjs';
 
 // TEAM GALLERY
-const fillRandom = document.getElementById("randomTeam");
-const teamOverviewContainer = document.querySelector(".teamOverview");
 const teamSlots = document.querySelectorAll(".teamSlot");
 const emptyText = document.getElementById("teamEmpty");
 
 // TEAM INFO
-const teamStatbars = document.querySelector(".teamStatbars");
-const teamInfoTypes = document.querySelector(".teamInfoTypes");
+const teamInfoTypes = document.getElementById("teamInfoTypes");
 const teamInfoCons = document.getElementById("teamInfoCons");
 const teamInfoPros = document.getElementById("teamInfoPros");
-const typeBarFill = document.getElementById("typeBarFill");
-const typeBar = document.getElementById("typeBar")
+
+// const typeBarFill = document.getElementById("typeBarFill");
+// const typeBar = document.querySelector(".typeBar")
+const typeDescription = document.getElementById("typeCoverageDescription");
 
 // WAITLIST (TEAM FULL)
 const waitlistInfo = document.getElementById("waitlistInfo");
@@ -35,6 +35,7 @@ const suggestedContainer = document.querySelector(".suggested");
 // hårdkodade alternativ för dynamiska teamresultat
 // pokemon id
 const typePools = {
+    steel: [823, 376, 448],
     water: [9, 130, 134],
     fire: [6, 59, 136],
     electric: [26, 135, 181],
@@ -57,6 +58,52 @@ const weaknessPools = {
     "special-defense": [197, 242, 378],
     speed: [101, 135, 142]
 };
+
+//hårdkodade statmeddelanden
+    const statStrengths = {
+        hp: "Your team can take a lot of hits.",
+        attack: "Your team can deal strong physical attacks.",
+        defense: "Your team handles physical attacks well.",
+        "special-attack": "Your team can pressure opponents with special attacks.",
+        "special-defense": "Your team can absorb special attacks effectively.",
+        speed: "Your Pokémon can outspeed many opponents."
+    }
+
+    const statWeaknesses = {
+        hp: "Your team may go down quickly.",
+        attack: "Your team may struggle to break bulky opponents.",
+        defense: "Strong physical moves may cause problems.",
+        "special-attack": "Your team may struggle to deal special damage.",
+        "special-defense": "Special attackers may deal heavy damage.",
+        speed: "Opponents may attack first in many battles."
+    }
+
+// från andreas api.js 
+// TYPE färger och function
+const TYPE = {
+    fire: { col: '#ff6b35', bg: 'rgba(204, 133, 107, 0.14)' },
+    water: { col: '#4fc3f7', bg: 'rgba(79,195,247,.14)' },
+    electric: { col: '#f7d02c', bg: 'rgba(247,208,44,.14)' },
+    grass: { col: '#78c850', bg: 'rgba(120,200,80,.14)' },
+    psychic: { col: '#f85888', bg: 'rgba(248,88,136,.14)' },
+    normal: { col: '#c8c8a0', bg: 'rgba(168,168,120,.14)' },
+    poison: { col: '#c060c0', bg: 'rgba(160,64,160,.14)' },
+    rock: { col: '#c8b040', bg: 'rgba(184,160,56,.14)' },
+    fighting: { col: '#e04030', bg: 'rgba(192,48,40,.14)' },
+    ice: { col: '#98d8d8', bg: 'rgba(152,216,216,.14)' },
+    dragon: { col: '#7038f8', bg: 'rgba(112,56,248,.14)' },
+    ghost: { col: '#9070b8', bg: 'rgba(112,88,152,.14)' },
+    steel: { col: '#c0c0e0', bg: 'rgba(184,184,208,.14)' },
+    dark: { col: '#907060', bg: 'rgba(112,88,72,.14)' },
+    ground: { col: '#d4b070', bg: 'rgba(210,180,100,.14)' },
+    flying: { col: '#8090d0', bg: 'rgba(128,144,208,.14)' },
+    fairy: { col: '#ffaec9', bg: 'rgba(255,174,201,.14)' },
+    bug: { col: '#a8b820', bg: 'rgba(168,184,32,.14)' },
+};
+
+function getTypeTheme(type) {
+    return TYPE[type] || { col: '#aaa', bg: 'rgba(180,180,180,.12)' };
+}
 
 // CACHE
 const pokemonCache = {};
@@ -143,46 +190,104 @@ function renderFilledSlot(slot, pokemon) {
     slot.classList.add("teamSlot--filled");
     // Ändrar aria-label
     slot.setAttribute("aria-label", `Team member: #${pokemon.id}: ${pokemon.name}`);
+    // för att kunna 'tab' igenom korten
+    slot.setAttribute("tabindex", "0");
+
+    // eventlistener for button visibility toggle
+    slot.addEventListener("click", () => {
+        slot.classList.toggle("active");
+    });
+
+    //keydown för tillgänglighet
+    slot.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+            slot.classList.toggle("active");
+        }
+    });
+
+    // skapar container för bilder och knappar
+    const imgWrapper = document.createElement("div");
+    imgWrapper.classList.add("imgWrapper");
+    // hämtar primärtypens färg
+    const wrapperTheme = getTypeTheme(pokemon.types[0].type.name);
+    // sätter primärtypens färg som bakgrund
+    imgWrapper.style.background = wrapperTheme.bg;
+
+    const btnGroup = document.createElement("div");
+    btnGroup.classList.add("btnGroup")
+
+    imgWrapper.appendChild(btnGroup);
 
     // Skapar bild till slot
     const pokeImg = document.createElement("img");
-    pokeImg.src = pokemon.sprites.front_default;
+    pokeImg.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png`;
+    // laddar bild när den är påväg att synas   
+    pokeImg.loading = "lazy";
     pokeImg.alt = pokemon.name;
+
+    imgWrapper.appendChild(pokeImg);
 
     // Lägger till namn och id i ny div
     const slotInfo = document.createElement("div");
-    const pokeName = document.createElement("p");
-    pokeName.textContent = pokemon.name;
-    const pokeId = document.createElement("p");
-    pokeId.textContent = `#${pokemon.id}`;
+    slotInfo.classList.add("slotInfo");
 
-    slotInfo.appendChild(pokeName);
-    slotInfo.appendChild(pokeId);
+    const nameRow = document.createElement("div");
+    nameRow.classList.add("slotNameRow");
+
+    const pokeId = document.createElement("span");
+    pokeId.classList.add("pokemonId")
+    // använd funktionen för att hämta och sätta # och 0 på id
+    setPokeID(pokemon.id, pokeId);
+
+    const pokeName = document.createElement("p");
+    pokeName.classList.add("pokemonName")
+    // lägger till stor bokstav i början på namnet
+    pokeName.textContent = capitalizeString(pokemon.name);
+
+    // append till container div
+    nameRow.appendChild(pokeId);
+    nameRow.appendChild(pokeName);
+
 
     // lägger till types i listformat
     const typesAll = document.createElement("ul");
-    // loopar igenom types för att ta ut namn på alla types
+    typesAll.classList.add("pokemonTypes");
+    // loopar igenom types för att ta fram namn
     pokemon.types.forEach(item => {
         //Skapar list items för varje type
         const pokeType = document.createElement("li");
         // Skapar innehåll på list item = type name
         pokeType.textContent = item.type.name;
+        // Hämtar stil från getTypeTheme funktionen
+        const theme = getTypeTheme(item.type.name);
+        pokeType.style.background = theme.bg;
+        pokeType.style.color = theme.col;
         // lägger till li i ul
         typesAll.appendChild(pokeType);
     });
+
+    // append till gemensam div
+    slotInfo.appendChild(nameRow);
     slotInfo.appendChild(typesAll);
+
 
     // DELETE TEAM MEMBER
     //Lägg till radera-knapp med innehåll och aria label
     const pokemonDelete = document.createElement("button");
+    pokemonDelete.classList.add("btnDeletePokemon")
     pokemonDelete.setAttribute("aria-label", `Remove ${pokemon.name} from team`);
     const deleteIcon = document.createElement("img");
     deleteIcon.src = "/assets/trash.png";
     deleteIcon.alt = "";
     pokemonDelete.appendChild(deleteIcon);
 
+    // lägger till knapp i bildcontainer för placering
+    btnGroup.appendChild(pokemonDelete);
+
     // event listener för att radera lagmedlem
-    pokemonDelete.addEventListener("click", () => {
+    pokemonDelete.addEventListener("click", (event) => {
+        // to not listen to slot event listener
+        event.stopPropagation();
         // confirmationsmeddelande
         const confirmed = confirm(`Do you want to remove ${pokemon.name} from your team?`);
         if (confirmed) {
@@ -198,6 +303,7 @@ function renderFilledSlot(slot, pokemon) {
 
     // Lägg till "se mer info" knapp med innehåll och aria label
     const pokemonSee = document.createElement("button");
+    pokemonSee.classList.add("btnSeeMore");
     pokemonSee.setAttribute("aria-label", `See more about ${pokemon.name}`);
     const seeIcon = document.createElement("img");
     seeIcon.src = "/assets/eye.png";
@@ -205,17 +311,20 @@ function renderFilledSlot(slot, pokemon) {
     pokemonSee.appendChild(seeIcon);
 
     //eventlistener för klick av se mer knapp
-    pokemonSee.addEventListener('click', () => {
-        // LÄGG TILL MER BREOENDE PÅ OM DET ÄR MODAL ELLER EGEN SIDA
-        //eventlistener see more
-        // navigate to see more page
+    pokemonSee.addEventListener('click', (event) => {
+        // to not listen to slot event listener
+        event.stopPropagation();
+        // navigera till ny sida
+        window.location.href = `../pages/detail.html?id=${pokemon.id}`;
+
     });
 
-    // Lägger in det skapade i förälderelement
-    slot.appendChild(pokeImg);
+    // lägger till knapp i bildcontainer för placering
+    btnGroup.appendChild(pokemonSee);
+
+    // Lägger till containers i container
+    slot.appendChild(imgWrapper);
     slot.appendChild(slotInfo);
-    slot.appendChild(pokemonDelete);
-    slot.appendChild(pokemonSee);
 }
 
 
@@ -273,8 +382,10 @@ async function loadWaitlist() {
         if (waitlistIds.length === 0) {
             //lägg tillbaks info för tom lista
             waitlistInfo.classList.remove("hidden");
+            waitlistContainer.innerHTML = "";
             return;
         }
+        waitlistInfo.classList.add("hidden");
         // Töm waitlist på placeholders
         waitlistContainer.innerHTML = "";
         // fyll slots med pokemons
@@ -306,33 +417,83 @@ function renderFilledCarousel(slot, pokemon) {
     slot.classList.add("waitSlot--filled");
     // Ändrar aria-label
     slot.setAttribute("aria-label", `Saved pokémon: #${pokemon.id}: ${pokemon.name}`);
+    // för att kunna 'tab' igenom korten
+    slot.setAttribute("tabindex", "0");
+
+    // eventlistener for button visibility toggle
+    slot.addEventListener("click", () => {
+        slot.classList.toggle("active");
+    });
+
+    //keydown för tillgänglighet
+    slot.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+            slot.classList.toggle("active");
+        }
+    });
+
+    // skapar container för bilder och knappar
+    const imgWrapper = document.createElement("div");
+    imgWrapper.classList.add("imgWrapper");
+    // hämtar primärtypens färg
+    const wrapperTheme = getTypeTheme(pokemon.types[0].type.name);
+    // sätter primärtypens färg som bakgrund
+    imgWrapper.style.background = wrapperTheme.bg;
+
+    const btnGroup = document.createElement("div");
+    btnGroup.classList.add("btnGroup");
+
+    imgWrapper.appendChild(btnGroup);
 
     // Skapar bild till slot
     const pokeImg = document.createElement("img");
-    pokeImg.src = pokemon.sprites.front_default;
+    pokeImg.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png`;
+    // laddar bild när den är påväg att synas   
+    pokeImg.loading = "lazy";
     pokeImg.alt = pokemon.name;
+
+    imgWrapper.appendChild(pokeImg);
 
     // Lägger till namn och id i ny div
     const slotInfo = document.createElement("div");
-    const pokeName = document.createElement("p");
-    pokeName.textContent = pokemon.name;
-    const pokeId = document.createElement("p");
-    pokeId.textContent = `#${pokemon.id}`;
+    slotInfo.classList.add("slotInfo");
 
-    slotInfo.appendChild(pokeName);
-    slotInfo.appendChild(pokeId);
+    const nameRow = document.createElement("div");
+    nameRow.classList.add("slotNameRow");
+
+    const pokeName = document.createElement("p");
+    pokeName.classList.add("pokemonName");
+    // lägger till stor bokstav i början på namnet
+    pokeName.textContent = capitalizeString(pokemon.name);
+
+    const pokeId = document.createElement("span");
+    pokeId.classList.add("pokemonId")
+    // använd funktionen för att hämta och sätta # och 0 på id
+    setPokeID(pokemon.id, pokeId);
+
+    nameRow.appendChild(pokeId);
+    nameRow.appendChild(pokeName);
+
+
 
     // lägger till types i listformat
     const typesAll = document.createElement("ul");
+    typesAll.classList.add("pokemonTypes");
     // loopar igenom types för att ta ut namn på alla types
     pokemon.types.forEach(item => {
         //Skapar list items för varje type
         const pokeType = document.createElement("li");
         // Skapar innehåll på list item = type name
         pokeType.textContent = item.type.name;
+        // hämtar type style från getTypeTheme funktionen
+        const theme = getTypeTheme(item.type.name);
+        pokeType.style.background = theme.bg;
+        pokeType.style.color = theme.col;
         // lägger till li i ul
         typesAll.appendChild(pokeType);
     });
+    // append alla till container div
+    slotInfo.appendChild(nameRow);
     slotInfo.appendChild(typesAll);
 
     // DELETE FROM WAITLIST
@@ -344,8 +505,13 @@ function renderFilledCarousel(slot, pokemon) {
     deleteIcon.alt = "";
     pokemonDelete.appendChild(deleteIcon);
 
+    // lägger till knapp i bildcontainer för placering
+    btnGroup.appendChild(pokemonDelete);
+
     // event listener för att radera från sparade
-    pokemonDelete.addEventListener("click", () => {
+    pokemonDelete.addEventListener("click", (event) => {
+        // to not listen to slot event listener
+        event.stopPropagation();
         // confirmation message
         const confirmed = confirm(`Do you want to remove ${pokemon.name} from your waitlist?`);
         if (confirmed) {
@@ -359,19 +525,33 @@ function renderFilledCarousel(slot, pokemon) {
         }
     });
 
+    // ADD TO TEAM
     //Lägg till "add to team" knapp med innehåll och aria label
     const addToTeam = document.createElement("button");
+    addToTeam.classList.add("addToTeam");
     addToTeam.setAttribute("aria-label", `Add ${pokemon.name} to your team`);
     const plusIcon = document.createElement("img");
     plusIcon.src = "/assets/plus.png";
     plusIcon.alt = "";
     addToTeam.appendChild(plusIcon);
+    // lägger till knapp i bildcontainer för placering
+    btnGroup.appendChild(addToTeam);
 
     // Event listener för att lägga till pokemon i team
-    addToTeam.addEventListener("click", () => {
-        //Ta reda på om Det finns plats att lägga till i team (under 6 finns plats, annars fullt)
-        // Hämtar id från localStorage, converterar från sträng.       
+    addToTeam.addEventListener("click", (event) => {
+        // to not listen to slot event listener
+        event.stopPropagation();
+         // Hämtar id från localStorage, converterar från sträng.       
         const teamIds = JSON.parse(localStorage.getItem("pokemonTeam")) || [];
+        // fråga om de vill lägga till i team, om nej - återgå
+        const confirmed = confirm(`Add ${pokemon.name} to your team?`);
+        if (!confirmed) return;
+        // Kolla om pokemon är i team, alert om den är det
+        if (teamIds.includes(pokemon.id)) {
+            alert(`${pokemon.name} is already in your team!`);
+            return;
+        }
+        //Ta reda på om Det finns plats att lägga till i team (under 6 finns plats, annars fullt)
         if (teamIds.length < 6) {
             // lägg till i team array
             teamIds.push(pokemon.id);
@@ -383,10 +563,7 @@ function renderFilledCarousel(slot, pokemon) {
             const updatedWaitlist = waitlistIds.filter(id => id !== pokemon.id);
             // skickar tillbaks uppdaterad pokemonWaitlist
             localStorage.setItem("pokemonWaitlist", JSON.stringify(updatedWaitlist));
-            // återställer utseendet på tom slot
-            // OBS : ÄNDRA TILL TA BORT SLOT HELT
-            loadTeam();
-            loadWaitlist();
+            init();
         } else {
             alert("Your team is full! Remove a Pokémon to add another.");
         }
@@ -394,35 +571,48 @@ function renderFilledCarousel(slot, pokemon) {
 
     // Lägg till "se mer info" knapp med innehåll och aria label
     const pokemonSee = document.createElement("button");
+    pokemonSee.classList.add("btnSeeMore");
     pokemonSee.setAttribute("aria-label", `See more about ${pokemon.name}`);
     const seeIcon = document.createElement("img");
     seeIcon.src = "/assets/eye.png";
     seeIcon.alt = "";
     pokemonSee.appendChild(seeIcon);
+    btnGroup.appendChild(pokemonSee);
 
     //eventlistener för klick av se mer knapp
-    pokemonSee.addEventListener('click', () => {
-        // LÄGG TILL MER BREOENDE PÅ OM DET ÄR MODAL ELLER EGEN SIDA
-        //eventlistener see more
-        // navigate to see more page
+    pokemonSee.addEventListener('click', (event) => {
+        // to not listen to slot event listener
+        event.stopPropagation();
+        // navigera till ny sida
+        window.location.href = `../pages/detail.html?id=${pokemon.id}`;
+
     });
 
     // Lägger in det skapade i förälderelement
-    slot.appendChild(pokeImg);
+    slot.appendChild(imgWrapper);
     slot.appendChild(slotInfo);
-    slot.appendChild(pokemonDelete);
-    slot.appendChild(pokemonSee);
-    slot.appendChild(addToTeam);
+
 }
 
 async function loadSuggested(pokemonData, teamStats) {
+    // töm på tidigare innehåll
+    suggestedContainer.innerHTML = "";
+    // ser till att pokemon finns & att id är rätt
+    const validPokemon = pokemonData.filter(pokemon => pokemon !== null);
+    const teamIds = validPokemon.map(pokemon => pokemon.id);
+    // TYPE suggestion
+    // Brigittas weakness calculator är mer specifik/bättre, men skulle kräva upp till 12 API anrop beroende på lagkonstellation
+    // Ändra till Brigittas version om tid finns över (Type weakness istället för Type Coverage)
+
+    // om pokemon, ta bort text
+    if (validPokemon.length === 0) {
+        suggestionInfo.classList.remove("hidden");
+        return;
+    }
+    suggestionInfo.classList.add("hidden");
+
     try {
-        // ser till att pokemon finns & att id är rätt
-        const validPokemon = pokemonData.filter(pokemon => pokemon !== null);
-        const teamIds = validPokemon.map(pokemon => pokemon.id);
-        // TYPE suggestion
-        // Brigittas weakness calculator är mere specifik/bättre, men skulle kräva upp till 12 API anrop beroende på lagkonstellation
-        // Ändra till Brigittas version om tid finns över (Type weakness istället för Type Coverage)
+
 
         // takes keys(types) from typePools and finds a non match in team.
         const missingType = Object.keys(typePools).find(type => !teamStats.types.includes(type));
@@ -466,8 +656,6 @@ async function loadSuggested(pokemonData, teamStats) {
             weaknessSuggestionId = availablePool[Math.floor(Math.random() * availablePool.length)];
         }
 
-        suggestedContainer.innerHTML = "";
-
         const suggestionData = await Promise.all([
             fetchPokemon(typeSuggestionId),
             fetchPokemon(balanceSuggestionId),
@@ -495,57 +683,127 @@ function renderFilledSuggestions(slot, pokemon) {
     slot.classList.add("sugSlot--filled");
     // Ändrar aria-label
     slot.setAttribute("aria-label", `Suggested pokémon: #${pokemon.id}: ${pokemon.name}`);
+    // för att kunna 'tab' igenom korten
+    slot.setAttribute("tabindex", "0");
+
+    // eventlistener for button visibility toggle
+    slot.addEventListener("click", () => {
+        slot.classList.toggle("active");
+    });
+
+    //keydown för tillgänglighet
+    slot.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+            slot.classList.toggle("active");
+        }
+    });
+
+    // skapar container för bilder och knappar
+    const imgWrapper = document.createElement("div");
+    imgWrapper.classList.add("imgWrapper");
+    // hämtar primärtypens färg
+    const wrapperTheme = getTypeTheme(pokemon.types[0].type.name);
+    // sätter primärtypens färg som bakgrund
+    imgWrapper.style.background = wrapperTheme.bg;
+
+    const btnGroup = document.createElement("div");
+    btnGroup.classList.add("btnGroup");
+
+    imgWrapper.appendChild(btnGroup);
 
     // Skapar bild till slot
     const pokeImg = document.createElement("img");
-    pokeImg.src = pokemon.sprites.front_default;
+    pokeImg.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png`;
+    // laddar bild när den är påväg att synas   
+    pokeImg.loading = "lazy";
     pokeImg.alt = pokemon.name;
 
-    const slotInfo = document.createElement("div");
-    const pokeName = document.createElement("p");
-    pokeName.textContent = pokemon.name;
-    const pokeId = document.createElement("p");
-    pokeId.textContent = `#${pokemon.id}`;
+    imgWrapper.appendChild(pokeImg);
 
-    slotInfo.appendChild(pokeName);
-    slotInfo.appendChild(pokeId);
+    // lägger till namn och id i ny div
+    const slotInfo = document.createElement("div");
+    slotInfo.classList.add("slotInfo");
+
+    const nameRow = document.createElement("div");
+    nameRow.classList.add("slotNameRow");
+
+    const pokeName = document.createElement("p");
+    pokeName.classList.add("pokemonName");
+    // lägger till stor bokstav i början på namnet
+    pokeName.textContent = capitalizeString(pokemon.name);
+
+    const pokeId = document.createElement("span");
+    pokeId.classList.add("pokemonId")
+    // använd funktionen för att hämta och sätta # och 0 på id
+    setPokeID(pokemon.id, pokeId);
+
+    // append till container
+    nameRow.appendChild(pokeId);
+    nameRow.appendChild(pokeName);
+
 
     // lägger till types i listformat
     const typesAll = document.createElement("ul");
+    typesAll.classList.add("pokemonTypes");
     // loopar igenom types för att ta ut namn på alla types
     pokemon.types.forEach(item => {
         //Skapar list items för varje type
         const pokeType = document.createElement("li");
         // Skapar innehåll på list item = type name
         pokeType.textContent = item.type.name;
+        // hämtar teman från getThemeType funktionen
+        const theme = getTypeTheme(item.type.name);
+        pokeType.style.background = theme.bg;
+        pokeType.style.color = theme.col;
         // lägger till li i ul
         typesAll.appendChild(pokeType);
     });
+
+    // append till gemensam div
+    slotInfo.appendChild(nameRow);
     slotInfo.appendChild(typesAll);
+
 
     //Lägg till "add to team" knapp med innehåll och aria label
     const addToTeam = document.createElement("button");
+    addToTeam.classList.add("addToTeam");
     addToTeam.setAttribute("aria-label", `Add ${pokemon.name} to your team`);
     const plusIcon = document.createElement("img");
     plusIcon.src = "/assets/plus.png";
     plusIcon.alt = "";
     addToTeam.appendChild(plusIcon);
 
+    btnGroup.appendChild(addToTeam);
+
     // Event listener för att lägga till pokemon i team
-    addToTeam.addEventListener("click", () => {
-        //Ta reda på om Det finns plats att lägga till i team (under 6 finns plats, annars fullt)
+    addToTeam.addEventListener("click", (event) => {
+        // to not listen to slot event listener
+        event.stopPropagation();
         // Hämtar id från localStorage, converterar från sträng.       
         const teamIds = JSON.parse(localStorage.getItem("pokemonTeam")) || [];
+        // Kolla om pokemon är i team, alert om den är det
+        if (teamIds.includes(pokemon.id)) {
+            alert(`${pokemon.name} is already in your team!`);
+            return;
+        }
+
+        //Ta reda på om Det finns plats att lägga till i team (under 6 finns plats, annars fullt)
         if (teamIds.length < 6) {
+            const confirmed = confirm(`Add ${pokemon.name} to your team?`)
+            if (!confirmed) return
             // lägg till i team array
             teamIds.push(pokemon.id);
             // skickar tillbaks uppdaterad pokemonTeam
             localStorage.setItem("pokemonTeam", JSON.stringify(teamIds));
             // updatera team
-            //init skickar nya fetch calls 
-            //för mycket tryck på apin????
+            //init laddar om sidan
             init();
+
         } else {
+            // fråga om att lägga till i waitlist
+            const confirmedWaitlist = confirm(`Your team is full. Add ${pokemon.name} to the waitlist?`)
+            if (!confirmedWaitlist) return
+
             const waitlistIds = JSON.parse(localStorage.getItem("pokemonWaitlist")) || [];
 
             if (!waitlistIds.includes(pokemon.id)) {
@@ -555,74 +813,122 @@ function renderFilledSuggestions(slot, pokemon) {
             } else {
                 alert("This pokemon is already in your waitlist!");
             }
-
         }
     });
     // Lägg till "se mer info" knapp med innehåll och aria label
     const pokemonSee = document.createElement("button");
+    pokemonSee.classList.add("btnSeeMore");
     pokemonSee.setAttribute("aria-label", `See more about ${pokemon.name}`);
     const seeIcon = document.createElement("img");
     seeIcon.src = "/assets/eye.png";
     seeIcon.alt = "";
     pokemonSee.appendChild(seeIcon);
 
+    btnGroup.appendChild(pokemonSee);
+
     //eventlistener för klick av se mer knapp
-    pokemonSee.addEventListener('click', () => {
-        // LÄGG TILL MER BREOENDE PÅ OM DET ÄR MODAL ELLER EGEN SIDA
-        //eventlistener see more
-        // navigate to see more page
+    pokemonSee.addEventListener('click', (event) => {
+        // to not listen to slot event listener
+        event.stopPropagation();
+        // navigera till ny sida
+        window.location.href = `../pages/detail.html?id=${pokemon.id}`;
     });
 
     // Lägger in det skapade i förälderelement
-    slot.appendChild(pokeImg);
+    slot.appendChild(imgWrapper);
     slot.appendChild(slotInfo);
-    slot.appendChild(pokemonSee);
-    slot.appendChild(addToTeam);
+
 }
 
 function loadTeamInfo(teamStats) {
     // TYPE COVERAGE
     // NGN text om resultatet???
-
+    // nollställer info om inga pokemon i team/ stats är 0
+    if (teamStats.types.length === 0) {
+        teamInfoTypes.innerHTML = "";
+       // typeBarFill.style.height = "0%";
+        typeDescription.innerHTML = "";
+        teamInfoPros.innerHTML = "";
+        teamInfoCons.innerHTML = "";
+        return;
+    }
+    teamInfoTypes.innerHTML = "";
     // set för att endast spara unika värden, spread operator för att omvandla till array
     const uniqueTypes = [...new Set(teamStats.types)];
     // score för att kunna bedöma type spread
     const score = uniqueTypes.length;
     const typesAll = document.createElement("ul");
+    typesAll.classList.add("typeSpread");
     // för varje unik typ, skapa en type badge, append till ul
-    uniqueTypes.forEach(item => {
+    uniqueTypes.forEach(type => {
         const uniqueBadge = document.createElement("li");
-        uniqueBadge.textContent = item;
+        uniqueBadge.textContent = type;
+        // styla utifrån getTypeTheme funktion
+        const theme = getTypeTheme(type);
+        uniqueBadge.style.background = theme.bg;
+        uniqueBadge.style.color = theme.col;
+        // append li till ul
         typesAll.appendChild(uniqueBadge);
     });
 
     teamInfoTypes.appendChild(typesAll);
+
+    /*
     // grafens höjd baserad på type spread
-    typeBarFill.style.height = `${(score / 6) * 100}%`;
+    typeBarFill.style.width = `${(score / 7) * 100}%`;
     // ändra aria-valuenow
-    typeBarFill.setAttribute("aria-valuenow", score)
+    typeBarFill.setAttribute("aria-valuenow", score) */
 
-    // STRENGTHS
-    // two highest stats - special note if highest stats are above a certain threshold --------- add if time ??
-    // Defense/attack balance if within range
+    // töm på tidigare text
+    typeDescription.innerHTML = "";
 
-    // töm container på tidigare innehåll
-    teamInfoPros.innerHTML = "";
-    // sorterar stats baserat på värde
+    const typeBarDescription = document.createElement("p");
+
+    if (score <= 2) {
+        typeBarDescription.textContent = "Your team has very limited type coverage.";
+    } else if (score <= 4) {
+        typeBarDescription.textContent = "Your team has limited type coverage.";
+    } else if (score === 5) {
+        typeBarDescription.textContent = "Your team has decent type coverage.";
+    } else if (score === 6) {
+        typeBarDescription.textContent = "Your team has good type coverage.";
+    } else if (score >= 7) {
+        typeBarDescription.textContent = "Your team has great type coverage!";
+    }
+
+    typeDescription.appendChild(typeBarDescription);
+
+     // sorterar stats baserat på värde
     const sortedStats = Object.keys(teamStats)
         // filtrerar bort types från stats
         .filter(key => key !== "types")
         // b först för att gå högst till lägst
         .sort((a, b) => teamStats[b] - teamStats[a]);
-    // två högsta stats
-    const highest = sortedStats[0];
-    const secondHighest = sortedStats[1];
-    // skapa meddelande baserat på resultat
-    const bestFeature = document.createElement("p");
-    bestFeature.textContent = `Your team excels in ${statDisplayNames[highest]} and ${statDisplayNames[secondHighest]}!`;
-    // flytta in i div container
-    teamInfoPros.appendChild(bestFeature);
 
+    // STRENGTHS -- two highest stats 
+    // töm container på tidigare innehåll
+    teamInfoPros.innerHTML = "";
+     // skapa rubrik 
+    const strengthHeading = document.createElement("h4");
+     strengthHeading.textContent = "Strengths";
+     teamInfoPros.appendChild(strengthHeading);
+
+     // skapar p för två högsta stats och lägger in hårdkodat meddelande
+    [sortedStats[0], sortedStats[1]].forEach(stat => {
+        const statName = document.createElement("p");
+        statName.textContent = `${statDisplayNames[stat]}`;
+        statName.classList.add("statName");
+
+        const statDes = document.createElement("p");
+        statDes.textContent = statStrengths[stat];
+        statDes.classList.add("statDescription");
+
+        teamInfoPros.appendChild(statName);
+        teamInfoPros.appendChild(statDes);
+    });
+
+
+    /*     ---------------EVENTUELLT FLYTTA BALANS TILL EGEN DEL
     // Se om balanserad attack
     // balanserad om range på +/- 50%
     //ena är inte mer än * 1.5 av andra
@@ -635,35 +941,48 @@ function loadTeamInfo(teamStats) {
     // om båda är balanserade, skapa p och skriv det, append till div elementet
     if (balanceAttack && balanceDefense) {
         const balanceText = document.createElement("p");
-        balanceText.textContent = "Your team has balanced offensive and defensive coverage! Good job!";
+        balanceText.textContent = "Your team has balanced offensive and defensive coverage.";
         teamInfoPros.appendChild(balanceText);
         // om bara attack har balans, skapa p och skriv det, append till div elementet
     } else if (balanceAttack) {
         const balanceText = document.createElement("p");
-        balanceText.textContent = "Your team has balanced offensive coverage!";
+        balanceText.textContent = "Your team has balanced offensive coverage.";
         // flytta in i div container
         teamInfoPros.appendChild(balanceText);
         // om bara defense har balans, skapa p och skriv det, append till div elementet
     } else if (balanceDefense) {
         // skapa p element för att skriva om balansen
         const balanceText = document.createElement("p");
-        balanceText.textContent = "Your team has balanced defensive coverage!";
+        balanceText.textContent = "Your team has balanced defensive coverage.";
         teamInfoPros.appendChild(balanceText);
     }
+*/
+
 
     // WEAKNESS
     // töm container
     teamInfoCons.innerHTML = "";
-    // ta fram de två lägsta stats
-    const lowest = sortedStats[5];
-    const secondLowest = sortedStats[4];
-    // skapa meddelande baserat på resultat
-    const worstFeature = document.createElement("p");
-    worstFeature.textContent = `Your team's weakest stat is ${statDisplayNames[lowest]}, second weakest is ${statDisplayNames[secondLowest]}.`;
-    // flytta in i div container
-    teamInfoCons.appendChild(worstFeature);
-    // Two lowest stats - special note if lowest stats are below certain threshold ???
 
+    // skapa rubrik
+    const weaknessHeading = document.createElement("h4");
+    weaknessHeading.textContent = "Weaknesses";
+    teamInfoCons.appendChild(weaknessHeading); 
+
+    [sortedStats[5], sortedStats[4]].forEach(stat => {
+        const statName = document.createElement("p");
+        statName.textContent = `${statDisplayNames[stat]}`;
+        statName.classList.add("statName");
+
+        const statDes = document.createElement("p");
+        statDes.textContent = statStrengths[stat];
+        statDes.classList.add("statDescription");
+
+        teamInfoCons.appendChild(statName);
+        teamInfoCons.appendChild(statDes);
+    });
+
+   
+    /* ---------------EVENTUELLT SKAPA EGEN DEL TILL BALANS?
     // om båda är obalanserade, skapa p och skriv det, append till div elementet
     if (!balanceAttack && !balanceDefense) {
         // ta reda på om physical eller special är tyngre
@@ -691,7 +1010,7 @@ function loadTeamInfo(teamStats) {
         const unbalancedText = document.createElement("p");
         unbalancedText.textContent = `Your team's defense leans heavily toward ${heavierSide}.`;
         teamInfoCons.appendChild(unbalancedText);
-    }
+    } */
 
     // STATBARS ---- TILL STÖRST DEL BRIGITTAS KOD
     //Stats
