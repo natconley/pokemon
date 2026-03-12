@@ -97,8 +97,6 @@ export async function getPokemonEvolutions(id = 1) {
 
         const evoData = await data.json();
 
-        console.log(evoData);
-
         //Tom array som samlar namnen och url på alla evolutioner
         const evolutions = [];
 

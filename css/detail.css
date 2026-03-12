@@ -74,6 +74,22 @@ main {
     display: none;
 }
 
+#pokeHP>div:nth-child(4),
+#pokeAttack>div:nth-child(4),
+#pokeDefense>div:nth-child(4),
+#pokeSpecialAttack>div:nth-child(4),
+#pokeSpecialDefense>div:nth-child(4),
+#pokeSpeed>div:nth-child(4) {
+    width: 100%;
+    height: 10px;
+    background: var(--surface);
+    border-radius: 30px;
+
+    position: relative;
+    top: -10px;
+    z-index: -1;
+}
+
 .pokeCard {
     display: flex;
     flex-direction: column;
@@ -124,7 +140,7 @@ main {
     border: 1.5px solid var(--border);
     /* border: 1px solid var(--border); */
     border-radius: 22px;
-    padding: 1rem 2rem 5rem 2rem;
+    padding: 2rem;
 }
 
 .pokeGrid {
@@ -173,6 +189,15 @@ main {
         height: 1px;
         flex: 1;
         background-color: var(--border);
+    }
+
+    #pokeHP>div:nth-child(4),
+    #pokeAttack>div:nth-child(4),
+    #pokeDefense>div:nth-child(4),
+    #pokeSpecialAttack>div:nth-child(4),
+    #pokeSpecialDefense>div:nth-child(4),
+    #pokeSpeed>div:nth-child(4) {
+        display: none;
     }
 
     .pokeBar {
