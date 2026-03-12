@@ -431,7 +431,7 @@ export async function setCard(pokeArray = [], div) {
 }
 
 //Hämtar pokemon infon
-export async function renderPokemonDetail(id = 1) {
+export async function renderPokemonDetail(id) {
 
     try {
 
