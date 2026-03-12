@@ -220,3 +220,141 @@ header {
   background: var(--surface);
   color: var(--text);
 }
+/*gömma check box i filters*/
+.type-filter input {
+  display: none;
+}
+
+.type-filter span {
+  font-size: .78rem;
+  font-weight: 800;
+  padding: .28rem .85rem;
+  border: 2px solid #ccc;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.type-filter input:checked + span {
+  background-color: #ff6b6b;
+  border-color: #ff6b6b;
+  color: white;
+  font-weight: bold;
+}
+#typelist{
+  flex-wrap: wrap;
+  list-style-type: none;
+  gap:1rem;
+  justify-content: center;
+  padding:1rem 0 1rem 0;
+}
+#filterssliders label{
+  display: flex;
+  flex-direction: column;
+
+}
+#filterssliders {
+  gap: 12px;
+  padding:1rem 0 1rem 0;
+  border-radius: 12px;
+  align-self: center;
+  justify-self:center ;
+}
+
+#filterssliders label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color:var(--text);
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  width: 100%;
+}
+
+/* the number input */
+input[type="number"] {
+  width: 55px;
+  padding: 4px 6px;
+  border-radius: 8px;
+  border: 1px solid #444;
+  background: var(--bg);
+  color: #ff6b6b;
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-align: center;
+  outline: none;
+}
+
+input[type="number"]:focus {
+  border-color: #ff6b6b;
+  box-shadow: 0 0 6px rgba(255, 107, 107, 0.4);
+}
+
+/* hide the number input arrows */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+
+/* range slider */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  flex: 1;
+  height: 6px;
+  border-radius: 10px;
+  background: var(--bg);
+  outline: none;
+  border: 1px solid #444;
+}
+/*styling the indicator of the slider*/
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #ff6b6b;
+  cursor: pointer;
+  border: 2px solid #fff;
+  box-shadow: 0 0 6px rgba(255, 107, 107, 0.6);
+}
+/*styling the slider*/
+input[type="range"]::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #ff6b6b;
+  cursor: pointer;
+  border: 2px solid #fff;
+  box-shadow: 0 0 6px rgba(255, 107, 107, 0.6);
+}
+#filterssliders, #typelist {
+  display: none;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0px);
+  }
+}
+@media (max-width:720px){
+  #filterssliders{
+    flex-wrap: wrap;
+  }
+}
+#filtersdrop button{
+  background-color: transparent;
+  border:none;
+  color: var(--text);
+  font-weight: 700;
+  font-size: 0.9rem;
+}

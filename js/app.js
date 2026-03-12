@@ -76,17 +76,41 @@ function buildTypeChips() {
 // Filtrera, sortera och rendera
 function applyFiltersAndRender() {
    const q = (searchEl.value || '').trim().toLowerCase();
+   
+   const hpsliderval = Number(document.getElementById(`hpslider`).value);
 
-   let entries = POKEMON.filter(p => {
-      if (activeType === 'team' && !isInTeam(p.id)) return false;
-      if (activeType !== 'all' && activeType !== 'team' && !p.types.includes(activeType)) return false;
-      if (!q) return true;
-      return p.name.toLowerCase().includes(q) || String(p.id).includes(q);
-   });
+  const defsliderval = Number(document.getElementById(`defslider`).value);
+
+  const attsliderval = Number(document.getElementById(`attslider`).value);
+
+  const weightsliderval = Number(document.getElementById(`weightslider`).value);
+
+  const speedsliderval = Number(document.getElementById(`speedslider`).value);
+
+  const checkedTypes = Array.from(document.querySelectorAll(".filterlist:checked")).map(cb => cb.value);
+
+let entries = POKEMON.filter(p => {
+  if (activeType === 'team' && !isInTeam(p.id)) return false;
+  if (activeType !== 'all' && activeType !== 'team' && !p.types.includes(activeType)) return false;
+
+  const typeMatch = checkedTypes.length === 0 || checkedTypes.every(type => p.types.includes(type));
+  const hpMatch = !hpsliderval || p.HP > hpsliderval;
+  const attMatch = !attsliderval || p.attack > attsliderval;
+  const defMatch = !defsliderval || p.defence > defsliderval;
+  const weightMatch = !weightsliderval || p.weight > weightsliderval;
+  const speedMatch = !speedsliderval || p.speed > speedsliderval;
+  const searchMatch = !q || p.name.toLowerCase().includes(q) || String(p.id).includes(q);
+
+  return typeMatch && hpMatch && attMatch && defMatch && weightMatch && speedMatch && searchMatch;
+});
 
    const sortVal = sortEl.value;
-   if (sortVal === 'az') entries.sort((a, b) => a.name.localeCompare(b.name));
-   else if (sortVal === 'number') entries.sort((a, b) => a.id - b.id);
+   if (sortVal === 'A-Z') entries.sort((a, b) => a.name.localeCompare(b.name));
+   if (sortVal === 'number') entries.sort((a, b) => a.id - b.id);
+   if (sortVal === 'Z-A') entries.sort((a,b) => b.name.localeCompare(a.name));
+   if (sortVal === "Bywegiht") entries.sort((a,b) => a.weight - b.weight);
+   if (sortVal === "HP") entries.sort((a,b) => a.HP - b.HP);
+   
 
    // Visa bara visibleCount antal
    const visible = entries.slice(0, visibleCount);

@@ -114,6 +114,12 @@ async function loadAllPokemon(onProgress) {
       name:  p.name.charAt(0).toUpperCase() + p.name.slice(1),
       types: p.types.map(t => t.type.name),
       img:   `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${p.id}.png`,
+      weight: p.weight,
+      height: p.height,
+      HP: p.stats[0].base_stat,
+      attack: p.stats[1].base_stat,
+      defence: p.stats[2].base_stat,
+      speed: p.stats[5].base_stat,
     };
   }
 
