@@ -7,16 +7,22 @@
     <title>Pokémon Team Builder</title>
     <link rel="stylesheet" type="text/css" href="../css/styles.css">
     <link rel="stylesheet" type="text/css" href="../css/teambuilder.css">
+    <link rel="stylesheet" href="../css/index.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;900&display=swap"
         rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
 </head>
 
 <body>
-    <header></header>
+    <!-- Navigationsfält -->
+    <nav class="topbar">
+        <img src="/assets/pokeball.svg" alt="Pokeball Icon" class="icon" />
+        <span class="topbar-title">Pokédex</span>
+        <div class="topbar-right">
+            <button id="theme-toggle" class="icon-btn" title="Toggle theme">☀️</button>
+        </div>
+    </nav>
     <main>
         <h1>Team Builder</h1>
         <section class="teamBuilder">
@@ -103,19 +109,13 @@
                         <h3>TYPE SPREAD</h3>
                         <div class="typesInfoContainer">
                             <div id="teamInfoTypes"></div>
-                            <div class="typeBar" role="meter" aria-label="Type coverage score" aria-valuemin="0"
-                                aria-valuemax="6" aria-valuenow="0">
-                                <div id="typeBarFill"></div>
-                                <span id="typeBarLabel"></span>
-                            </div>
                             <div id="typeCoverageDescription"></div>
                         </div>
-
                     </section>
                 </div>
 
                 <section class="analysisContainer">
-                    <h3>ANALYSIS</h3>
+                    <h3>STRENGTHS AND WEAKNESSES</h3>
                     <div class="teamAnalysis">
                         <div id="teamInfoPros">
                         </div>
@@ -166,7 +166,7 @@
         </section>
     </main>
 
-
+    <script src="../js/themes.js"></script>
     <script type="module" src="/js/teamBuilder.mjs"></script>
 </body>
 

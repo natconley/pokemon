@@ -1,12 +1,15 @@
+
+
+
 // URSÄKTA MIN SVENGELSKA
 
-
-// TO DO
-
-// Weakness använder fallbackpool, ändra till näst lägsta stat
-// lägg till text om varför pokemon i suggestions valdes?
-// meddelanden i strengths och weaknesses ??
-// se över funktion för att minska kod som dubliceras, ex. render
+// OM TID ÖVER-------------------------------------------------------------------------------
+// Suggestion Weakness använder fallbackpool om föreslagna finns, ändra till näst lägsta stat
+// Motivering till suggestions i gränssnitt
+// se över lösning för att minska kod som dubliceras, ex. renderfunktioner
+// undersök möjlighet till förbättring på type spread (se nuvarande type spread)
+// bättre visualisering och egen display av balance (just nu inuti strengths & weaknesses)
+// dela upp i olika filer? ca 1k rader..
 
 import { capitalizeString, setPokeID } from './pokeUtility.mjs';
 
@@ -60,23 +63,23 @@ const weaknessPools = {
 };
 
 //hårdkodade statmeddelanden
-    const statStrengths = {
-        hp: "Your team can take a lot of hits.",
-        attack: "Your team can deal strong physical attacks.",
-        defense: "Your team handles physical attacks well.",
-        "special-attack": "Your team can pressure opponents with special attacks.",
-        "special-defense": "Your team can absorb special attacks effectively.",
-        speed: "Your Pokémon can outspeed many opponents."
-    }
+const statStrengths = {
+    hp: "Your team can take a lot of hits.",
+    attack: "Your team can deal strong physical attacks.",
+    defense: "Your team handles physical attacks well.",
+    "special-attack": "Your team can pressure opponents with special attacks.",
+    "special-defense": "Your team can absorb special attacks effectively.",
+    speed: "Your Pokémon can outspeed many opponents."
+}
 
-    const statWeaknesses = {
-        hp: "Your team may go down quickly.",
-        attack: "Your team may struggle to break bulky opponents.",
-        defense: "Strong physical moves may cause problems.",
-        "special-attack": "Your team may struggle to deal special damage.",
-        "special-defense": "Special attackers may deal heavy damage.",
-        speed: "Opponents may attack first in many battles."
-    }
+const statWeaknesses = {
+    hp: "Your team may go down quickly.",
+    attack: "Your team may struggle to break bulky opponents.",
+    defense: "Strong physical moves may cause problems.",
+    "special-attack": "Your team may struggle to deal special damage.",
+    "special-defense": "Special attackers may deal heavy damage.",
+    speed: "Opponents may attack first in many battles."
+}
 
 // från andreas api.js 
 // TYPE färger och function
@@ -214,7 +217,7 @@ function renderFilledSlot(slot, pokemon) {
     imgWrapper.style.background = wrapperTheme.bg;
 
     const btnGroup = document.createElement("div");
-    btnGroup.classList.add("btnGroup")
+    btnGroup.classList.add("btnGroup");
 
     imgWrapper.appendChild(btnGroup);
 
@@ -235,12 +238,12 @@ function renderFilledSlot(slot, pokemon) {
     nameRow.classList.add("slotNameRow");
 
     const pokeId = document.createElement("span");
-    pokeId.classList.add("pokemonId")
+    pokeId.classList.add("pokemonId");
     // använd funktionen för att hämta och sätta # och 0 på id
     setPokeID(pokemon.id, pokeId);
 
     const pokeName = document.createElement("p");
-    pokeName.classList.add("pokemonName")
+    pokeName.classList.add("pokemonName");
     // lägger till stor bokstav i början på namnet
     pokeName.textContent = capitalizeString(pokemon.name);
 
@@ -274,7 +277,7 @@ function renderFilledSlot(slot, pokemon) {
     // DELETE TEAM MEMBER
     //Lägg till radera-knapp med innehåll och aria label
     const pokemonDelete = document.createElement("button");
-    pokemonDelete.classList.add("btnDeletePokemon")
+    pokemonDelete.classList.add("btnDeletePokemon");
     pokemonDelete.setAttribute("aria-label", `Remove ${pokemon.name} from team`);
     const deleteIcon = document.createElement("img");
     deleteIcon.src = "/assets/trash.png";
@@ -359,7 +362,7 @@ function loadStats(pokemonData) {
         pokemon.types.forEach(t => {
             // push type names to stat object
             teamStats.types.push(t.type.name);
-        })
+        });
         // loopa igenom stats
         pokemon.stats.forEach(s => {
             // stats namn
@@ -474,8 +477,6 @@ function renderFilledCarousel(slot, pokemon) {
     nameRow.appendChild(pokeId);
     nameRow.appendChild(pokeName);
 
-
-
     // lägger till types i listformat
     const typesAll = document.createElement("ul");
     typesAll.classList.add("pokemonTypes");
@@ -492,6 +493,7 @@ function renderFilledCarousel(slot, pokemon) {
         // lägger till li i ul
         typesAll.appendChild(pokeType);
     });
+
     // append alla till container div
     slotInfo.appendChild(nameRow);
     slotInfo.appendChild(typesAll);
@@ -541,7 +543,7 @@ function renderFilledCarousel(slot, pokemon) {
     addToTeam.addEventListener("click", (event) => {
         // to not listen to slot event listener
         event.stopPropagation();
-         // Hämtar id från localStorage, converterar från sträng.       
+        // Hämtar id från localStorage, converterar från sträng.       
         const teamIds = JSON.parse(localStorage.getItem("pokemonTeam")) || [];
         // fråga om de vill lägga till i team, om nej - återgå
         const confirmed = confirm(`Add ${pokemon.name} to your team?`);
@@ -585,7 +587,6 @@ function renderFilledCarousel(slot, pokemon) {
         event.stopPropagation();
         // navigera till ny sida
         window.location.href = `../pages/detail.html?id=${pokemon.id}`;
-
     });
 
     // Lägger in det skapade i förälderelement
@@ -600,8 +601,10 @@ async function loadSuggested(pokemonData, teamStats) {
     // ser till att pokemon finns & att id är rätt
     const validPokemon = pokemonData.filter(pokemon => pokemon !== null);
     const teamIds = validPokemon.map(pokemon => pokemon.id);
+
     // TYPE suggestion
     // Brigittas weakness calculator är mer specifik/bättre, men skulle kräva upp till 12 API anrop beroende på lagkonstellation
+    // möjligt att spara värderna i array från start men mkt jobb & tidskrävande
     // Ändra till Brigittas version om tid finns över (Type weakness istället för Type Coverage)
 
     // om pokemon, ta bort text
@@ -772,7 +775,6 @@ function renderFilledSuggestions(slot, pokemon) {
     plusIcon.src = "/assets/plus.png";
     plusIcon.alt = "";
     addToTeam.appendChild(plusIcon);
-
     btnGroup.appendChild(addToTeam);
 
     // Event listener för att lägga till pokemon i team
@@ -837,21 +839,20 @@ function renderFilledSuggestions(slot, pokemon) {
     // Lägger in det skapade i förälderelement
     slot.appendChild(imgWrapper);
     slot.appendChild(slotInfo);
-
 }
 
 function loadTeamInfo(teamStats) {
-    // TYPE COVERAGE
-    // NGN text om resultatet???
     // nollställer info om inga pokemon i team/ stats är 0
     if (teamStats.types.length === 0) {
         teamInfoTypes.innerHTML = "";
-       // typeBarFill.style.height = "0%";
+        // typeBarFill.style.height = "0%";
         typeDescription.innerHTML = "";
         teamInfoPros.innerHTML = "";
         teamInfoCons.innerHTML = "";
         return;
     }
+
+    // TYPE COVERAGE
     teamInfoTypes.innerHTML = "";
     // set för att endast spara unika värden, spread operator för att omvandla till array
     const uniqueTypes = [...new Set(teamStats.types)];
@@ -873,11 +874,7 @@ function loadTeamInfo(teamStats) {
 
     teamInfoTypes.appendChild(typesAll);
 
-    /*
-    // grafens höjd baserad på type spread
-    typeBarFill.style.width = `${(score / 7) * 100}%`;
-    // ändra aria-valuenow
-    typeBarFill.setAttribute("aria-valuenow", score) */
+    // tog bort bar för type coverage, behöll texten
 
     // töm på tidigare text
     typeDescription.innerHTML = "";
@@ -898,7 +895,7 @@ function loadTeamInfo(teamStats) {
 
     typeDescription.appendChild(typeBarDescription);
 
-     // sorterar stats baserat på värde
+    // sorterar stats baserat på värde
     const sortedStats = Object.keys(teamStats)
         // filtrerar bort types från stats
         .filter(key => key !== "types")
@@ -908,12 +905,12 @@ function loadTeamInfo(teamStats) {
     // STRENGTHS -- two highest stats 
     // töm container på tidigare innehåll
     teamInfoPros.innerHTML = "";
-     // skapa rubrik 
+    // skapa rubrik 
     const strengthHeading = document.createElement("h4");
-     strengthHeading.textContent = "Strengths";
-     teamInfoPros.appendChild(strengthHeading);
+    strengthHeading.textContent = "Strengths";
+    teamInfoPros.appendChild(strengthHeading);
 
-     // skapar p för två högsta stats och lägger in hårdkodat meddelande
+    // skapar p för två högsta stats och lägger in hårdkodat meddelande
     [sortedStats[0], sortedStats[1]].forEach(stat => {
         const statName = document.createElement("p");
         statName.textContent = `${statDisplayNames[stat]}`;
@@ -927,37 +924,37 @@ function loadTeamInfo(teamStats) {
         teamInfoPros.appendChild(statDes);
     });
 
+    // Se om balanserad attack och defense
+    // balanserad om range på +/- 40
+    // Math.abs ger skillnaden mellan statsen, sedan se om skillnaden är mindre än eller 40
+    const balanceAttack = Math.abs(teamStats.attack - teamStats["special-attack"]) <= 40;
+    const balanceDefense = Math.abs(teamStats.defense - teamStats["special-defense"]) <= 40;
 
-    /*     ---------------EVENTUELLT FLYTTA BALANS TILL EGEN DEL
-    // Se om balanserad attack
-    // balanserad om range på +/- 50%
-    //ena är inte mer än * 1.5 av andra
-    const balanceAttack = teamStats.attack <= teamStats["special-attack"] * 1.5 &&
-        teamStats["special-attack"] <= teamStats.attack * 1.5;
-    // se om balanserad defense, samma range som attack
-    const balanceDefense = teamStats.defense <= teamStats["special-defense"] * 1.5 &&
-        teamStats["special-defense"] <= teamStats.defense * 1.5;
+    const balanceHeader = document.createElement("p");
+    balanceHeader.textContent = "Balance";
+    balanceHeader.classList.add("statName");
 
     // om båda är balanserade, skapa p och skriv det, append till div elementet
     if (balanceAttack && balanceDefense) {
         const balanceText = document.createElement("p");
         balanceText.textContent = "Your team has balanced offensive and defensive coverage.";
+        teamInfoPros.appendChild(balanceHeader);
         teamInfoPros.appendChild(balanceText);
         // om bara attack har balans, skapa p och skriv det, append till div elementet
     } else if (balanceAttack) {
         const balanceText = document.createElement("p");
         balanceText.textContent = "Your team has balanced offensive coverage.";
         // flytta in i div container
+        teamInfoPros.appendChild(balanceHeader);
         teamInfoPros.appendChild(balanceText);
         // om bara defense har balans, skapa p och skriv det, append till div elementet
     } else if (balanceDefense) {
         // skapa p element för att skriva om balansen
         const balanceText = document.createElement("p");
         balanceText.textContent = "Your team has balanced defensive coverage.";
+        teamInfoPros.appendChild(balanceHeader);
         teamInfoPros.appendChild(balanceText);
     }
-*/
-
 
     // WEAKNESS
     // töm container
@@ -966,23 +963,22 @@ function loadTeamInfo(teamStats) {
     // skapa rubrik
     const weaknessHeading = document.createElement("h4");
     weaknessHeading.textContent = "Weaknesses";
-    teamInfoCons.appendChild(weaknessHeading); 
+    teamInfoCons.appendChild(weaknessHeading);
 
+    // samma som strenghts
     [sortedStats[5], sortedStats[4]].forEach(stat => {
         const statName = document.createElement("p");
         statName.textContent = `${statDisplayNames[stat]}`;
         statName.classList.add("statName");
 
         const statDes = document.createElement("p");
-        statDes.textContent = statStrengths[stat];
+        statDes.textContent = statWeaknesses[stat];
         statDes.classList.add("statDescription");
 
         teamInfoCons.appendChild(statName);
         teamInfoCons.appendChild(statDes);
     });
 
-   
-    /* ---------------EVENTUELLT SKAPA EGEN DEL TILL BALANS?
     // om båda är obalanserade, skapa p och skriv det, append till div elementet
     if (!balanceAttack && !balanceDefense) {
         // ta reda på om physical eller special är tyngre
@@ -991,7 +987,8 @@ function loadTeamInfo(teamStats) {
         // skapa p element
         const unbalancedText = document.createElement("p");
         // berätta för användaren vilka stats som är högre.
-        unbalancedText.textContent = `UH-OH! Your team has unbalanced offensive and defensive coverage! Your defense leans ${heavierDefense} and your attack leans ${heavierAttack}. Your team may benefit from adjustments.`;
+        unbalancedText.textContent = `Your team is unbalanced. Your defense leans ${heavierDefense} and your attack leans ${heavierAttack}. Your team may benefit from adjustments.`;
+        teamInfoCons.appendChild(balanceHeader);
         teamInfoCons.appendChild(unbalancedText);
         // om bara attack är i obalans, skapa p och skriv det, append till div elementet
     } else if (!balanceAttack) {
@@ -1001,6 +998,7 @@ function loadTeamInfo(teamStats) {
         // skriv ut att teamet lutar åt ett håll
         unbalancedText.textContent = `Your team leans heavily ${heavierSide} offensive!`;
         // flytta in i div container
+        teamInfoCons.appendChild(balanceHeader);
         teamInfoCons.appendChild(unbalancedText);
         // om bara defense har obalans, skapa p och skriv det, append till div elementet
     } else if (!balanceDefense) {
@@ -1009,8 +1007,9 @@ function loadTeamInfo(teamStats) {
         // skapa p element för att skriva om balansen
         const unbalancedText = document.createElement("p");
         unbalancedText.textContent = `Your team's defense leans heavily toward ${heavierSide}.`;
+        teamInfoCons.appendChild(balanceHeader);
         teamInfoCons.appendChild(unbalancedText);
-    } */
+    }
 
     // STATBARS ---- TILL STÖRST DEL BRIGITTAS KOD
     //Stats
@@ -1020,7 +1019,6 @@ function loadTeamInfo(teamStats) {
     const pokeSpecialAttack = document.querySelector("#pokeSpecialAttack p");
     const pokeSpecialDefense = document.querySelector("#pokeSpecialDefense p");
     const pokeSpeed = document.querySelector("#pokeSpeed p");
-
     //Bars
     const hpBar = document.querySelector("#pokeHP .pokeBar");
     const attackBar = document.querySelector("#pokeAttack .pokeBar");
@@ -1028,7 +1026,6 @@ function loadTeamInfo(teamStats) {
     const specialAttackBar = document.querySelector("#pokeSpecialAttack .pokeBar");
     const specialDefenseBar = document.querySelector("#pokeSpecialDefense .pokeBar");
     const speedBar = document.querySelector("#pokeSpeed .pokeBar");
-
     // ändrar innehåll till aktuell stat siffra
     pokeHP.textContent = teamStats.hp;
     pokeAttack.textContent = teamStats.attack;
@@ -1036,7 +1033,6 @@ function loadTeamInfo(teamStats) {
     pokeSpecialAttack.textContent = teamStats["special-attack"];
     pokeSpecialDefense.textContent = teamStats["special-defense"];
     pokeSpeed.textContent = teamStats.speed;
-
     // rätt stat på rätt plats
     const statBars = [
         { stat: teamStats.hp, bar: hpBar },
@@ -1045,10 +1041,9 @@ function loadTeamInfo(teamStats) {
         { stat: teamStats["special-attack"], bar: specialAttackBar },
         { stat: teamStats["special-defense"], bar: specialDefenseBar },
         { stat: teamStats.speed, bar: speedBar }
-    ]
+    ];
     // calling progressbar function
     setProgressBar(statBars);
-
 }
 
 //Beräknar progressbarens längd  -------- BRIGITTAS KOD
@@ -1058,18 +1053,21 @@ function setProgressBar(array) {
     array.forEach(element => {
         //Högsta kombinerade stats i spelet (1253)
         element.bar.style.width = ((element.stat / 1253) * 100) + "%";
-    })
-
-};
+    });
+}
 
 // LOAD DATA ON PAGE
 async function init() {
     try {
-        //Hämta team data från loadTeam
+        //Hämta team constellation/data från loadTeam
         const pokemonData = await loadTeam();
+        // hämta stats för användning av teaminfo
         const teamStats = loadStats(pokemonData);
+        // ladda teaminfo med stats
         loadTeamInfo(teamStats);
+        // ladda waitlist
         await loadWaitlist();
+        // ladda suggestions
         await loadSuggested(pokemonData, teamStats);
     } catch (error) {
         console.error("Error initializing page:", error);
