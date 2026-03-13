@@ -23,6 +23,9 @@
   --accent: #f7d02c;
   /* Gul accentfärg */
   --shadow: rgba(0, 0, 0, .55);
+  --box-bg: linear-gradient(180deg, #13142e 0%, #0e0f22 100%);
+  --box-lines: #191a3a;
+  ;
 }
 
 /* -- LJUST TEMA ----------------------------------------------
@@ -36,6 +39,8 @@
   --muted: #7a7da8;
   --accent: #d4a800;
   --shadow: rgba(0, 0, 0, .12);
+  --box-bg: linear-gradient(180deg, #ffffff 0%, #e8eaf2 100%);
+  --box-lines: #dbdce9;
 }
 
 /* -- BODY --------------------------------------------------
