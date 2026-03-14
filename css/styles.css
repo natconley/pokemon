@@ -80,6 +80,13 @@ body {
   background: rgba(240, 242, 248, .85);
 }
 
+.topbar-left {
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
 .icon {
   width: 28px;
   height: 28px;
@@ -87,9 +94,16 @@ body {
 
 .topbar-title {
   font-family: 'Press Start 2P', monospace;
+  margin-top: 3px;
   font-size: .7rem;
   color: #f7d02c;
-  margin-left: 1rem;
+}
+
+.topbar-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 /* Toggle theme */
@@ -137,4 +151,23 @@ body {
 #load-more:hover {
   border-color: var(--accent);
   transform: translateY(-2px);
+}
+
+.btn-remove {
+  margin-top: .5rem;
+  width: 100%;
+  border-radius: 8px;
+  padding: .3rem 0;
+  font-size: .75rem;
+  font-weight: 800;
+  cursor: pointer;
+  background: rgba(220, 50, 50, 0.08);
+  border: 1px solid rgba(220, 50, 50, 0.25);
+  color: #dc3232;
+  transition: background .15s, border-color .15s;
+}
+
+.btn-remove:hover {
+  background: rgba(220, 50, 50, 0.18);
+  border-color: rgba(220, 50, 50, 0.5);
 }
