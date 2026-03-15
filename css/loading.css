@@ -3,36 +3,13 @@
   transform: translate(+0%, +1000%);
   margin-bottom:4rem;
 }
-.loadingdivc{
-  position: absolute;
-  background-color: white;
-  transform: translate(+0%, +115%);
-  width:3rem;
-  height: 3rem;
-  border:solid 0.5rem #333;
-  border-radius: 50%;
-}
-.loadingdiva, .loadingdivb{
-  position: absolute;
-  border-radius:50%;
+.loadingimg{
+  animation: loadinganimation 3s linear infinite;
   width:10rem;
   height: 10rem;
+
 }
-.loadingdiva{
-  border-top:solid 0.5rem red;
-  animation: loadinganimetop 3s linear infinite;
-}
-.loadingdivb{
-  border-bottom:solid 0.5rem white;
-  animation: loadinganimedown 3s linear infinite;
-}
-@keyframes loadinganimetop {
-  0%{transform: rotate(0deg);
-  border-color: red;}
-  50% {border-color: white;}
-  100%{transform: rotate(360deg);}
-}
-@keyframes loadinganimedown {
+@keyframes loadinganimation {
   0%{transform: rotate(0deg);
   border-color: white;}
   50% {border-color: red;}

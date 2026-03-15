@@ -1,17 +1,12 @@
 function LoadingAnime(){
     hideloadmore();
-  const loadingdiva = document.createElement('div');
-  loadingdiva.className = "loadingdiva";
-  const loadingdivb = document.createElement('div');
-  loadingdivb.className = "loadingdivb";
-    const loadingdivc = document.createElement('div');
-  loadingdivc.className = "loadingdivc";
-    const loadingtext = document.createElement('p');
+  const loadingimg = document.createElement('img');
+  const loadingtext = document.createElement('p')
+  loadingimg.src = "/assets/Pokeball-15.png";
+  loadingimg.className = "loadingimg"
   loadingtext.className = "loadingtxt";
   loadingtext.innerText = "Loading Content Please Wait......"
-  document.getElementById(`grid`).appendChild(loadingdiva);
-  document.getElementById(`grid`).appendChild(loadingdivb);
-  document.getElementById(`grid`).appendChild(loadingdivc);
+  document.getElementById(`grid`).appendChild(loadingimg);
   document.getElementById(`grid`).appendChild(loadingtext);
   document.getElementById(`grid`).style.display = "flex";
   document.getElementById(`grid`).style.justifyContent = "center";
