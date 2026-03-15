@@ -1,9 +1,11 @@
 /* -- api.js -------------------------------------------------------------
    Hämtar all Pokémon-data från PokeAPI en gång per session.
-   Vid nästa sidladdning läses datan från sessionStorage — inga extra nätverksanrop.
+   Data cachas i sessionStorage så att vi slipper hämta om allt när användaren återvänder till sidan.
    ----------------------------------------------------------------------- */
 
-// Nyckel som används för att spara och läsa cache i sessionStorage
+/*CACHE_KEY används som nyckel för att spara och läsa data i sessionStorage. 
+  sessionStorage används istället för localStorage eftersom datan är stor och bara behövs under en session.              
+  Tillfälligt minne i webbläsaren som finns kvar så länge fliken är öppen och försvinner när man stänger fliken */
 const CACHE_KEY = 'pokedex_data_v1';
 
 /* -- FÄRGTEMAN PER TYP -------------------------------------------------- */
@@ -53,9 +55,8 @@ async function fetchJSON(url, retries = 3) {
   }
 }
 
-// Hämtar många URLs parallellt, i omgångar om `batchSize` stycken
-// Anropar onProgress() efter varje omgång för att uppdatera laddningsbaren
-// Används för att hämta detaljerad data för alla Pokémon och deras art-data
+// batchFetch, Hämtar många URLs parallellt (samtidigt)
+// Delar upp i mindre batcher för att undvika att överbelasta nätverket eller API:et
 async function batchFetch(urls, batchSize = 50, onProgress) {
   const results = [];
   for (let i = 0; i < urls.length; i += batchSize) {
@@ -67,9 +68,9 @@ async function batchFetch(urls, batchSize = 50, onProgress) {
 }
 
 /* -- HJÄLP FÖR EVOLUTIONSKEDJOR ------------------------------------------ */
-// PokeAPI returnerar evolutionskedjor som ett träd.
+// PokeAPI returnerar evolutionskedjor som ett träd. ex. eevee med sina 8 evolutions.
 // Den här funktionen plattar ut trädet till en lista med namn
-// i evolutionsordning (bas → mellanform → slutform)
+// i evolutionsordning (bas -> mellanform -> slutform)
 function extractChainMembers(node) {
   const names = [node.species.name];
   for (const evo of node.evolves_to) names.push(...extractChainMembers(evo));
@@ -105,7 +106,7 @@ async function loadAllPokemon(onProgress) {
   /* Behåll bara "riktiga" Pokémon (id 1–1025), inte former eller varianter */
   const basePokemon = pokeDetails.filter(p => p.id <= 1025);
 
-  // Bygg en snabb uppslagstabell: id → Pokémon-objekt
+  // Bygg en snabb uppslagstabell: id -> Pokémon-objekt
   const byId = {};
   for (const p of basePokemon) {
     byId[p.id] = {

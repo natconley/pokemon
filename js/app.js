@@ -22,17 +22,51 @@ const loadingEl   = document.getElementById('loading-overlay');
 const loadingText = document.getElementById('loading-msg');
 const loadingBar  = document.getElementById('loading-bar');
 
-// Enkel Teamhantering (lokal storage) så render.js kan använda `isInTeam`/`toggleTeamMember`
+// läser och returnerar team och waitlist från localStorage som två separata arrayer.
+// går något fel returneras tomma arrayer.
 function _readTeam() {
-   try { return new Set(JSON.parse(localStorage.getItem('pokedex_team') || '[]')); }
-   catch { return new Set(); }
+  try {
+    const team = JSON.parse(localStorage.getItem('pokemonTeam') || '[]');
+    const waitlist = JSON.parse(localStorage.getItem('pokemonWaitlist') || '[]');
+    return { team, waitlist };
+  } catch {
+    return { team: [], waitlist: [] };
+  }
 }
-function isInTeam(id) { return _readTeam().has(id); }
+// kollar om en Pokémon-id finns i teamet eller waitlist. 
+function isInTeam(id) {
+  const { team, waitlist } = _readTeam();
+  return team.includes(id) || waitlist.includes(id);
+}
+// Om Pokémon-id finns i team flyttas den till waitlist.
+// Om den finns i waitlist flyttas den till team, om laget är färre än sex st.
+// Om den inte finns läggs den i team om det finns plats annars i waitlist om den inte är full.
 function toggleTeamMember(id) {
-   const s = _readTeam();
-   if (s.has(id)) s.delete(id); else s.add(id);
-   localStorage.setItem('pokedex_team', JSON.stringify([...s]));
-   document.dispatchEvent(new CustomEvent('teamchange', { detail: { id } }));
+  const { team, waitlist } = _readTeam();
+
+  if (team.includes(id)) {
+    const updated = team.filter(x => x !== id);
+    waitlist.push(id);
+    localStorage.setItem('pokemonTeam', JSON.stringify(updated));
+    localStorage.setItem('pokemonWaitlist', JSON.stringify(waitlist));
+  } else if (waitlist.includes(id)) {
+    if (team.length < 6) {
+      const updated = waitlist.filter(x => x !== id);
+      team.push(id);
+      localStorage.setItem('pokemonTeam', JSON.stringify(team));
+      localStorage.setItem('pokemonWaitlist', JSON.stringify(updated));
+    }
+  } else {
+    if (team.length < 6) {
+      team.push(id);
+      localStorage.setItem('pokemonTeam', JSON.stringify(team));
+    } else if (waitlist.length < 10) {
+      waitlist.push(id);
+      localStorage.setItem('pokemonWaitlist', JSON.stringify(waitlist));
+    }
+  }
+  // skickar event så alla korts knappar uppdateras när team/waitlist ändras
+  document.dispatchEvent(new CustomEvent('teamchange', { detail: { id } }));
 }
 
 // Uppdatera laddnings-UI
