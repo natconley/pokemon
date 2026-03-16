@@ -103,8 +103,6 @@ main {
 
 /* -- HERO -----------------------------*/
 .pokeHero {
-    margin-top: 5rem;
-
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -155,6 +153,37 @@ main {
     margin-bottom: 1rem;
 }
 
+/* -- BUTTONS --------------------------------- */
+.btn {
+    padding: .3rem 0;
+    width: fit-content;
+    background-color: transparent;
+    border: none;
+
+    transition: transform .2s, border-color .2s;
+
+    display: flex;
+    align-items: center;
+    gap: .3rem;
+
+    font-family: 'Nunito', sans-serif;
+
+    text-transform: capitalize;
+    letter-spacing: .02em;
+
+    color: var(--text);
+}
+
+.btn:hover {
+    cursor: pointer;
+    /*transform: translateY(-2px);*/
+}
+
+.back {
+
+    margin-top: 5rem;
+
+}
 
 /* --MEDIA QUERYS -----------------------------*/
 /*Smartphones (portrait)*/
