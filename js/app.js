@@ -163,7 +163,7 @@ async function init() {
       const data = await loadAllPokemon((msg, pct) => setLoading(msg, pct));
       CHAINS = data.CHAINS || [];
       POKEMON = data.POKEMON || CHAINS.flat();
-      buildTypeChips();
+      //buildTypeChips();
       stoploadingAnime();
       applyFiltersAndRender();
    } catch (e) {
