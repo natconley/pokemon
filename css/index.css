@@ -11,6 +11,18 @@ header {
   align-items: center;
   gap: 1rem;
 }
+.topbar-left{
+  align-items: center;
+  margin:0;
+}
+.topbar-title{
+  font-size: 16px;
+  padding:0;
+}
+.icon{
+  width: 28px;
+  height: 28px;
+}
 
 /* --  KONTROLLER ------------------------------------------------
     Innehåller sökfält och sorteringsväljare. */
