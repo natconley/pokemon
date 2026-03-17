@@ -43,22 +43,34 @@
 
     <main>
 
-        <!--Hero section-->
-        <section class="pokeHero">
-            <img src="" alt="Pokemon sprite" id="pokeSprite">
-            <div>
-                <!--Byt till <header> elementet?-->
-                <div class="alignItems flex-wrap gap1rem">
-                    <h1 id="pokeName">Pokemon name</h1>
-                    <span id="pokeId">Pokemon id</span>
+        <div>
+            <button onclick="history.back()" class="btn back">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-arrow-left">
+                    <path d="M19 12H5" />
+                    <path d="m12 19-7-7 7-7" />
+                </svg>
+                Go back
+            </button>
+
+            <!--Hero section-->
+            <section class="pokeHero">
+                <img src="" alt="Pokemon sprite" id="pokeSprite">
+                <div>
+                    <!--Byt till <header> elementet?-->
+                    <div class="alignItems flex-wrap gap1rem">
+                        <h1 id="pokeName">Pokemon name</h1>
+                        <span id="pokeId">Pokemon id</span>
+                    </div>
+
+                    <!--Description-->
+                    <p id="pokeDescription"></p>
+
+                    <button class="btn-team" aria-label="Adds pokemon to team">Add To Team</button>
                 </div>
-
-                <!--Description-->
-                <p id="pokeDescription"></p>
-
-                <button class="btn-team" aria-label="Adds pokemon to team">Add To Team</button>
-            </div>
-        </section>
+            </section>
+        </div>
 
         <section id="section1">
             <!--Types-->
@@ -78,8 +90,6 @@
             </section>
 
             <!--Base stats-->
-
-            <!--Finns tydligen en <progress> html tag-->
             <section id="statsSection">
                 <h2>Base stats</h2>
                 <div id="pokeHP">
@@ -92,6 +102,7 @@
                     <div aria-hidden="true"></div>
                     <!--Själva progressbaren-->
                     <div class="pokeBar"></div>
+                    <div></div>
                 </div>
                 <div id="pokeAttack">
                     <div>
@@ -100,6 +111,7 @@
                     </div>
                     <div aria-hidden="true"></div>
                     <div class="pokeBar"></div>
+                    <div></div>
                 </div>
                 <div id="pokeDefense">
                     <div>
@@ -108,6 +120,7 @@
                     </div>
                     <div aria-hidden="true"></div>
                     <div class="pokeBar"></div>
+                    <div></div>
                 </div>
                 <div id="pokeSpecialAttack">
                     <div>
@@ -116,6 +129,7 @@
                     </div>
                     <div aria-hidden="true"></div>
                     <div class="pokeBar"></div>
+                    <div></div>
                 </div>
                 <div id="pokeSpecialDefense">
                     <div>
@@ -124,6 +138,7 @@
                     </div>
                     <div aria-hidden="true"></div>
                     <div class="pokeBar"></div>
+                    <div></div>
                 </div>
                 <div id="pokeSpeed">
                     <div>
@@ -132,6 +147,7 @@
                     </div>
                     <div aria-hidden="true"></div>
                     <div class="pokeBar"></div>
+                    <div></div>
                 </div>
             </section>
         </section>
@@ -150,7 +166,7 @@
         </section>
 
         <!--Traits-->
-        <section>
+        <section id="TraitsSection">
             <h2 class="title">Traits</h2>
             <div class="pokeGrid pokeSection">
                 <div>
@@ -163,7 +179,7 @@
                 </div>
                 <div>
                     <h3>Category</h3>
-                    <p>TBA</p>
+                    <p></p>
                 </div>
                 <div>
                     <h3>Abilities</h3>
