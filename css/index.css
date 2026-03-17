@@ -82,6 +82,8 @@ header {
   background: transparent;
   user-select: none;
   text-decoration: none;
+  border-radius: 1rem;
+  border:1px solid var(--text);
 }
 .chip:hover { transform: translateY(-1px); color: var(--accent); }
 /* Aktiv chip (valt filter) */
