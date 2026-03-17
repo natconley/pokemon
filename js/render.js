@@ -82,7 +82,7 @@ function createChip(type, onClick) {
 }
 
 // Ritar ut en lista av Pokémon-kort i gridEl. Rensar först befintliga kort.
-// Om listan är tom visas ett meddelande istället.
+//Om listan är tom visas ett meddelande istället.
 // Rensar befintliga kort och bygger nya med ett DocumentFragment
 // för bättre prestanda (lägger till allt på en gång i DOM:en).
 function renderGrid(gridEl, entries) {
@@ -99,3 +99,4 @@ function renderGrid(gridEl, entries) {
   });
   gridEl.appendChild(fragment);
 }
+//

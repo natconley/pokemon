@@ -11,6 +11,18 @@ header {
   align-items: center;
   gap: 1rem;
 }
+.topbar-left{
+  align-items: center;
+  margin:0;
+}
+.topbar-title{
+  font-size: 16px;
+  padding:0;
+}
+.icon{
+  width: 28px;
+  height: 28px;
+}
 
 /* --  KONTROLLER ------------------------------------------------
     Innehåller sökfält och sorteringsväljare. */
@@ -50,28 +62,30 @@ header {
 
 /* -- FILTER-CHIPS --------------------------------------------------
    Klickbara knappar för att filtrera på typ */
-.filters {
+/*.filters {
   display: flex;
   flex-wrap: wrap;
   gap: .4rem;
   padding: 4rem 2rem 1.5rem;
   max-width: 1360px;
   margin: 0 auto;
-}
+}*/
 
 .chip {
   padding: .28rem .85rem;
-  border-radius: 50px;
-  border: 1.5px solid var(--border);
-  font-size: .78rem; font-weight: 800;
+  margin-left:auto ;
+  font-size: 1rem; font-weight: 800;
   cursor: pointer;
   text-transform: capitalize;
   transition: background .15s, color .15s, border-color .15s, transform .15s;
-  color: var(--muted);
+  color: var(--text);
   background: transparent;
   user-select: none;
+  text-decoration: none;
+  border-radius: 1rem;
+  border:1px solid var(--text);
 }
-.chip:hover { transform: translateY(-1px); color: var(--text); }
+.chip:hover { transform: translateY(-1px); color: var(--accent); }
 /* Aktiv chip (valt filter) */
 .chip.active { background: var(--surface2); color: var(--text); border-color: rgba(255,255,255,.2); }
 [data-theme="light"] .chip.active { border-color: rgba(0,0,0,.15); }
@@ -479,4 +493,9 @@ input[type="range"]::-moz-range-thumb {
 .card--waitlist:hover {
   opacity: 1;
   filter: saturate(1);
+}
+@media (max-width:350px){
+  .topbar-title{
+    display: none;
+  }
 }

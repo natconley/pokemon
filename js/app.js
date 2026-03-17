@@ -158,17 +158,18 @@ let entries = POKEMON.filter(p => {
 // Init — hämta data och visa allt
 async function init() {
    try {
+      LoadingAnime();
       setLoading('Starting…', 0);
       const data = await loadAllPokemon((msg, pct) => setLoading(msg, pct));
       CHAINS = data.CHAINS || [];
       POKEMON = data.POKEMON || CHAINS.flat();
-
-      buildTypeChips();
+      //buildTypeChips();
+      stoploadingAnime();
       applyFiltersAndRender();
    } catch (e) {
       setLoading('Error loading data', 100);
       console.error('Failed to load Pokémon:', e);
-      gridEl.innerHTML = `<div class="empty"><span>!</span>Could not load Pokémon data</div>`;
+      gridEl.innerHtml = `<div class="empty"><span>!</span>Could not load Pokémon data</div>`;
    } finally {
       // Dölj overlay efter kort fördröjning
       setTimeout(() => loadingEl && (loadingEl.style.display = 'none'), 400);

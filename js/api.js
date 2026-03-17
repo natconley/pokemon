@@ -96,7 +96,6 @@ async function loadAllPokemon(onProgress) {
   /* 1: hämta listan på alla Pokémon (id, namn och URL till detaljer) */
   onProgress('Fetching Pokémon list…', 0);
   const { results: allEntries } = await fetchJSON('https://pokeapi.co/api/v2/pokemon?limit=10000');
-
   /* 2: hämta detaljerad data för alla Pokémon i listan — behövs för att bygga korten och typ-chipsen */
   const pokeDetails = await batchFetch(
     allEntries.map(e => e.url),

@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Nunito:wght@400;600;700;900&display=swap"
         rel="stylesheet" />
     <link rel="stylesheet" href="../css/styles.css" />
+    <link rel="stylesheet" href="../css/loading.css" />
     <link rel="stylesheet" href="../css/index.css" />
 </head>
 
@@ -29,6 +30,7 @@
         <img src="/assets/pokeball.svg" alt="Pokeball Icon" class="icon" />
         <span class="topbar-title">Pokédex</span>
         </a>
+            <a href="teambuilder.html" class="chip chip-team" data-type="team" id="chip-team">Teambuilder</a>
         <div class="topbar-right">
             <button id="theme-toggle" class="icon-btn" title="Toggle theme">☀️</button>
         </div>
@@ -62,35 +64,30 @@
             <div id="filterssliders">
                 <label id="hpsliderlabel">HP :
                     <input class="statsinput" type="number" id="hpnumber" min="1" max="500" value="0">
-                    <input class="statslider" type="range" min="1" max="500" id="hpslider" value="0">
+                    <input class="statslider" type="range" min="1" max="255" id="hpslider" value="0">
                 </label>
                 <label id="defsliderlabel">defence:
                     <input class="statsinput" type="number" id="defnumber" min="1" max="500" value="0">
-                    <input class="statslider" type="range" min="1" max="500" id="defslider" value="0">
+                    <input class="statslider" type="range" min="1" max="255" id="defslider" value="0">
                 </label>
                 <label id="attsliderlabel">attack:
                     <input class="statsinput" type="number" id="attnumber" min="1" max="500" value="0">
-                    <input class="statslider" type="range" min="1" max="500" id="attslider" value="0">
+                    <input class="statslider" type="range" min="1" max="255" id="attslider" value="0">
                 </label>
                 <label id="speedsliderlabel">speed:
                     <input class="statsinput" type="number" id="speednumber" min="1" max="500" value="0">
-                    <input class="statslider" type="range" min="1" max="500" id="speedslider" value="0">
+                    <input class="statslider" type="range" min="1" max="255" id="speedslider" value="0">
                 </label>
                 <label id="weightsliderlabel">weight:
                     <input class="statsinput" type="number" id="weightnumber" min="1" max="500" value="0">
-                    <input class="statslider" type="range" min="1" max="500" id="weightslider" value="0">
+                    <input class="statslider" type="range" min="1" max="255" id="weightslider" value="0">
                 </label>
             </div>
         </div>
         <!-- Filter-chips: utanför topbar -->
-        <div class="filters" id="filters">
-            <div class="chip active" data-type="all" id="chip-all">All</div>
-            <a href="teambuilder.html" class="chip chip-team" data-type="team" id="chip-team">Teambuilder</a>
-        </div>
     </header>
 
     <!-- Kortnätet: utanför topbar -->
-    <div class="grid" id="grid"></div>
     <div class="grid" id="grid"></div>
     <div class="load-more-wrap">
         <button id="load-more">Load more</button>
@@ -100,6 +97,8 @@
     <script src="../js/render.js"></script>
     <script src="../js/app.js"></script>
     <script src="../js/filters.js"></script>
+    <script src="../js/app.js"></script>
+    <script src="../js/loading.js"></script>
 </body>
 
 </html>

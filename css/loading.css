@@ -1,0 +1,17 @@
+.loadingtxt{
+  position: absolute;
+  transform: translate(+0%, +1000%);
+  margin-bottom:4rem;
+}
+.loadingimg{
+  animation: loadinganimation 3s linear infinite;
+  width:10rem;
+  height: 10rem;
+
+}
+@keyframes loadinganimation {
+  0%{transform: rotate(0deg);
+  border-color: white;}
+  50% {border-color: red;}
+  100%{transform: rotate(360deg);}
+}
