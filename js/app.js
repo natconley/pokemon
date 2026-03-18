@@ -135,6 +135,7 @@ let entries = POKEMON.filter(p => {
   const speedMatch = !speedsliderval || p.speed > speedsliderval;
   const searchMatch = !q || p.name.toLowerCase().includes(q) || String(p.id).includes(q);
 
+  // returnerar true om alla aktiva filter stämmer, annars false för att filtrera bort pokemons som inte matchar.
   return typeMatch && hpMatch && attMatch && defMatch && weightMatch && speedMatch && searchMatch;
 });
 
@@ -169,6 +170,7 @@ async function init() {
    } catch (e) {
       setLoading('Error loading data', 100);
       console.error('Failed to load Pokémon:', e);
+      //VI ÄR MEDVETNA ATT DETTA ÄR OSÄKERT, DET SKALL UNDVIKAS
       gridEl.innerHtml = `<div class="empty"><span>!</span>Could not load Pokémon data</div>`;
    } finally {
       // Dölj overlay efter kort fördröjning

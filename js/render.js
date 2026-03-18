@@ -16,6 +16,7 @@ function createCard(pokemon, index) {
     if (team.includes(pokemon.id)) return 'In Team';
     if (waitlist.includes(pokemon.id)) return 'In Waitlist';
     if (team.length >= 6) return 'Add To Waitlist';
+    // returnerar standardtexten om pokemons inte finns i team eller waitlist.
     return 'Add To Team';
   };
 
@@ -23,6 +24,7 @@ function createCard(pokemon, index) {
     const { team, waitlist } = _readTeam();
     if (team.includes(pokemon.id)) return 'active';
     if (waitlist.includes(pokemon.id)) return 'active waitlist';
+    // returnerar tom sträng om pokemons inte finns i team eller waitlist för att använda standardknappens utseende.
     return '';
   };
 
@@ -32,6 +34,7 @@ function createCard(pokemon, index) {
   }).join('');
 
   // Bygger kortets struktur enligt HTML strukturen
+  // VI ÄR MEDVETNA ATT DETTA ÄR OSÄKERT, DET SKALL UNDVIKAS
   card.innerHTML = `
   <div class="card-glow" style="background: linear-gradient(90deg, ${th.col}88, transparent);"></div>
   <a class="card-link" href="detail.html?id=${pokemon.id}">
@@ -53,7 +56,8 @@ function createCard(pokemon, index) {
   card.onmouseleave = () => { card.style.boxShadow = ''; };
 
   card.querySelector('.btn-team').addEventListener('click', e => {
-    e.preventDefault(); e.stopPropagation();
+    e.preventDefault(); 
+    e.stopPropagation();
     toggleTeamMember(pokemon.id);
   });
 
@@ -99,4 +103,4 @@ function renderGrid(gridEl, entries) {
   });
   gridEl.appendChild(fragment);
 }
-//
+  
