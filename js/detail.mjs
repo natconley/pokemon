@@ -1,10 +1,26 @@
-import { fetchPokemon, fetchType, fetchSpecies, getPokemonType, setPokemonType, capitalizeString, setPokeID, setBaseStats, setProgressBar } from "./pokeUtility.mjs"
+/* -- detail.mjs ---------------------------------------------------------
+   JS filen för detail.html sidan.
+   Visar detaljerad information om pokemon. 
+   ------------------------------------------------------------------- */
+
+import {
+    fetchPokemon,
+    fetchType,
+    fetchSpecies,
+    getPokemonType,
+    setPokemonType,
+    capitalizeString,
+    setPokeID,
+    setBaseStats,
+    setProgressBar
+} from "./pokeUtility.mjs"
 
 //Basic info
 const pokeSprite = document.getElementById("pokeSprite");
 const pokeName = document.getElementById("pokeName");
 const pokeId = document.getElementById("pokeId");
 const pokeDescription = document.getElementById("pokeDescription");
+const teamBtn = document.querySelector(".pokeHero button");
 
 //Stats
 const pokeHP = document.querySelector("#pokeHP p");
@@ -129,70 +145,6 @@ export async function getPokemonEvolutions(id = 1) {
     }
 
 };
-
-//export function setTextContent(){}; ?
-
-/* export async function renderEvolutions(evolutionArray = []) {
-
-    try {
-
-        let typesName = [];
-
-        for (const element of evolutionArray) {
-
-            //Tömmer types arreyn
-            typesName = [];
-
-            //Skapar alla element
-            const div = document.createElement("div");
-            const evolutionSprite = document.createElement("img");
-            const evolutionName = document.createElement("span");
-            const evolutionID = document.createElement("span");
-            const typeDiv = document.createElement("div");
-
-            //Hämtar data för varje pokemon
-            const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${element.name}`);
-
-            if (!response.ok) {
-                throw new Error("Status: " + response.status);
-            }
-
-            const evoData = await response.json();
-
-            //Sätter bilden och namnet
-            evolutionSprite.src = evoData.sprites.front_default;
-            evolutionSprite.alt = capitalizeString(element.name) + " sprite";
-            evolutionName.textContent = capitalizeString(element.name);
-            evolutionName.classList.add("card-name");
-
-            //Sätter 0:or och # i början av ID:t
-            setPokeID(evoData.id, evolutionID);
-
-            div.classList.add("pokeCard", "card-types");
-
-            pokeEvolutionDiv.append(div);
-            div.append(evolutionSprite); // du glömde lägga till spriten!
-            div.append(evolutionName);
-            div.append(evolutionID);
-            div.append(typeDiv);
-
-            //Sätter typen
-            typesName = [evoData.types[0].type.name];
-
-            //Om det finns en andra typ
-            if (evoData.types[1]) {
-                typesName.push(evoData.types[1].type.name);
-            }
-
-            setPokemonType(typesName, typeDiv);
-
-        }
-
-    } catch (err) {
-
-    }
-
-}; */
 
 export async function renderEvolutions(evolutionArray = []) {
 
@@ -349,7 +301,7 @@ export async function getPokemonStrengths(typeArray = []) {
 
 };
 
-export async function getSugesstedPokemon(weaknessArray = [], stats = []) {
+export async function getSugesstedPokemon(weaknessArray = []) {
 
     try {
 
@@ -421,6 +373,42 @@ export async function setCard(pokeArray = [], div) {
 
 }
 
+//sätter team knappens textinnehåll och klass
+export function setTeamBtn(id) {
+
+    //parse:ar id:t. 
+    const numericId = Number(id);
+
+    //hämtar ut teamet och waitlistan från localstorage
+    const { team, waitlist } = _readTeam();
+
+    //Tar bort tidigare klasser
+    teamBtn.classList.remove("active", "waitlist");
+
+    //sätter knappens text och klass. Kändes smidigast med en switch
+    switch (true) {
+
+        case team.includes(numericId):
+            teamBtn.textContent = "In Team";
+            teamBtn.classList.add("active");
+            break;
+
+        case waitlist.includes(numericId):
+            teamBtn.textContent = "In Waitlist";
+            teamBtn.classList.add("active", "waitlist");
+            break;
+
+        case team.length >= 6:
+            teamBtn.textContent = "Add To Waitlist";
+            break;
+
+        default:
+            teamBtn.textContent = "Add To Team";
+
+    }
+
+};
+
 //Hämtar pokemon infon
 export async function renderPokemonDetail(id) {
 
@@ -444,6 +432,9 @@ export async function renderPokemonDetail(id) {
         //Sätter typerna
         const typesArray = getPokemonType(data);
         setPokemonType(typesArray, pokeTypesDiv);
+
+        //knappen
+        setTeamBtn(id);
 
         //Weakness
         const weaknessArray = await getPokemonWeakness(typesArray);
@@ -513,3 +504,14 @@ const id = params.get("id");
 
 //Funktionen som hämtar infon för varje enskild pokemon
 renderPokemonDetail(id);
+
+//Knappen för att lägga till pokemon i teamet
+teamBtn.addEventListener("click", () => {
+    //parse:ar id till ett nummer eftersom det är det toggleTeamMember och setTeamBtnText förväntar sig
+    const numericId = Number(id);
+
+    //funktionen som togglar om pokemonen är i teamet eller waitlist i localstorage
+    toggleTeamMember(numericId);
+    //sätter texten på knappen och bytter CSS klasssen
+    setTeamBtn(numericId);
+});
