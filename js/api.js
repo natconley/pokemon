@@ -144,6 +144,7 @@ async function loadAllPokemon(onProgress) {
       .map(name => {
         // Slå upp Pokémon-objektet via art-namnet
         const species = allSpecies.find(s => s.name === name);
+        // returnerar pokemon-objekt eller null om det inte finns
         return species ? byId[species.id] : null;
       })
       .filter(Boolean) // ta bort null-värden (Pokémon som filtrerades bort i steg 2)
@@ -151,6 +152,7 @@ async function loadAllPokemon(onProgress) {
         // Hoppa över om Pokémon redan finns i en annan kedja
         if (seenIds.has(p.id)) return false;
         seenIds.add(p.id);
+        // returnerar true för att behålla Pokémon i kedjan
         return true;
       });
 
@@ -175,5 +177,6 @@ async function loadAllPokemon(onProgress) {
   } catch (_) { /* Cache full — kör utan, datan laddas om vid nästa besök */ }
 
   onProgress('Done!', 100);
+  // returnerar både chains och en platt lista av alla pokemons till app.js
   return { CHAINS, POKEMON: CHAINS.flat() };
 }
