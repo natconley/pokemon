@@ -1,21 +1,27 @@
 // FETCH POKEMON FROM API (Natalies funktion)
-export async function fetchPokemon(id) {
+export async function fetchPokemon(pokemon) {
+    //funktionen förväntar sig antingen ett pokemon id eller namnet på pokemonen
     try {
+
         // Hämtar data från API
-        const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
+        const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon}`);
         // Validerar att information kunde hämtas
         // response.ok = statskod 200 - 299, !response.ok = alla andra statuskoder
         if (!response.ok) {
-            throw new Error(`Failed to fetch Pokémon ID ${id}. Status: ${response.status}`);
+            throw new Error(`Failed to fetch Pokémon ID ${pokemon}. Status: ${response.status}`);
         }
-        // Omvandlar till JSON
+
+        // parse:ar JSON svaret till ett javaScript objekt
         const data = await response.json();
+        // Returnerar javascript objektet
         return data;
-    } catch (error) {
-        console.error("Error fetching Pokémon", error);
-        // loadTeam renderar null som empty slot
+
+    } catch (err) {
+        // Fångar fel (nätverksfel eller kastade fel ovan) och returnerar null
+        console.error("Error fetching Pokémon" + "\n" + err);
         return null;
     }
+
 }
 
 export async function fetchType(type = "") {
@@ -32,11 +38,12 @@ export async function fetchType(type = "") {
             if (!response.ok) {
                 throw new Error(`Failed to fetch Pokémon type ${type}. Status: ${response.status}`);
             }
-            // Omvandlar till JSON
+
+            // parse:ar JSON svaret till ett javaScript objekt
             const data = await response.json();
-
+            //lägger datan i session storage
             sessionStorage.setItem(type, JSON.stringify(data));
-
+            // Returnerar javascript objektet
             return data;
 
         } else {
@@ -46,9 +53,8 @@ export async function fetchType(type = "") {
 
         }
 
-    } catch (error) {
-        console.error("Error fetching type", error);
-        // loadTeam renderar null som empty slot
+    } catch (err) {
+        console.error("Error fetching type" + "\n" + err);
         return null;
     }
 
@@ -58,7 +64,7 @@ export async function fetchSpecies(id = 1) {
 
     try {
 
-        //Lägger till typerna i session storage för att minska API anropen
+        //Lägger till species informationen i session storage för att minska API anropen
         if (!sessionStorage.getItem(`species_${id}`)) {
 
             // Hämtar data från API
@@ -68,11 +74,12 @@ export async function fetchSpecies(id = 1) {
             if (!response.ok) {
                 throw new Error(`Failed to fetch Pokémon species ${id}. Status: ${response.status}`);
             }
-            // Omvandlar till JSON
+
+            // parse:ar JSON svaret till ett javaScript objekt
             const data = await response.json();
-
+            //lägger datan i session storage
             sessionStorage.setItem(`species_${id}`, JSON.stringify(data));
-
+            // Returnerar javascript objektet
             return data;
 
         } else {
@@ -82,14 +89,47 @@ export async function fetchSpecies(id = 1) {
 
         }
 
-    } catch (error) {
-        console.error("Error fetching species", error);
-        // loadTeam renderar null som empty slot
+    } catch (err) {
+        console.error("Error fetching species" + "\n" + err);
         return null;
     }
 
 }
 
+export async function fetchEvolutionChain(id = 1) {
+
+    try {
+
+        //Lägger till evolutionerna i session storage för att minska API anropen
+        if (!sessionStorage.getItem(`evolution-chain_${id}`)) {
+
+            // Hämtar data från API
+            const response = await fetch(`https://pokeapi.co/api/v2/evolution-chain/${id}`);
+            // Validerar att information kunde hämtas
+            // response.ok = statskod 200 - 299, !response.ok = alla andra statuskoder
+            if (!response.ok) {
+                throw new Error(`Failed to fetch Pokémon evolution-chain ${id}. Status: ${response.status}`);
+            }
+            // Omvandlar till JSON
+            const data = await response.json();
+            //lägger datan i session storage
+            sessionStorage.setItem(`evolution-chain_${id}`, JSON.stringify(data));
+            // Returnerar javascript objektet
+            return data;
+
+        } else {
+
+            const data = sessionStorage.getItem(`evolution-chain_${id}`);
+            return JSON.parse(data);
+
+        }
+
+    } catch (err) {
+        console.error("Error fetching evolution-chain" + "\n" + err);
+        return null;
+    }
+
+}
 
 //Gör förstabokstaven till storbokstav
 export function capitalizeString(string = "") {
