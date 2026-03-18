@@ -1,4 +1,4 @@
-/* MISC. ------------------------------------------*/
+/* --MISC. ------------------------------------------*/
 
 * {
     box-sizing: border-box;
@@ -49,7 +49,7 @@ a {
     display: none;
 }
 
-/* LAYOUT ---------------------------------------*/
+/* --LAYOUT ---------------------------------------*/
 main {
     max-width: 900px;
     margin: 0 auto;
@@ -117,7 +117,7 @@ main {
     border-color: var(--border);
 }
 
-/* CTA Buttons----------------------------------------------------*/
+/* --CTA Buttons----------------------------------------------------*/
 .btnGroup {
     z-index: 1;
     position: absolute;
@@ -159,7 +159,7 @@ button {
     transform: translateY(0);
 }
 
-/* TEAM OVERVIEW---------------------------------------*/
+/* --TEAM OVERVIEW---------------------------------------*/
 
 /* Cards/images */
 
@@ -255,7 +255,7 @@ button {
 }
 
 
-/* TEAM ANALYSIS -------------------------------------*/
+/* --TEAM ANALYSIS -------------------------------------*/
 
 .typeCoverage h3,
 .analysisContainer h3,
@@ -424,7 +424,7 @@ button {
     transition: transform .3s cubic-bezier(.34, 1.56, .64, 1), box-shadow .25s, border-color .2s;
 }
 
-/* WAITLIST----------------------------------------*/
+/* --WAITLIST----------------------------------------*/
 
 .waitlist {
     display: flex;
@@ -460,7 +460,7 @@ button {
     width: fit-content;
 }
 
-/* MEDIA QUERIES---------------------------------*/
+/* --MEDIA QUERIES---------------------------------*/
 
 @media (min-width: 420px) {
     .slotNameRow {

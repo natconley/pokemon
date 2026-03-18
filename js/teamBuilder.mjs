@@ -3,14 +3,6 @@
 
 // URSÄKTA MIN SVENGELSKA
 
-// OM TID ÖVER-------------------------------------------------------------------------------
-// Suggestion Weakness använder fallbackpool om föreslagna finns, ändra till näst lägsta stat
-// Motivering till suggestions i gränssnitt
-// se över lösning för att minska kod som dubliceras, ex. renderfunktioner
-// undersök möjlighet till förbättring på type spread (se nuvarande type spread)
-// bättre visualisering och egen display av balance (just nu inuti strengths & weaknesses)
-// dela upp i olika filer? ca 1k rader..
-
 import { capitalizeString, setPokeID } from './pokeUtility.mjs';
 
 // TEAM GALLERY
@@ -123,6 +115,8 @@ const statDisplayNames = {
 
 
 // LOAD TEAM
+// laddar team från locakStorage, kallar på fetch funktion och renderfunktion
+// returnerar tom array om fetch ej fungerat 
 async function loadTeam() {
     try {
         // Hämtar id från localStorage, converterar från sträng. Om inget är sparat är teamIds en tom array
@@ -150,7 +144,7 @@ async function loadTeam() {
         }
         // return för användning i loadStats
         return pokemonData;
-    } catch {
+    } catch (error) {
         console.error("Error loading team:", error);
         // return empty array för at loadsuggested och teamstats inte ska crasha
         return [];
@@ -158,6 +152,7 @@ async function loadTeam() {
 }
 
 // FETCH POKEMON FROM API
+// returnerar pokemon data som objekt eller null om fail
 async function fetchPokemon(id) {
     // för att minimera API calls när init körs
     if (pokemonCache[id]) {
@@ -185,6 +180,8 @@ async function fetchPokemon(id) {
 
 
 //FILL SLOT W. POKE INFO (img, name, id, types, actions)
+// renderar kort med pokemon info och bild
+// toggle på knappar för se mer och ta bort
 function renderFilledSlot(slot, pokemon) {
     // Tömmer kortets tidigare innehåll, innerHTML bör inte vara en risk här
     slot.innerHTML = "";
@@ -330,7 +327,7 @@ function renderFilledSlot(slot, pokemon) {
     slot.appendChild(slotInfo);
 }
 
-
+// RENDERS SLOT FOR DELETED POKEMON
 function renderEmptySlot(slot) {
     // clear slot contents
     slot.innerHTML = "";
@@ -348,6 +345,7 @@ function renderEmptySlot(slot) {
 }
 
 // GET AND COMBINES INDIVIDUAL STATS FOR TEAM STATS
+// Returns teamStats objekt
 function loadStats(pokemonData) {
     // tomt objekt för att lagra resultat
     const teamStats = {};
@@ -376,6 +374,7 @@ function loadStats(pokemonData) {
 
 
 // LOAD WAITLIST
+// laddar väntlista från localStorage, använder fetchfunktion och renderfunktion
 async function loadWaitlist() {
     try {
         // Hämta id fron localStorage, convertera till sträng. Om inget är sparat är waitlistIds en tom array
@@ -412,6 +411,8 @@ async function loadWaitlist() {
 }
 
 // FILL WAITLIST SLOT W. POKE INFO (img, name, id, types, actions)
+// renderar kort i väntlista med pokemon info och bild
+// eventlistener för add to team, delete och see more knappar
 function renderFilledCarousel(slot, pokemon) {
     // Tömmer kortets tidigare innehåll, innerHTML bör inte vara en risk här
     slot.innerHTML = "";
@@ -594,18 +595,15 @@ function renderFilledCarousel(slot, pokemon) {
     slot.appendChild(slotInfo);
 
 }
-
+// LOAD SUGGESTIONS
+// hämtar/laddar och renderar tre suggestionskort baserat på teamanalysis
+// empty state meddelande om team ej har pokemon
 async function loadSuggested(pokemonData, teamStats) {
     // töm på tidigare innehåll
     suggestedContainer.innerHTML = "";
     // ser till att pokemon finns & att id är rätt
     const validPokemon = pokemonData.filter(pokemon => pokemon !== null);
     const teamIds = validPokemon.map(pokemon => pokemon.id);
-
-    // TYPE suggestion
-    // Brigittas weakness calculator är mer specifik/bättre, men skulle kräva upp till 12 API anrop beroende på lagkonstellation
-    // möjligt att spara värderna i array från start men mkt jobb & tidskrävande
-    // Ändra till Brigittas version om tid finns över (Type weakness istället för Type Coverage)
 
     // om pokemon, ta bort text
     if (validPokemon.length === 0) {
@@ -615,8 +613,6 @@ async function loadSuggested(pokemonData, teamStats) {
     suggestionInfo.classList.add("hidden");
 
     try {
-
-
         // takes keys(types) from typePools and finds a non match in team.
         const missingType = Object.keys(typePools).find(type => !teamStats.types.includes(type));
 
@@ -678,6 +674,9 @@ async function loadSuggested(pokemonData, teamStats) {
     }
 }
 
+// RENDER SUGGESTION SLOT
+// renderar suggestion slots med info och bild
+// eventlisteners för knappar see more och add to team
 function renderFilledSuggestions(slot, pokemon) {
     // Tömmer kortets tidigare innehåll, innerHTML bör inte vara en risk här
     slot.innerHTML = "";
@@ -841,6 +840,9 @@ function renderFilledSuggestions(slot, pokemon) {
     slot.appendChild(slotInfo);
 }
 
+// TEAM ANALYSIS
+// skapar och renderar team analys
+// Type coverage, starkast och svagast stats, balans mellan attack stats och defense stats
 function loadTeamInfo(teamStats) {
     // nollställer info om inga pokemon i team/ stats är 0
     if (teamStats.types.length === 0) {
@@ -902,6 +904,11 @@ function loadTeamInfo(teamStats) {
         // b först för att gå högst till lägst
         .sort((a, b) => teamStats[b] - teamStats[a]);
 
+    //Header för balanskategori
+    const balanceHeader = document.createElement("p");
+    balanceHeader.textContent = "Balance";
+    balanceHeader.classList.add("statName");
+
     // STRENGTHS -- two highest stats 
     // töm container på tidigare innehåll
     teamInfoPros.innerHTML = "";
@@ -929,10 +936,6 @@ function loadTeamInfo(teamStats) {
     // Math.abs ger skillnaden mellan statsen, sedan se om skillnaden är mindre än eller 40
     const balanceAttack = Math.abs(teamStats.attack - teamStats["special-attack"]) <= 40;
     const balanceDefense = Math.abs(teamStats.defense - teamStats["special-defense"]) <= 40;
-
-    const balanceHeader = document.createElement("p");
-    balanceHeader.textContent = "Balance";
-    balanceHeader.classList.add("statName");
 
     // om båda är balanserade, skapa p och skriv det, append till div elementet
     if (balanceAttack && balanceDefense) {
@@ -1057,6 +1060,8 @@ function setProgressBar(array) {
 }
 
 // LOAD DATA ON PAGE
+// initialiserar sidan genom att ladda och rendera alla delar i ordning
+// blir kallad på vid page load och när lag eller waitlist förändras
 async function init() {
     try {
         //Hämta team constellation/data från loadTeam
