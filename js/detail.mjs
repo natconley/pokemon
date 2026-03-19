@@ -1,10 +1,27 @@
-import { fetchPokemon, fetchType, fetchSpecies, getPokemonType, setPokemonType, capitalizeString, setPokeID, setBaseStats, setProgressBar } from "./pokeUtility.mjs"
+/* -- detail.mjs ---------------------------------------------------------
+   JS filen för detail.html sidan.
+   Visar detaljerad information om pokemon. 
+   ------------------------------------------------------------------- */
+
+import {
+    fetchPokemon,
+    fetchType,
+    fetchSpecies,
+    fetchEvolutionChain,
+    getPokemonType,
+    setPokemonType,
+    capitalizeString,
+    setPokeID,
+    setBaseStats,
+    setProgressBar
+} from "./pokeUtility.mjs"
 
 //Basic info
 const pokeSprite = document.getElementById("pokeSprite");
 const pokeName = document.getElementById("pokeName");
 const pokeId = document.getElementById("pokeId");
 const pokeDescription = document.getElementById("pokeDescription");
+const teamBtn = document.querySelector(".pokeHero button");
 
 //Stats
 const pokeHP = document.querySelector("#pokeHP p");
@@ -67,6 +84,7 @@ const typePools = {
     fairy: [282, 468, 700]
 };
 
+//Sätter pokemon beskrivningen
 function renderPokemonDescription(data) {
     // Hämtar flavor text
     const descriptions = data.flavor_text_entries;
@@ -86,16 +104,12 @@ export async function getPokemonEvolutions(id = 1) {
 
     try {
 
+        //API anrop för att hämta URL:en till evolutions kedjan
         const response = await fetchSpecies(id);
+        const url = response.evolution_chain.url.split("/");
 
-        // Andra anropet (URL från första svaret)
-        const data = await fetch(response.evolution_chain.url);
-
-        if (!data.ok) {
-            throw new Error("Status: " + response.status);
-        }
-
-        const evoData = await data.json();
+        //Andra API anropet för att hämta evolutions kedjan för pokemonen
+        const data = await fetchEvolutionChain(url[6]);
 
         //Tom array som samlar namnen och url på alla evolutioner
         const evolutions = [];
@@ -118,81 +132,20 @@ export async function getPokemonEvolutions(id = 1) {
                 // funktionen körs då igen fast ett steg längre ner i JSON trädet
                 // detta fortsätter tills evolves_to är tom och forEach inte har något att köra
                 parseChain(chainObject));
+
         }
 
-        parseChain(evoData.chain);
+        parseChain(data.chain);
 
+        //returnerar en array av objekt med pokemon namn och URl till pokemon species för varje pokemon i evolutions kedjan
         return evolutions;
 
     } catch (err) {
-
+        console.error("Could not get pokemon evolutions:" + "\n" + err);
+        return;
     }
 
 };
-
-//export function setTextContent(){}; ?
-
-/* export async function renderEvolutions(evolutionArray = []) {
-
-    try {
-
-        let typesName = [];
-
-        for (const element of evolutionArray) {
-
-            //Tömmer types arreyn
-            typesName = [];
-
-            //Skapar alla element
-            const div = document.createElement("div");
-            const evolutionSprite = document.createElement("img");
-            const evolutionName = document.createElement("span");
-            const evolutionID = document.createElement("span");
-            const typeDiv = document.createElement("div");
-
-            //Hämtar data för varje pokemon
-            const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${element.name}`);
-
-            if (!response.ok) {
-                throw new Error("Status: " + response.status);
-            }
-
-            const evoData = await response.json();
-
-            //Sätter bilden och namnet
-            evolutionSprite.src = evoData.sprites.front_default;
-            evolutionSprite.alt = capitalizeString(element.name) + " sprite";
-            evolutionName.textContent = capitalizeString(element.name);
-            evolutionName.classList.add("card-name");
-
-            //Sätter 0:or och # i början av ID:t
-            setPokeID(evoData.id, evolutionID);
-
-            div.classList.add("pokeCard", "card-types");
-
-            pokeEvolutionDiv.append(div);
-            div.append(evolutionSprite); // du glömde lägga till spriten!
-            div.append(evolutionName);
-            div.append(evolutionID);
-            div.append(typeDiv);
-
-            //Sätter typen
-            typesName = [evoData.types[0].type.name];
-
-            //Om det finns en andra typ
-            if (evoData.types[1]) {
-                typesName.push(evoData.types[1].type.name);
-            }
-
-            setPokemonType(typesName, typeDiv);
-
-        }
-
-    } catch (err) {
-
-    }
-
-}; */
 
 export async function renderEvolutions(evolutionArray = []) {
 
@@ -208,16 +161,9 @@ export async function renderEvolutions(evolutionArray = []) {
 
         for (const element of evolutionArray) {
 
-            //Hämtar data för varje pokemon
-            const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${element.name}`);
+            const evoData = await fetchPokemon(element.name);
 
-            if (!response.ok) {
-                throw new Error("Status: " + response.status);
-            }
-
-            const evoData = await response.json();
-
-            setCard()
+            setCard();
 
             //Bygger ett nytt objekt för varje iteration
             //Objektet innehåller data på det sättet som createCard förväntar sig
@@ -238,7 +184,8 @@ export async function renderEvolutions(evolutionArray = []) {
         }
 
     } catch (err) {
-
+        console.error("Could not render pokemon evolutions: " + "\n" + err);
+        return;
     }
 
 };
@@ -251,10 +198,11 @@ export async function getPokemonWeakness(typeArray = []) {
         //Här används objekt istället för arrayer för att lättare kunna söka eftere element utan att loopa 
         let typesMultipliers = {};
 
+        //Loopar igenom varje typ som pokemonen har tex gräs, eld 
         for (const element of typeArray) {
 
-            //Destructuring
-            const { id, damage_relations } = await fetchType(element);
+            //Destructuring. Plockar ut id och damage_relations direkt från objektet som fetchType returnerar
+            const { damage_relations } = await fetchType(element);
 
             //Loopar igenom double_damage_from arrayen
             damage_relations.double_damage_from.forEach(element => {
@@ -267,36 +215,41 @@ export async function getPokemonWeakness(typeArray = []) {
                 typesMultipliers[element.name] = (typesMultipliers[element.name] || 1) * 2
             })
 
+            //Typer som gör 0.5x skada mot den här typen
             damage_relations.half_damage_from.forEach(element => {
                 typesMultipliers[element.name] = (typesMultipliers[element.name] || 1) * 0.5
             })
 
+            //Typer som gör 0x skada mot den här typen
             damage_relations.no_damage_from.forEach(element => {
                 typesMultipliers[element.name] = (typesMultipliers[element.name] || 1) * 0
             })
 
         };
 
-        //Gör om objektet till en array genom Object.entries
+        //Gör om typesMultipliers objektet till en array
+        //tex { fire: 2, water: 0.5 } → [["fire", 2], ["water", 0.5]]
         const results = Object.entries(typesMultipliers);
 
-        //De slutliga värdena sparas i den här arrayen
+        //Tom array som samlar typerna som pokemonen är svag mot
         const doubleDamage = [];
 
+        //Loopar igenom alla typer och pushar typerna med multiplier över 1 in i doubleDamage arrayen
         for (const [key, value] of results) {
             if (value > 1) { doubleDamage.push(key) }
         };
 
-        //Ingenting händer med resultatet här, utan värdet returneras endast. Detta för att göra funkitonen återanvändbar
+        //Returnerar en string array med typerna som pokemonen är svag mot
         return doubleDamage;
 
     } catch (err) {
-
+        console.error("Could not get pokemon weaknesses: " + "\n" + err);
+        return;
     }
 
 };
 
-//Hämtar vilka typer en pokemon är svag mot
+//Hämtar vilka typer en pokemon är stark mot
 export async function getPokemonStrengths(typeArray = []) {
 
     try {
@@ -307,7 +260,7 @@ export async function getPokemonStrengths(typeArray = []) {
         for (const element of typeArray) {
 
             //Destructuring
-            const { id, damage_relations } = await fetchType(element);
+            const { damage_relations } = await fetchType(element);
 
             //Loopar igenom double_damage_from arrayen
             damage_relations.double_damage_to.forEach(element => {
@@ -330,26 +283,30 @@ export async function getPokemonStrengths(typeArray = []) {
 
         };
 
-        //Gör om objektet till en array genom Object.entries
+        //Gör om typesMultipliers objektet till en array
+        //tex { fire: 2, water: 0.5 } → [["fire", 2], ["water", 0.5]]
         const results = Object.entries(typesMultipliers);
 
-        //De slutliga värdena sparas i den här arrayen
+        //Tom array som samlar typerna som pokemonen är stark mot
         const doubleDamage = [];
 
+        //Loopar igenom alla typer och pushar typerna med multiplier över 1 in i doubleDamage arrayen
         for (const [key, value] of results) {
             if (value > 1) { doubleDamage.push(key) }
         };
 
-        //Ingenting händer med resultatet här, utan värdet returneras endast. Detta för att göra funkitonen återanvändbar
+        //Returnerar en string array med typerna som pokemonen är stark mot
         return doubleDamage;
 
     } catch (err) {
-
+        console.error("Could not get pokemon strengths: " + "\n" + err);
+        return;
     }
 
 };
 
-export async function getSugesstedPokemon(weaknessArray = [], stats = []) {
+//Hämtar pokemon rekommendationer baserat på pokemonens svagheter för att täcka upp luckor i laget
+export async function getSugesstedPokemon(weaknessArray = []) {
 
     try {
 
@@ -366,30 +323,46 @@ export async function getSugesstedPokemon(weaknessArray = [], stats = []) {
             suggestions.push(...typePools[element]);
         }
 
-        //begrönsar rekommendationerna till 5 stycken 
-        while (result.length < 5) {
+        //begrönsar rekommendationerna till 6 stycken 
+        while (result.length < 6) {
+
             //randomize type pool pick
             const id = suggestions[Math.floor(Math.random() * suggestions.length)];
+
+            //hindrar att dubbleter kommer med i rekommendationerna
             if (!result.includes(id)) {
                 result.push(id);
             }
+
         }
 
+        //returnerar en array med pokemon id:n
         return result;
 
     } catch (err) {
-
+        console.error("Could not get sugessted pokemon: " + "\n" + err);
+        return;
     }
 
 }
 
+//sätter "category" under "traits" sektionen
 export async function setPokemonCategory(id = 1, p) {
-    const category = await fetchSpecies(id);
 
-    p.textContent = category.genera[7].genus;
+    try {
+
+        const category = await fetchSpecies(id);
+
+        p.textContent = category.genera[7].genus;
+
+    } catch (err) {
+        console.error("Could not get pokemon category: " + "\n" + err);
+        return;
+    }
+
 }
 
-//Formaterar datat på sättet som createCard funktionen förväntar sig
+//Formaterar datan på sättet som createCard funktionen förväntar sig
 export async function setCard(pokeArray = [], div) {
 
     try {
@@ -416,10 +389,47 @@ export async function setCard(pokeArray = [], div) {
         }
 
     } catch (err) {
-
+        console.error("Could not set pokemon card: " + "\n" + err);
+        return;
     }
 
 }
+
+//sätter team knappens textinnehåll och klass
+export function setTeamBtn(id) {
+
+    //parse:ar id:t. 
+    const numericId = Number(id);
+
+    //hämtar ut teamet och waitlistan från localstorage
+    const { team, waitlist } = _readTeam();
+
+    //Tar bort tidigare klasser
+    teamBtn.classList.remove("active", "waitlist");
+
+    //sätter knappens text och klass. Kändes smidigast med en switch
+    switch (true) {
+
+        case team.includes(numericId):
+            teamBtn.textContent = "In Team";
+            teamBtn.classList.add("active");
+            break;
+
+        case waitlist.includes(numericId):
+            teamBtn.textContent = "In Waitlist";
+            teamBtn.classList.add("active", "waitlist");
+            break;
+
+        case team.length >= 6:
+            teamBtn.textContent = "Add To Waitlist";
+            break;
+
+        default:
+            teamBtn.textContent = "Add To Team";
+
+    }
+
+};
 
 //Hämtar pokemon infon
 export async function renderPokemonDetail(id) {
@@ -444,6 +454,9 @@ export async function renderPokemonDetail(id) {
         //Sätter typerna
         const typesArray = getPokemonType(data);
         setPokemonType(typesArray, pokeTypesDiv);
+
+        //knappen
+        setTeamBtn(id);
 
         //Weakness
         const weaknessArray = await getPokemonWeakness(typesArray);
@@ -497,7 +510,8 @@ export async function renderPokemonDetail(id) {
         setCard(suggestions, suggestionsDiv);
 
     } catch (err) {
-
+        console.error("Could not render pokemon: " + "\n" + err);
+        return;
     }
 
 };
@@ -513,3 +527,14 @@ const id = params.get("id");
 
 //Funktionen som hämtar infon för varje enskild pokemon
 renderPokemonDetail(id);
+
+//Hanterar knapptryck för team knappen
+teamBtn.addEventListener("click", () => {
+    //parse:ar id till ett nummer eftersom det är det toggleTeamMember och setTeamBtnText förväntar sig
+    const numericId = Number(id);
+
+    //funktionen som togglar om pokemonen är i teamet eller waitlist i localstorage
+    toggleTeamMember(numericId);
+    //sätter texten på knappen och bytter CSS klasssen
+    setTeamBtn(numericId);
+});
