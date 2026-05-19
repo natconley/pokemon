@@ -214,4 +214,31 @@ export function _readTeam() {
   } catch {
     return { team: [], waitlist: [] };
   }
-}v
+}
+
+export function toggleTeamMember(id) {
+  const { team, waitlist } = _readTeam();
+
+  if (team.includes(id)) {
+    const updated = team.filter(x => x !== id);
+    waitlist.push(id);
+    localStorage.setItem('pokemonTeam', JSON.stringify(updated));
+    localStorage.setItem('pokemonWaitlist', JSON.stringify(waitlist));
+  } else if (waitlist.includes(id)) {
+    if (team.length < 6) {
+      const updated = waitlist.filter(x => x !== id);
+      team.push(id);
+      localStorage.setItem('pokemonTeam', JSON.stringify(team));
+      localStorage.setItem('pokemonWaitlist', JSON.stringify(updated));
+    }
+  } else {
+    if (team.length < 6) {
+      team.push(id);
+      localStorage.setItem('pokemonTeam', JSON.stringify(team));
+    } else if (waitlist.length < 10) {
+      waitlist.push(id);
+      localStorage.setItem('pokemonWaitlist', JSON.stringify(waitlist));
+    }
+  }
+  document.dispatchEvent(new CustomEvent('teamchange', { detail: { id } }));
+}

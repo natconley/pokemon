@@ -14,7 +14,8 @@ import {
     setPokeID,
     setBaseStats,
     setProgressBar,
-    _readTeam
+    _readTeam,
+    toggleTeamMember
 } from "./pokeUtility.mjs"
 
 
