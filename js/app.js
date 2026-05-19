@@ -171,7 +171,7 @@ async function init() {
       setLoading('Error loading data', 100);
       console.error('Failed to load Pokémon:', e);
       //VI ÄR MEDVETNA ATT DETTA ÄR OSÄKERT, DET SKALL UNDVIKAS
-      gridEl.innerHtml = `<div class="empty"><span>!</span>Could not load Pokémon data</div>`;
+      gridEl.innerHTML = `<div class="empty"><span>!</span>Could not load Pokémon data</div>`;
    } finally {
       // Dölj overlay efter kort fördröjning
       setTimeout(() => loadingEl && (loadingEl.style.display = 'none'), 400);
