@@ -203,3 +203,15 @@ export function setProgressBar(array = []) {
     })
 
 };
+
+// läser och returnerar team och waitlist från localStorage som två separata arrayer.
+// går något fel returneras tomma arrayer.
+export function _readTeam() {
+  try {
+    const team = JSON.parse(localStorage.getItem('pokemonTeam') || '[]');
+    const waitlist = JSON.parse(localStorage.getItem('pokemonWaitlist') || '[]');
+    return { team, waitlist };
+  } catch {
+    return { team: [], waitlist: [] };
+  }
+}v

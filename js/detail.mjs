@@ -13,8 +13,11 @@ import {
     capitalizeString,
     setPokeID,
     setBaseStats,
-    setProgressBar
+    setProgressBar,
+    _readTeam
 } from "./pokeUtility.mjs"
+
+
 
 //Basic info
 const pokeSprite = document.getElementById("pokeSprite");
