@@ -2,15 +2,18 @@ function LoadingAnime(){
     hideloadmore();
   const loadingimg = document.createElement('img');
   const loadingtext = document.createElement('p')
-  loadingimg.src = "assets/Pokeball-15.png";
+  loadingimg.src = "/pokemon/assets/Pokeball-15.png";
   loadingimg.className = "loadingimg"
   loadingtext.className = "loadingtxt";
   loadingtext.innerText = "Loading Content Please Wait......"
-  document.getElementById(`grid`).appendChild(loadingimg);
-  document.getElementById(`grid`).appendChild(loadingtext);
-  document.getElementById(`grid`).style.display = "flex";
-  document.getElementById(`grid`).style.justifyContent = "center";
-  document.getElementById(`grid`).style.minHeight = "100lhv";
+  const grid = document.getElementById('grid');
+if (grid) {
+    grid.appendChild(loadingimg);
+    grid.appendChild(loadingtext);
+    grid.style.display = "flex";
+    grid.style.justifyContent = "center";
+    grid.style.minHeight = "100lhv";
+}
 }
 function stoploadingAnime (){
   const grid = document.getElementById('grid');
