@@ -23,9 +23,9 @@ function stoploadingAnime (){
 }
 function hideloadmore(){
     const loadbtn = document.querySelector('.load-more-wrap');
-    loadbtn.style.display = "none";
+    if (loadbtn) loadbtn.style.display = "none";
 }
 function showloadmore(){
     const loadbtn = document.querySelector('.load-more-wrap');
-    loadbtn.style.display = "flex";
+    if (loadbtn) loadbtn.style.display = "flex";
 }
