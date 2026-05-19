@@ -37,7 +37,7 @@ function createCard(pokemon, index) {
   // VI ÄR MEDVETNA ATT DETTA ÄR OSÄKERT, DET SKALL UNDVIKAS
   card.innerHTML = `
   <div class="card-glow" style="background: linear-gradient(90deg, ${th.col}88, transparent);"></div>
-  <a class="card-link" href="detail.html?id=${pokemon.id}">
+  <a class="card-link" href="pages/detail.html?id=${pokemon.id}">
     <div class="card-img-wrap" style="background: ${th.bg};">
       <span class="card-number">#${String(pokemon.id).padStart(3, '0')}</span>
       <img src="${pokemon.img}" alt="${pokemon.name}" loading="lazy" />
