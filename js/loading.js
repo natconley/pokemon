@@ -2,7 +2,7 @@ function LoadingAnime(){
     hideloadmore();
   const loadingimg = document.createElement('img');
   const loadingtext = document.createElement('p')
-  loadingimg.src = "/assets/Pokeball-15.png";
+  loadingimg.src = "assets/Pokeball-15.png";
   loadingimg.className = "loadingimg"
   loadingtext.className = "loadingtxt";
   loadingtext.innerText = "Loading Content Please Wait......"
