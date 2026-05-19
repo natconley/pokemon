@@ -17,13 +17,13 @@ if (grid) {
 }
 function stoploadingAnime (){
   const grid = document.getElementById('grid');
-  grid.innercontent = '';
+  grid.innerHTML = '';
   grid.style.display = "grid";
   grid.style.justifyContent = "";
   grid.style.height = "";
   showloadmore();
-
 }
+
 function hideloadmore(){
     const loadbtn = document.querySelector('.load-more-wrap');
     if (loadbtn) loadbtn.style.display = "none";
