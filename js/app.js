@@ -68,12 +68,12 @@ function toggleTeamMember(id) {
   // skickar event så alla korts knappar uppdateras när team/waitlist ändras
   document.dispatchEvent(new CustomEvent('teamchange', { detail: { id } }));
 }
-
+/*
 // Uppdatera laddnings-UI
 function setLoading(msg, percent) {
    if (loadingText) loadingText.textContent = msg || '';
    if (loadingBar) loadingBar.style.width = (Number(percent) || 0) + '%';
-}
+}*/
 
 // Bygg typ-chip-listan (behåll befintliga "All" och "Team")
 function buildTypeChips() {
@@ -159,22 +159,13 @@ let entries = POKEMON.filter(p => {
 // Init — hämta data och visa allt
 async function init() {
    try {
-      LoadingAnime();
-      setLoading('Starting…', 0);
-      const data = await loadAllPokemon((msg, pct) => setLoading(msg, pct));
+      const data = await loadAllPokemon();
       CHAINS = data.CHAINS || [];
       POKEMON = data.POKEMON || CHAINS.flat();
-      //buildTypeChips();
-      stoploadingAnime();
       applyFiltersAndRender();
    } catch (e) {
-      setLoading('Error loading data', 100);
       console.error('Failed to load Pokémon:', e);
-      //VI ÄR MEDVETNA ATT DETTA ÄR OSÄKERT, DET SKALL UNDVIKAS
-      gridEl.innerHTML = `<div class="empty"><span>!</span>Could not load Pokémon data</div>`;
-   } finally {
-      // Dölj overlay efter kort fördröjning
-      setTimeout(() => loadingEl && (loadingEl.style.display = 'none'), 400);
+      if (gridEl) gridEl.innerHTML = `<div class="empty"><span>!</span>Could not load Pokémon data</div>`;
    }
 }
 
