@@ -277,7 +277,7 @@ function renderFilledSlot(slot, pokemon) {
     pokemonDelete.classList.add("btnDeletePokemon");
     pokemonDelete.setAttribute("aria-label", `Remove ${pokemon.name} from team`);
     const deleteIcon = document.createElement("img");
-    deleteIcon.src = "/assets/trash.png";
+    deleteIcon.src = "../assets/trash.png";
     deleteIcon.alt = "";
     pokemonDelete.appendChild(deleteIcon);
 
@@ -306,7 +306,7 @@ function renderFilledSlot(slot, pokemon) {
     pokemonSee.classList.add("btnSeeMore");
     pokemonSee.setAttribute("aria-label", `See more about ${pokemon.name}`);
     const seeIcon = document.createElement("img");
-    seeIcon.src = "/assets/eye.png";
+    seeIcon.src = "../assets/eye.png";
     seeIcon.alt = "";
     pokemonSee.appendChild(seeIcon);
 
@@ -338,7 +338,7 @@ function renderEmptySlot(slot) {
     slot.setAttribute("aria-label", "Team slot, empty. Add Pokémon.");
     // add q-mark img
     const emptyImg = document.createElement("img");
-    emptyImg.src = "/assets/q-mark.png";
+    emptyImg.src = "../assets/q-mark.png";
     emptyImg.alt = "";
     // add to slot
     slot.appendChild(emptyImg);
@@ -504,7 +504,7 @@ function renderFilledCarousel(slot, pokemon) {
     const pokemonDelete = document.createElement("button");
     pokemonDelete.setAttribute("aria-label", `Remove ${pokemon.name} from waitlist`);
     const deleteIcon = document.createElement("img");
-    deleteIcon.src = "/assets/trash.png";
+    deleteIcon.src = "../assets/trash.png";
     deleteIcon.alt = "";
     pokemonDelete.appendChild(deleteIcon);
 
@@ -534,7 +534,7 @@ function renderFilledCarousel(slot, pokemon) {
     addToTeam.classList.add("addToTeam");
     addToTeam.setAttribute("aria-label", `Add ${pokemon.name} to your team`);
     const plusIcon = document.createElement("img");
-    plusIcon.src = "/assets/plus.png";
+    plusIcon.src = "../assets/plus.png";
     plusIcon.alt = "";
     addToTeam.appendChild(plusIcon);
     // lägger till knapp i bildcontainer för placering
@@ -577,7 +577,7 @@ function renderFilledCarousel(slot, pokemon) {
     pokemonSee.classList.add("btnSeeMore");
     pokemonSee.setAttribute("aria-label", `See more about ${pokemon.name}`);
     const seeIcon = document.createElement("img");
-    seeIcon.src = "/assets/eye.png";
+    seeIcon.src = "../assets/eye.png";
     seeIcon.alt = "";
     pokemonSee.appendChild(seeIcon);
     btnGroup.appendChild(pokemonSee);
@@ -771,7 +771,7 @@ function renderFilledSuggestions(slot, pokemon) {
     addToTeam.classList.add("addToTeam");
     addToTeam.setAttribute("aria-label", `Add ${pokemon.name} to your team`);
     const plusIcon = document.createElement("img");
-    plusIcon.src = "/assets/plus.png";
+    plusIcon.src = "../assets/plus.png";
     plusIcon.alt = "";
     addToTeam.appendChild(plusIcon);
     btnGroup.appendChild(addToTeam);
@@ -821,7 +821,7 @@ function renderFilledSuggestions(slot, pokemon) {
     pokemonSee.classList.add("btnSeeMore");
     pokemonSee.setAttribute("aria-label", `See more about ${pokemon.name}`);
     const seeIcon = document.createElement("img");
-    seeIcon.src = "/assets/eye.png";
+    seeIcon.src = "../assets/eye.png";
     seeIcon.alt = "";
     pokemonSee.appendChild(seeIcon);
 
