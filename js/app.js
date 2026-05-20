@@ -18,9 +18,7 @@ const gridEl      = document.getElementById('grid');
 const filtersEl   = document.getElementById('filters');
 const searchEl    = document.getElementById('search');
 const sortEl      = document.getElementById('sort-select');
-const loadingEl   = document.getElementById('loading-overlay');
-const loadingText = document.getElementById('loading-msg');
-const loadingBar  = document.getElementById('loading-bar');
+
 
 // läser och returnerar team och waitlist från localStorage som två separata arrayer.
 // går något fel returneras tomma arrayer.
