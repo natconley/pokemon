@@ -19,7 +19,6 @@ const filtersEl   = document.getElementById('filters');
 const searchEl    = document.getElementById('search');
 const sortEl      = document.getElementById('sort-select');
 
-const data = await loadAllPokemon(() => {});
 // läser och returnerar team och waitlist från localStorage som två separata arrayer.
 // går något fel returneras tomma arrayer.
 function _readTeam() {
@@ -157,7 +156,7 @@ let entries = POKEMON.filter(p => {
 // Init — hämta data och visa allt
 async function init() {
    try {
-      const data = await loadAllPokemon();
+      const data = await loadAllPokemon(() => {});
       CHAINS = data.CHAINS || [];
       POKEMON = data.POKEMON || CHAINS.flat();
       applyFiltersAndRender();
