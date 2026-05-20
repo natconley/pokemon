@@ -1,6 +1,6 @@
 # Pokédex & Team Builder
 
-🔗 [Live Demo](your-github-pages-or-vercel-url)
+🔗 [Live Demo] https://natconley.github.io/pokemon
 
 ## About
 A Pokémon catalogue built with vanilla HTML, CSS and JavaScript during a 
