@@ -106,6 +106,8 @@ function buildTypeChips() {
 
 // Filtrera, sortera och rendera
 function applyFiltersAndRender() {
+   if (!gridEl) return;
+   
    const q = (searchEl.value || '').trim().toLowerCase();
    
    const hpsliderval = Number(document.getElementById(`hpslider`).value);
